@@ -1,0 +1,49 @@
+{
+    "name": "charta",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@craco/craco": "5.6.4",
+        "@szhsin/react-menu": "^1.9.1",
+        "@testing-library/jest-dom": "^5.11.10",
+        "@testing-library/react": "^11.2.6",
+        "@testing-library/user-event": "^12.8.3",
+        "fabric": "^3.5.1",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-draggable": "^4.4.3",
+        "react-scripts": "3.4.4",
+        "react-sketch": "^0.5.1",
+        "web-vitals": "^1.1.1"
+    },
+    "scripts": {
+        "start": "craco start",
+        "build": "craco build",
+        "test": "craco test",
+        "eject": "react-sctipts eject"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "@tailwindcss/postcss7-compat": "^2.1.0",
+        "autoprefixer": "^9.8.6",
+        "postcss": "^7.0.35",
+        "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.1.0"
+    }
+}
