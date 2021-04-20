@@ -24,36 +24,27 @@ function formatData(data){
 export class Tile extends React.Component {
   constructor(props){
     super(props);
+    this.data = props.events;
     this.type = props.type || "default";
     this.title = props.title;
     this.imageurl = props.imageurl;
     this.state = {
-      open: false,
     }
   }
 
-  handleTooltipClose() {
-    this.setState({open:false});
-  }
+  eventToDiv(e){
 
-  handleTooltipOpen() {
-    this.setState({open:true});
   }
-
   render() {
     var toolTip;
     const tile = <div className={`w-3 h-2 bg-${constants.EVENT2COLOR[this.type]}-400 m-1 rounded`}
-      onClick={this.handleTooltipOpen.bind(this)}
       ></div>;
     if (this.type == 'default') {
       toolTip = tile
     } else {
-      toolTip = <ClickAwayListener onClickAway={this.handleTooltipClose.bind(this)}>
-          <div>
+      toolTip = <div>
             <Tooltip arrow 
               disableHoverListener={this.title==null}
-              disableFocusListener={this.title==null}
-              disableTouchListener={this.title==null}
               leaveDelay={0}
               placement="top"
               open={this.state.open}
@@ -70,7 +61,6 @@ export class Tile extends React.Component {
               {tile}
             </Tooltip>
           </div>
-        </ClickAwayListener>
     }
     return (
       <div>{toolTip}</div>
@@ -82,8 +72,14 @@ export default class Board extends React.Component {
   constructor(props){
     super(props);
     const data = formatData(props.data);
-    this.data = data;
+
     this.today = new Date();
+    data.events.push({
+      date: this.today,
+      type: "today",
+      title: "Today",
+    })
+    this.data = data;
     this.state = {
       displayMode: 'month', // week | month
       numRows: this.data.maxAge,
@@ -102,6 +98,7 @@ export default class Board extends React.Component {
       endDate = startDate.add(1, this.state.displayMode),
       events = this.eventsLookup(startDate, endDate),
       tileTitle = events.length > 0 ? events[0].title : null;
+
     var tileType = events.length > 0 ? events[0].type : null;
       if (tileType == null){
         tileType = startDate < this.today ? "default" : "disable"; 
@@ -112,15 +109,14 @@ export default class Board extends React.Component {
         <Tile key={`${r}-${c}`} 
           type={tileType}
           title={tileTitle}
-
+          events={events}
         />
       </Grid>
     )
   }
+
   getEvent(row){
-
   }
-
 
   render(){
     this.getTile(0, 0);
