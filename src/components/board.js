@@ -43,7 +43,7 @@ export class Tile extends React.Component {
           }
           className="text-red-400"
         >
-          <div className={`w-3 h-3 bg-${constants.EVENT2COLOR[this.type]}-400 m-1 rounded`}></div>
+          <div className={`w-3 h-2 bg-${constants.EVENT2COLOR[this.type]}-400 m-1 rounded`}></div>
         </Tooltip>
       </div>
     )
@@ -100,7 +100,7 @@ export default class Board extends React.Component {
       <div>
         <Grid container spacing={3}>
           {this.state.numRows > 0 && Array.from(Array(this.state.numRows + 1).keys()).map((r) =>
-          <Grid key={`row-${r}`} container className="justify-center">
+          <Grid key={`row-${r}`} container className="justify-center items-end">
             <Grid item className="w-6 text-sm text-center">{r % 5 == 0 ? r : " "}</Grid>
             {this.state.numCols > 0 && Array.from(Array(this.state.numCols).keys()).map((c) => 
               this.getTile(r, c)
