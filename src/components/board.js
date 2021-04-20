@@ -37,14 +37,15 @@ export class Tile extends React.Component {
   }
   render() {
     var toolTip;
-    const tile = <div className={`w-3 h-2 bg-${constants.EVENT2COLOR[this.type]}-400 m-1 rounded`}
+    const tile = <div className={`transform hover:scale-150 hover:bg-${constants.EVENT2COLOR[this.type]}-600 bg-${constants.EVENT2COLOR[this.type]}-300 w-3 h-2 box-border mr-0.5 mb-0.5`}
       ></div>;
     if (this.type == 'default') {
       toolTip = tile
     } else {
-      toolTip = <div>
+      toolTip = 
             <Tooltip arrow 
               disableHoverListener={this.title==null}
+              enterDelay={0}
               leaveDelay={0}
               placement="top"
               open={this.state.open}
@@ -60,10 +61,11 @@ export class Tile extends React.Component {
             >
               {tile}
             </Tooltip>
-          </div>
     }
     return (
-      <div>{toolTip}</div>
+      <React.Fragment>
+        {toolTip}
+      </React.Fragment>
     )
   }
 }
@@ -81,9 +83,9 @@ export default class Board extends React.Component {
     })
     this.data = data;
     this.state = {
-      displayMode: 'month', // week | month
+      displayMode: 'week', // week | month
       numRows: this.data.maxAge,
-      numCols: 12, 
+      numCols: 52, 
     }
   }
 
@@ -122,7 +124,7 @@ export default class Board extends React.Component {
     this.getTile(0, 0);
     return (
       <div>
-        <Grid container spacing={3}>
+        <Grid container>
           {this.state.numRows > 0 && Array.from(Array(this.state.numRows + 1).keys()).map((r) =>
           <Grid key={`row-${r}`} container className="justify-center items-end">
             <Grid item className="w-6 text-sm text-center">{r % 5 == 0 ? r : " "}</Grid>
