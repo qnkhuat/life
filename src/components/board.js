@@ -1,12 +1,15 @@
 import React from 'react';
+import * as constants from "../constants"
+
+import dayjs from "dayjs";
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import dayjs from "dayjs";
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import * as constants from "../constants"
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 dayjs.extend(customParseFormat);
 
@@ -24,28 +27,53 @@ export class Tile extends React.Component {
     this.type = props.type || "default";
     this.title = props.title;
     this.imageurl = props.imageurl;
+    this.state = {
+      open: false,
+    }
+  }
+
+  handleTooltipClose() {
+    this.setState({open:false});
+  }
+
+  handleTooltipOpen() {
+    this.setState({open:true});
   }
 
   render() {
+    var toolTip;
+    const tile = <div className={`w-3 h-2 bg-${constants.EVENT2COLOR[this.type]}-400 m-1 rounded`}
+      onClick={this.handleTooltipOpen.bind(this)}
+      ></div>;
+    if (this.type == 'default') {
+      toolTip = tile
+    } else {
+      toolTip = <ClickAwayListener onClickAway={this.handleTooltipClose.bind(this)}>
+          <div>
+            <Tooltip arrow 
+              disableHoverListener={this.title==null}
+              disableFocusListener={this.title==null}
+              disableTouchListener={this.title==null}
+              leaveDelay={0}
+              placement="top"
+              open={this.state.open}
+              title={
+                <React.Fragment>
+                  {this.title && 
+                  <p className={`text-${constants.EVENT2COLOR[this.type]}-400 text-xl`}>{this.title || "No message"}</p>}
+                  {this.imageurl && 
+                    <img src={this.imageurl}/>}
+                </React.Fragment>
+              }
+              className="text-red-400"
+            >
+              {tile}
+            </Tooltip>
+          </div>
+        </ClickAwayListener>
+    }
     return (
-      <div> 
-        <Tooltip arrow 
-          disableHoverListener={this.title==null}
-          leaveDelay={0}
-          placement="top"
-          title={
-            <React.Fragment>
-              {this.title && 
-              <p className={`text-${constants.EVENT2COLOR[this.type]}-400 text-xl`}>{this.title || "No message"}</p>}
-              {this.imageurl && 
-                <img src={this.imageurl}/>}
-            </React.Fragment>
-          }
-          className="text-red-400"
-        >
-          <div className={`w-3 h-2 bg-${constants.EVENT2COLOR[this.type]}-400 m-1 rounded`}></div>
-        </Tooltip>
-      </div>
+      <div>{toolTip}</div>
     )
   }
 }
