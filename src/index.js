@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Board, {Tile} from './components/board';
+import Board from './components/board';
 import './index.css'; // Tailwind
 import tempData from './tempData.json'
 
 function App() {
   return (
-    <Board data={tempData}/>
+    <div className="m-24">
+      <Board data={tempData}/>
+    </div>
   )
 }
 

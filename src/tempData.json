@@ -5,9 +5,16 @@
   "maxAge":90,
   "events": [
     {
+      "date":"17/04/1998",
+      "title": "A star was born",
+      "imageUrls": ["./firstyear.JPG"],
+      "videoUrls": [],
+      "type": "birthday"
+    },
+    {
       "date":"20/09/2016",
       "title": "First year college",
-      "imageUrls": [],
+      "imageUrls": ["./firstyear.JPG"],
       "videoUrls": [],
       "type": "career"
     },
