@@ -26,3 +26,7 @@ body {
 
   resize: none; /*remove the resize handle on the bottom right*/
 }
+
+.cursor-none {
+  cursor:none;
+}

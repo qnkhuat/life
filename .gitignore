@@ -2,6 +2,8 @@
 
 # dev
 /repos
+*.swp
+*.swo
 
 # dependencies
 /node_modules
