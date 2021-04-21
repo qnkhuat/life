@@ -19,11 +19,13 @@ export default class Board extends React.Component {
   constructor(props){
     super(props);
     const data = formatData(props.data);
-    this.today = new Date();
+    this.today = dayjs();
     data.events.push({
       date: this.today,
       type: "today",
       title: "Today",
+      imageUrls: [],
+      videoUrls: [],
     })
     this.data = data;
     this.state = {
@@ -48,8 +50,8 @@ export default class Board extends React.Component {
     if (tileType == null) tileType = startDate < this.today ? "default" : "disable"; 
 
     return (
-      <Grid item key={`tile-${r}-${c}`}>
-        <Tile key={`${r}-${c}`} 
+      <Grid item key={`item-${r}-${c}`}>
+        <Tile key={`tile-${r}-${c}`} 
           startDate={startDate}
           endDate={endDate}
           type={tileType}
@@ -60,17 +62,13 @@ export default class Board extends React.Component {
     )
   }
 
-  getEvent(row){
-  }
-
   render(){
-    this.getTile(0, 0);
     return (
       <div>
-        <Grid container>
+        <Grid container className="cursor-none">
           {this.state.numRows > 0 && Array.from(Array(this.state.numRows + 1).keys()).map((r) =>
           <Grid key={`row-${r}`} container className="justify-center items-end">
-            <Grid item className="w-6 text-sm text-center">{r % 5 == 0 ? r : " "}</Grid>
+            <Grid item key={`row-idnex-${r}`} className="w-6 text-sm text-center">{r % 5 == 0 ? r : " "}</Grid>
             {this.state.numCols > 0 && Array.from(Array(this.state.numCols).keys()).map((c) => 
               this.getTile(r, c)
             )}

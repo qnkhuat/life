@@ -6,6 +6,7 @@ export const EVENT2COLOR = {
   "career": "yellow",
   "default": "blue",
   "disable": "gray",
-  "today": "pink"
+  "today": "pink",
+  "travel": "purple"
 }
 
