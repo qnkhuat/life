@@ -7,35 +7,43 @@
     {
       "date":"17/04/1998",
       "title": "A star was born",
-      "imageUrls": ["./firstyear.JPG"],
+      "imageUrls": ["/born.JPG"],
       "videoUrls": [],
       "type": "birthday"
     },
     {
       "date":"20/09/2016",
       "title": "First year college",
-      "imageUrls": ["./firstyear.JPG"],
+      "imageUrls": ["firstyear.JPG"],
       "videoUrls": [],
       "type": "career"
     },
     {
+      "date":"17/04/2019",
+      "title": "First time US",
+      "imageUrls": ["us.jpeg"],
+      "videoUrls": [],
+      "type": "achievement"
+    },
+
+    {
       "date":"12/10/2017",
       "title": "Kawaii top 5",
-      "imageUrls": [],
+      "imageUrls": ["kawai.jpg"],
       "videoUrls": [],
       "type": "achievement"
     },
     {
       "date":"12/05/2018",
       "title": "Join Topica",
-      "imageUrls": [],
+      "imageUrls": ["topica.JPG"],
       "videoUrls": [],
       "type": "career"
     },
     {
       "date":"15/08/2019",
       "title": "Join Vantix",
-      "imageUrls": [],
+      "imageUrls": ["vantix.jpeg"],
       "videoUrls": [],
       "type": "career"
     },

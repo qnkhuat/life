@@ -1,14 +1,10 @@
-import React from 'react';import * as constants from "../constants"
+import React from 'react';
+import Tile from "./Tile";
+import * as constants from "../constants";
 
 import dayjs from "dayjs";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 dayjs.extend(customParseFormat);
 
@@ -17,63 +13,6 @@ function formatData(data){
   data.events.forEach(e => e.date = formatDate(e.date));
   data.birthday = formatDate(data.birthday);
   return data;
-}
-
-
-export class Tile extends React.Component {
-  constructor(props){
-    super(props);
-    this.data = props.events;
-    this.startDate = props.startDate;
-    this.endDate = props.endDate;
-    this.type = props.type || "default";
-    this.title = props.title;
-    this.imageurl = props.imageurl;
-    this.state = {
-    }
-  }
-
-  
-  render() {
-    var toolTip;
-    const tile = <div 
-      className={`transform hover:scale-150 
-      hover:bg-${constants.EVENT2COLOR[this.type]}-600 bg-${constants.EVENT2COLOR[this.type]}-300 
-      hover:z-10 z-0 relative
-      w-5 h-4 
-      box-border m-0.5`}
-    ></div>;
-    if (this.data.length == 0) {
-      toolTip = tile
-    } else {
-      toolTip = 
-        <Tooltip arrow 
-          disableHoverListener={this.title==null}
-          enterDelay={0}
-          leaveDelay={0}
-          placement="top"
-          open={this.state.open}
-          title={
-            <React.Fragment>
-              <h1>{this.title}</h1>
-              {this.startDate && this.endDate && <p className="text-base text-center">{`${this.startDate.format("MM/YY")}-${this.endDate.format("MM/YY")}`}</p> }
-              {this.title && 
-              <p className={`text-${constants.EVENT2COLOR[this.type]}-400 text-base`}>{this.title}</p>}
-              {this.imageurl && 
-                <img src={this.imageurl}/>}
-            </React.Fragment>
-          }
-          className="text-red-400"
-        >
-          {tile}
-        </Tooltip>
-    }
-    return (
-      <React.Fragment>
-        {toolTip}
-      </React.Fragment>
-    )
-  }
 }
 
 export default class Board extends React.Component {
@@ -88,8 +27,7 @@ export default class Board extends React.Component {
     })
     this.data = data;
     this.state = {
-      //numRows: this.data.maxAge,
-      numRows:20,
+      numRows: this.data.maxAge,
       displayMode: 'week', // week | month
       numCols: 52, 
     }
@@ -129,7 +67,7 @@ export default class Board extends React.Component {
     this.getTile(0, 0);
     return (
       <div>
-        <Grid container className='cursor-none'>
+        <Grid container>
           {this.state.numRows > 0 && Array.from(Array(this.state.numRows + 1).keys()).map((r) =>
           <Grid key={`row-${r}`} container className="justify-center items-end">
             <Grid item className="w-6 text-sm text-center">{r % 5 == 0 ? r : " "}</Grid>
