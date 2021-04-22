@@ -1,11 +1,11 @@
 import React from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles } from "@material-ui/core/styles";
+import Tooltip from '@material-ui/core/Tooltip';
 import Carousel from 'react-gallery-carousel';
 import 'react-gallery-carousel/dist/index.css';
+import OutsideDetector from "./OutsideDetector";
 
 import * as constants from "../constants";
-
 
 const TILE_WIDTH  = "400px";
 const TILE_HEIGHT = "300px";
@@ -58,7 +58,6 @@ export default class Tile extends React.Component {
   }
 
   handleOnClick(){
-    console.log("click ne");
     const openState = this.state.open;
     if (this.state.hoverOpen){
       this.setState({
@@ -72,7 +71,6 @@ export default class Tile extends React.Component {
         clickOpen: !openState
       });
     }
-
   }
 
   handleOnMouseOver(){
@@ -81,6 +79,10 @@ export default class Tile extends React.Component {
 
   handleOnMouseLeave(){
     if (this.state.open && !this.state.clickOpen) this.setState({open:false, hoverOpen:false});
+  }
+
+  handleOnClickAway(){
+    this.setState({open:false});
   }
 
   render() {
@@ -96,6 +98,10 @@ export default class Tile extends React.Component {
       w-5 h-4 
       box-border m-0.5`}
     >{constants.EVENT2ICON[this.type]}</div>;
+
+    if (this.state.open) tileDiv = <div><OutsideDetector
+      onClickAway={this.handleOnClickAway.bind(this)}
+      >{tileDiv}</OutsideDetector></div>;
 
     
     const tooltipClassName = "shadow-xl border-2 border border-gray-300 rounded bg-black";
