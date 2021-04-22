@@ -82,7 +82,9 @@ export default class Tile extends React.Component {
   }
 
   handleOnClickAway(){
-    this.setState({open:false});
+    this.setState({open:false,
+      hoverOpen:false,
+      clickOpen:false});
   }
 
   render() {
