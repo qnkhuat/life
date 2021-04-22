@@ -8,8 +8,8 @@ import 'react-gallery-carousel/dist/index.css';
 import * as constants from "../constants";
 
 
-const TILE_WIDTH  = "600px";
-const TILE_HEIGHT = "450px";
+const TILE_WIDTH  = "400px";
+const TILE_HEIGHT = "300px";
 
 const CustomTooltip = withStyles({
   tooltip: {
@@ -96,6 +96,7 @@ export default class Tile extends React.Component {
         <CustomTooltip
           enterDelay={0}
           leaveDelay={0}
+          interactive={false}
           placement="top"
           title={
             <React.Fragment>

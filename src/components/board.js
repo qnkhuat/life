@@ -31,8 +31,8 @@ export default class Board extends React.Component {
     this.data = data;
     this.state = {
       numRows: this.data.maxAge,
-      displayMode: 'month', // week | month
-      numCols: 12, 
+      displayMode: 'week', // week | month
+      numCols: 52, 
     }
   }
 
