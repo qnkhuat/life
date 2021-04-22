@@ -28,9 +28,7 @@ export default class OutsideAlerter extends React.Component {
 
   
   handleClickOutside(event) {
-    console.log("called");
     if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
-      console.log("triggered");
       this.handleFunction();
     }
   }

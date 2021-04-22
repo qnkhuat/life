@@ -71,7 +71,7 @@ export default class Board extends React.Component {
       <div>
         <Grid container className="disable-cursor-none">
           {this.state.numRows > 0 && Array.from(Array(this.state.numRows + 1).keys()).map((r) =>
-          <Grid key={`row-${r}`} container className="justify-center items-end">
+          <Grid key={`row-${r}`} container className="justify-center items-end relative">
             <Grid item key={`row-idnex-${r}`} className="w-6 text-sm text-center">{r % 5 === 0 ? r : " "}</Grid>
             {this.state.numCols > 0 && Array.from(Array(this.state.numCols).keys()).map((c) => 
               this.getTile(r, c)
