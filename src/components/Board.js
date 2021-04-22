@@ -11,23 +11,26 @@ dayjs.extend(customParseFormat);
 
 function formatData(data){
   const formatDate = (date) => dayjs(date, constants.dateFormat);
-  data.events.forEach(e => e.date = formatDate(e.date));
   data.birthday = formatDate(data.birthday);
+  data.events.forEach(e => {
+    e.date = formatDate(e.date);
+    e.ageSince = (e.date - data.birthday)/ ( 1000 * 60 *60 *24 * 365);
+  });
   return data;
 }
 
 export default class Board extends React.Component {
   constructor(props){
     super(props);
-    const data = formatData(props.data);
     this.today = dayjs();
-    data.events.push({
+    props.data.events.push({
       date: this.today,
       type: "today",
       title: "Today",
       imageUrls: [],
       videoUrls: [],
     })
+    const data = formatData(props.data);
     this.data = data;
     this.state = {
       numRows: this.data.maxAge,

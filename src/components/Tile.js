@@ -29,8 +29,6 @@ export default class Tile extends React.Component {
     this.startDate = props.startDate;
     this.endDate = props.endDate;
     this.type = props.type || "default";
-    this.state = {
-    }
   }
 
   eventToDiv(e){
@@ -44,12 +42,11 @@ export default class Tile extends React.Component {
             className="object-contain" src={url}/>)}
         </div>
         <div 
-          style={{"max-width": TILE_WIDTH, "max-height": TILE_HEIGHT}}
           className="tooltip-text bg-white px-5 py-5 text-black text-left">
           <p className="text-xl text-bold overflow-ellipsis">{e.title}</p>
           {e.content && <p className="text-base">{e.content}</p>}
           <hr/>
-          <p className="text-sm text-gray-500">{e.date.format(DATE_RANGE_FORMAT)}</p>
+          <p className="text-sm text-gray-500">{e.date.format(DATE_RANGE_FORMAT)} - {Math.floor(e.ageSince)} Years old</p>
         </div>
       </div>
     )
@@ -57,7 +54,7 @@ export default class Tile extends React.Component {
 
   render() {
     var toolTip;
-    const tile = <div 
+    const tileDiv = <div 
       className={`transform hover:scale-125 
       hover:bg-${constants.EVENT2COLOR[this.type]}-500 bg-${constants.EVENT2COLOR[this.type]}-300 
       hover:z-10 z-0 relative
@@ -68,12 +65,13 @@ export default class Tile extends React.Component {
 
     const tooltipClassName = "shadow-xl border-2 border border-gray-300 rounded bg-black";
 
-
     if (this.data.length > 0) {
+      const tilesContent = this.data.map((e) => <div className="text-slide">{this.eventToDiv(e)}</div>);
+
       var tooltipTitle;
-      if (this.data.length == 1){
-        tooltipTitle = <div className={tooltipClassName}>{this.eventToDiv(this.data[0])}</div>;
-      } else{
+      if (this.data.length == 1) {
+        tooltipTitle = <div className={tooltipClassName}>{tilesContent}</div>;
+      } else {
         tooltipTitle = <Carousel
           className={tooltipClassName}
           isLoop={false}
@@ -87,28 +85,20 @@ export default class Tile extends React.Component {
           shouldMinimizeOnSwipeDown={false} // for vertical overflow scrolling
           style={{ userSelect: 'text' }}
         >
-          {this.data.map((e) => <div className="text-slide">{this.eventToDiv(e)}</div>)}
+          tilesContent
         </Carousel>
       }
 
 
       toolTip = 
         <CustomTooltip
-          enterDelay={0}
-          leaveDelay={0}
-          interactive={false}
           placement="top"
-          title={
-            <React.Fragment>
-              {tooltipTitle}
-            </React.Fragment>
-          }
+          title={tooltipTitle}
         >
-          {tile}
+          {tileDiv}
         </CustomTooltip>
     } else {
-      toolTip = tile
-
+      toolTip = tileDiv;
     }
     return (
       <React.Fragment>
