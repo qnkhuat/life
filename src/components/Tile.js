@@ -2,19 +2,22 @@ import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import {withStyles} from "@material-ui/core/styles";
 import dayjs from "dayjs";
+import Carousel from 'react-gallery-carousel';
+import 'react-gallery-carousel/dist/index.css';
 
 import * as constants from "../constants";
 
+
+const TILE_WIDTH  = "600px";
+const TILE_HEIGHT = "450px";
+
 const CustomTooltip = withStyles({
   tooltip: {
-    maxWidth: "500px",
+    maxWidth: TILE_WIDTH,
     padding: "0px",
-    maxHeight: "500px",
+    maxHeight: "600px",
   }
 })(Tooltip);
-
-const TILE_WIDTH  = "400px";
-const TILE_HEIGHT = "300px";
 
 const DATE_RANGE_FORMAT = "DD/MM/YYYY";
 
@@ -33,12 +36,12 @@ export default class Tile extends React.Component {
   eventToDiv(e){
     return (
       <div 
-        className="text-base rounded shadow-xl">
+        className="text-base rounded">
         <div className="tooltip-media"
         >
           {e.imageUrls && e.imageUrls.length > 0 && e.imageUrls.map((url) => <img 
-          style={{width: TILE_WIDTH, height: TILE_HEIGHT}}
-          className="object-contain" src={url}/>)}
+            style={{width: TILE_WIDTH, height: TILE_HEIGHT}}
+            className="object-contain" src={url}/>)}
         </div>
         <div 
           style={{"max-width": TILE_WIDTH, "max-height": TILE_HEIGHT}}
@@ -62,7 +65,33 @@ export default class Tile extends React.Component {
       w-5 h-4 
       box-border m-0.5`}
     >{constants.EVENT2ICON[this.type]}</div>;
+
+    const tooltipClassName = "shadow-xl border-2 border border-gray-300 rounded bg-black";
+
+
     if (this.data.length > 0) {
+      var tooltipTitle;
+      if (this.data.length == 1){
+        tooltipTitle = <div className={tooltipClassName}>{this.eventToDiv(this.data[0])}</div>;
+      } else{
+        tooltipTitle = <Carousel
+          className={tooltipClassName}
+          isLoop={false}
+          hasMediaButton={false}
+          isMaximized={false}
+          hasIndexBoard={false}
+          hasSizeButton={false}
+          hasDotButtons='bottom'
+          hasThumbnails={false}
+          shouldSwipeOnMouse={true} // for selecting text
+          shouldMinimizeOnSwipeDown={false} // for vertical overflow scrolling
+          style={{ userSelect: 'text' }}
+        >
+          {this.data.map((e) => <div className="text-slide">{this.eventToDiv(e)}</div>)}
+        </Carousel>
+      }
+
+
       toolTip = 
         <CustomTooltip
           enterDelay={0}
@@ -70,7 +99,7 @@ export default class Tile extends React.Component {
           placement="top"
           title={
             <React.Fragment>
-              {this.data.length > 0 && this.data.map((e) => <div>{this.eventToDiv(e)}</div>)}
+              {tooltipTitle}
             </React.Fragment>
           }
         >

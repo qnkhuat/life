@@ -1,0 +1,24 @@
+{
+  "name": "Khuat Quang Ngoc",
+  "nationality": "Viet Nam",
+  "birthday":"17/04/1998",
+  "maxAge":90,
+  "events": [
+    {
+      "date":"12/05/2018",
+      "title": "Join Topica",
+      "content":"",
+      "imageUrls": ["topica.JPG"],
+      "videoUrls": [],
+      "type": "career"
+    },
+    {
+      "date":"14/05/2018",
+      "title": "Join Topica",
+      "content":"",
+      "imageUrls": ["topica.JPG"],
+      "videoUrls": [],
+      "type": "career"
+    }
+  ]
+}
