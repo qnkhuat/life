@@ -1,9 +1,10 @@
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
-import {withStyles} from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import dayjs from "dayjs";
 import Carousel from 'react-gallery-carousel';
 import 'react-gallery-carousel/dist/index.css';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 import * as constants from "../constants";
 
@@ -29,6 +30,11 @@ export default class Tile extends React.Component {
     this.startDate = props.startDate;
     this.endDate = props.endDate;
     this.type = props.type || "default";
+    this.state = {
+      open:false,
+      clickOpen:false,
+      hoverOpen:false,
+    }
   }
 
   eventToDiv(e){
@@ -52,10 +58,50 @@ export default class Tile extends React.Component {
     )
   }
 
+  handleOnClick(){
+    console.log("click ne");
+    const openState = this.state.open;
+    if (this.state.hoverOpen){
+      this.setState({
+        open:true,
+        clickOpen:true,
+        hoverOpen:false
+      })
+    } else{
+      this.setState({
+        open: !openState,
+        clickOpen: !openState
+      });
+    }
+
+  }
+
+  handleOnMouseOver(){
+    if (!this.state.open && !this.state.clickOpen) this.setState({open:true, hoverOpen:true});
+  }
+
+  handleOnMouseLeave(){
+    if (this.state.open && !this.state.clickOpen) this.setState({open:false, hoverOpen:false});
+  }
+
+  handleOnClickAway(){
+    console.log("click away ne");
+    //if (!this.state.open){
+    //  this.setState({
+    //    open:false,
+    //    clickOpen:false,
+    //    hoverOpen:false,
+    //  });
+    //}
+  }
+
   render() {
-    var toolTip;
-    const tileDiv = <div 
-      className={`transform hover:scale-125 
+    var toolTip, tileDiv;
+    tileDiv = <div 
+        onClick={this.handleOnClick.bind(this)}
+        onMouseOver={this.handleOnMouseOver.bind(this)}
+        onMouseLeave={this.handleOnMouseLeave.bind(this)}
+        className={`transform hover:scale-125 
       hover:bg-${constants.EVENT2COLOR[this.type]}-500 bg-${constants.EVENT2COLOR[this.type]}-300 
       hover:z-10 z-0 relative
       text-xs text-center
@@ -63,6 +109,9 @@ export default class Tile extends React.Component {
       box-border m-0.5`}
     >{constants.EVENT2ICON[this.type]}</div>;
 
+    //if (this.state.open){
+    //  tileDiv = <ClickAwayListener onClickAway={this.handleOnClickAway.bind(this)}>{tileDiv}</ClickAwayListener>;
+    //}   
     const tooltipClassName = "shadow-xl border-2 border border-gray-300 rounded bg-black";
 
     if (this.data.length > 0) {
@@ -89,14 +138,14 @@ export default class Tile extends React.Component {
         </Carousel>
       }
 
-
-      toolTip = 
-        <CustomTooltip
-          placement="top"
-          title={tooltipTitle}
-        >
-          {tileDiv}
-        </CustomTooltip>
+      toolTip = <CustomTooltip
+        open={this.state.open}
+        placement="top"
+        disableInteractive={!this.state.open}
+        title={tooltipTitle}
+      >
+        {tileDiv}
+      </CustomTooltip>;
     } else {
       toolTip = tileDiv;
     }

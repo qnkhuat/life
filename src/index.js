@@ -12,8 +12,8 @@ function App(data) {
 }
 
 fetch("tempData.json")
-.then((r) => r.json())
-.then((data) =>{
+  .then((r) => r.json())
+  .then((data) =>{
     ReactDOM.render(<App data={data}/>, document.getElementById('root'));
-})
+  })
 
