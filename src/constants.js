@@ -7,6 +7,18 @@ export const EVENT2COLOR = {
   "default": "blue",
   "disable": "gray",
   "today": "pink",
-  "travel": "purple"
+  "travel": "purple",
+  "family": "red"
+}
+
+export const EVENT2ICON = {
+  "birthday" : "🎂",
+  "achievement": "🏆",
+  "career": "👨‍💻",
+  "default": "",
+  "disable": "",
+  "today": "📍",
+  "travel": "🗺",
+  "family": "🏠"
 }
 

@@ -30,8 +30,8 @@ export default class Board extends React.Component {
     this.data = data;
     this.state = {
       numRows: this.data.maxAge,
-      displayMode: 'week', // week | month
-      numCols: 52, 
+      displayMode: 'month', // week | month
+      numCols: 12, 
     }
   }
 
@@ -65,7 +65,7 @@ export default class Board extends React.Component {
   render(){
     return (
       <div>
-        <Grid container className="cursor-none">
+        <Grid container className="disable-cursor-none">
           {this.state.numRows > 0 && Array.from(Array(this.state.numRows + 1).keys()).map((r) =>
           <Grid key={`row-${r}`} container className="justify-center items-end">
             <Grid item key={`row-idnex-${r}`} className="w-6 text-sm text-center">{r % 5 == 0 ? r : " "}</Grid>

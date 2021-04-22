@@ -6,7 +6,7 @@ import tempData from './tempData.json'
 
 function App() {
   return (
-    <div className="my-16">
+    <div className="my-16 bg-">
       <Board data={tempData}/>
     </div>
   )
