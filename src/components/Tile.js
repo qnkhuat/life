@@ -1,10 +1,8 @@
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles } from "@material-ui/core/styles";
-import dayjs from "dayjs";
 import Carousel from 'react-gallery-carousel';
 import 'react-gallery-carousel/dist/index.css';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 import * as constants from "../constants";
 
@@ -44,6 +42,7 @@ export default class Tile extends React.Component {
         <div className="tooltip-media"
         >
           {e.imageUrls && e.imageUrls.length > 0 && e.imageUrls.map((url) => <img 
+            alt={e.date.format(DATE_RANGE_FORMAT)}
             style={{width: TILE_WIDTH, height: TILE_HEIGHT}}
             className="object-contain" src={url}/>)}
         </div>
@@ -84,17 +83,6 @@ export default class Tile extends React.Component {
     if (this.state.open && !this.state.clickOpen) this.setState({open:false, hoverOpen:false});
   }
 
-  handleOnClickAway(){
-    console.log("click away ne");
-    //if (!this.state.open){
-    //  this.setState({
-    //    open:false,
-    //    clickOpen:false,
-    //    hoverOpen:false,
-    //  });
-    //}
-  }
-
   render() {
     var toolTip, tileDiv;
     tileDiv = <div 
@@ -109,16 +97,14 @@ export default class Tile extends React.Component {
       box-border m-0.5`}
     >{constants.EVENT2ICON[this.type]}</div>;
 
-    //if (this.state.open){
-    //  tileDiv = <ClickAwayListener onClickAway={this.handleOnClickAway.bind(this)}>{tileDiv}</ClickAwayListener>;
-    //}   
+    
     const tooltipClassName = "shadow-xl border-2 border border-gray-300 rounded bg-black";
 
     if (this.data.length > 0) {
       const tilesContent = this.data.map((e) => <div className="text-slide">{this.eventToDiv(e)}</div>);
 
       var tooltipTitle;
-      if (this.data.length == 1) {
+      if (this.data.length === 1) {
         tooltipTitle = <div className={tooltipClassName}>{tilesContent}</div>;
       } else {
         tooltipTitle = <Carousel

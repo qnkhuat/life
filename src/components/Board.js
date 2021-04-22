@@ -5,7 +5,7 @@ import * as constants from "../constants";
 import dayjs from "dayjs";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import Grid from '@material-ui/core/Grid';
-import { FixedSizeGrid } from 'react-window'; // TODO use this to render our big table
+// TODO use this to render our big table react-window
 
 dayjs.extend(customParseFormat);
 
@@ -72,7 +72,7 @@ export default class Board extends React.Component {
         <Grid container className="disable-cursor-none">
           {this.state.numRows > 0 && Array.from(Array(this.state.numRows + 1).keys()).map((r) =>
           <Grid key={`row-${r}`} container className="justify-center items-end">
-            <Grid item key={`row-idnex-${r}`} className="w-6 text-sm text-center">{r % 5 == 0 ? r : " "}</Grid>
+            <Grid item key={`row-idnex-${r}`} className="w-6 text-sm text-center">{r % 5 === 0 ? r : " "}</Grid>
             {this.state.numCols > 0 && Array.from(Array(this.state.numCols).keys()).map((c) => 
               this.getTile(r, c)
             )}
