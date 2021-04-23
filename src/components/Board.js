@@ -5,7 +5,10 @@ import * as constants from "../constants";
 import dayjs from "dayjs";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import Grid from '@material-ui/core/Grid';
+
 // TODO use this to render our big table react-window
+
+const MODE_BREAKPOINT = 1350;
 
 dayjs.extend(customParseFormat);
 
@@ -38,6 +41,33 @@ export default class Board extends React.Component {
       numCols: 12, 
     }
   }
+
+  changeDisplayMode(mode){
+    const numCols = mode == "month" ? 12 : 52;
+    this.setState({
+      numCols: numCols,
+      displayMode: mode,
+    });
+  }
+
+  componentDidMount() {
+    const changeModeBasedOnWidth = (width) => {
+      if (window.innerWidth < MODE_BREAKPOINT && this.state.displayMode != "month"){
+        console.log("wow");
+        this.changeDisplayMode("month");
+      } else if (window.innerWidth >= MODE_BREAKPOINT && this.state.displayMode != "week") {
+        console.log("way");
+        this.changeDisplayMode("week");
+      }
+    }
+
+    changeModeBasedOnWidth(window.innerWidth); // execute one after mount
+
+    window.addEventListener("resize", () => {
+      changeModeBasedOnWidth(window.innerWidth);
+    });
+  }
+
 
   eventsLookup(startDate, endDate){
     let events = this.data.events.filter((e) => startDate <= e.date && e.date < endDate);
