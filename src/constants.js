@@ -22,3 +22,13 @@ export const EVENT2ICON = {
   "family": "🏠"
 }
 
+
+
+// CSS
+export const TILE = { // in px
+  "width": 20,
+  "height": 16,
+  "margin": 1 * 2
+}
+
+export const MODE_BREAKPOINT = 1350; // in px

@@ -1,5 +1,5 @@
 {
-    "name": "charta",
+    "name": "life",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
@@ -14,8 +14,7 @@
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-gallery-carousel": "^0.1.4",
-        "react-scripts": "3.4.4",
-        "react-window": "^1.8.6"
+        "react-scripts": "3.4.4"
     },
     "scripts": {
         "start": "craco start",

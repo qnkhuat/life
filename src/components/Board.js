@@ -5,10 +5,10 @@ import * as constants from "../constants";
 import dayjs from "dayjs";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import Grid from '@material-ui/core/Grid';
+import { FixedSizeGrid } from 'react-window';
+import AutoSizer from "react-virtualized-auto-sizer";
 
-// TODO use this to render our big table react-window
 
-const MODE_BREAKPOINT = 1350;
 
 dayjs.extend(customParseFormat);
 
@@ -52,9 +52,9 @@ export default class Board extends React.Component {
 
   componentDidMount() {
     const changeModeBasedOnWidth = (width) => {
-      if (window.innerWidth < MODE_BREAKPOINT && this.state.displayMode !== "month"){
+      if (window.innerWidth < constants.MODE_BREAKPOINT && this.state.displayMode !== "month"){
         this.changeDisplayMode("month");
-      } else if (window.innerWidth >= MODE_BREAKPOINT && this.state.displayMode !== "week") {
+      } else if (window.innerWidth >= constants.MODE_BREAKPOINT && this.state.displayMode !== "week") {
         this.changeDisplayMode("week");
       }
     }
@@ -65,7 +65,6 @@ export default class Board extends React.Component {
       changeModeBasedOnWidth(window.innerWidth);
     });
   }
-
 
   eventsLookup(startDate, endDate){
     let events = this.data.events.filter((e) => startDate <= e.date && e.date < endDate);
@@ -87,8 +86,10 @@ export default class Board extends React.Component {
           startDate={startDate}
           endDate={endDate}
           type={tileType}
-          title={tileTitle}
           events={events}
+          width={constants.TILE['width']}
+          height={constants.TILE['height']}
+          margin={constants.TILE['margin']}
         />
       </Grid>
     )
@@ -110,6 +111,6 @@ export default class Board extends React.Component {
       </div>
     )
   }
+  
 }
-
 

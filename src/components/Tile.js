@@ -7,12 +7,13 @@ import OutsideDetector from "./OutsideDetector";
 
 import * as constants from "../constants";
 
-const TILE_WIDTH  = "400px";
-const TILE_HEIGHT = "300px";
+const POPUP_WIDTH  = "400px";
+const POPUP_HEIGHT = "300px";
+
 
 const CustomTooltip = withStyles({
   tooltip: {
-    maxWidth: TILE_WIDTH,
+    maxWidth: POPUP_WIDTH,
     padding: "0px",
     maxHeight: "600px",
   }
@@ -28,6 +29,9 @@ export default class Tile extends React.Component {
     this.startDate = props.startDate;
     this.endDate = props.endDate;
     this.type = props.type || "default";
+    this.tileHeight = props.height || constants.TILE['height'];
+    this.tileWidth = props.width || constants.TILE['width'];
+    this.tileMargin = props.margin || constants.TILE['margin'];
     this.state = {
       open:false,
       clickOpen:false,
@@ -44,7 +48,7 @@ export default class Tile extends React.Component {
           {e.imageUrls && e.imageUrls.length > 0 && e.imageUrls.map((url, i) => <img 
             key={i}
             alt={e.date.format(DATE_RANGE_FORMAT)}
-            style={{width: TILE_WIDTH, height: TILE_HEIGHT}}
+            style={{width: POPUP_WIDTH, height: POPUP_HEIGHT}}
             className="object-contain" src={url}/>)}
         </div>
         <div 
@@ -91,6 +95,11 @@ export default class Tile extends React.Component {
   render() {
     var toolTip, tileDiv;
     tileDiv = <div 
+      style={{
+        width: this.tileWidth,
+        height: this.tileHeight,
+        margin:this.tileMargin,
+      }}
         onClick={this.handleOnClick.bind(this)}
         onMouseOver={this.handleOnMouseOver.bind(this)}
         onMouseLeave={this.handleOnMouseLeave.bind(this)}
@@ -98,8 +107,7 @@ export default class Tile extends React.Component {
       hover:bg-${constants.EVENT2COLOR[this.type]}-500 bg-${constants.EVENT2COLOR[this.type]}-300 
       hover:z-10 z-0 relative
       text-xs text-center
-      w-5 h-4 
-      box-border m-0.5`}
+      box-border`}
     >{constants.EVENT2ICON[this.type]}</div>;
 
     if (this.state.open) tileDiv = <div><OutsideDetector
