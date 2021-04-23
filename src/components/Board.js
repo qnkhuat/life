@@ -43,7 +43,7 @@ export default class Board extends React.Component {
   }
 
   changeDisplayMode(mode){
-    const numCols = mode == "month" ? 12 : 52;
+    const numCols = mode === "month" ? 12 : 52;
     this.setState({
       numCols: numCols,
       displayMode: mode,
@@ -52,11 +52,9 @@ export default class Board extends React.Component {
 
   componentDidMount() {
     const changeModeBasedOnWidth = (width) => {
-      if (window.innerWidth < MODE_BREAKPOINT && this.state.displayMode != "month"){
-        console.log("wow");
+      if (window.innerWidth < MODE_BREAKPOINT && this.state.displayMode !== "month"){
         this.changeDisplayMode("month");
-      } else if (window.innerWidth >= MODE_BREAKPOINT && this.state.displayMode != "week") {
-        console.log("way");
+      } else if (window.innerWidth >= MODE_BREAKPOINT && this.state.displayMode !== "week") {
         this.changeDisplayMode("week");
       }
     }

@@ -41,7 +41,8 @@ export default class Tile extends React.Component {
         className="text-base rounded">
         <div className="tooltip-media"
         >
-          {e.imageUrls && e.imageUrls.length > 0 && e.imageUrls.map((url) => <img 
+          {e.imageUrls && e.imageUrls.length > 0 && e.imageUrls.map((url, i) => <img 
+            key={i}
             alt={e.date.format(DATE_RANGE_FORMAT)}
             style={{width: TILE_WIDTH, height: TILE_HEIGHT}}
             className="object-contain" src={url}/>)}
@@ -109,7 +110,7 @@ export default class Tile extends React.Component {
     const tooltipClassName = "shadow-xl border-2 border border-gray-300 rounded bg-black";
 
     if (this.data.length > 0) {
-      const tilesContent = this.data.map((e) => <div className="text-slide">{this.eventToDiv(e)}</div>);
+      const tilesContent = this.data.map((e, i) => <div key={i} className="text-slide">{this.eventToDiv(e)}</div>);
 
       var tooltipTitle;
       if (this.data.length === 1) {
