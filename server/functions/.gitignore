@@ -7,3 +7,10 @@ typings/
 
 # Node.js dependency directory
 node_modules/
+
+# Dev
+ui-debug.log
+
+
+# Credentials
+credential.json

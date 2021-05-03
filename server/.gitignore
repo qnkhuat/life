@@ -1,7 +1,6 @@
 # developemt
 *.swo
 *.swp
-.DS_Store
 repos
 
 # dependencies
