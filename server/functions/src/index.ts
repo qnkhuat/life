@@ -7,11 +7,11 @@ import * as cert from "./credential.json";
 import { body, validatationResult } from "express-validator";
 import * as Joi from "joi";
 
-import { Request, Response } from 'express'
+import { Request, Responsei, Next } from 'express'
 
 
-// Validation middleware
-const validator = (schema:Joi.Scheme, property: string){
+// *** Validation middleware
+const validator = (schema:Joi.Scheme, property: string): void{
   // https://dev.to/itnext/joi-awesome-code-validation-for-node-js-and-express-35pk
   return (req, res, next) => {
     console.log(req);
@@ -27,7 +27,12 @@ const validator = (schema:Joi.Scheme, property: string){
   }
 }
 
-// Schemas
+// *** Authen
+
+const isAuthenticated = (req: Request, res: Response, next: Function){
+}
+
+// *** Schemas
 const itemSchema = Joi.object().keys({
   id: Joi.number().required(),
   item: Joi.object().keys({
@@ -35,7 +40,7 @@ const itemSchema = Joi.object().keys({
   }).required(),
 })
 
-// set up firebase
+// *** Firebase
 admin.initializeApp({
   credential: admin.credential.cert(cert),
   databaseURL: "https://life-61d15.firebaseio.com"
@@ -44,7 +49,7 @@ admin.firestore().settings({ timestampsInSnapshots: true })
 const db: admin.Firestore = admin.firestore();
 
 
-// setup expressjs
+// *** Expressjs
 const app: express.Application = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -55,7 +60,7 @@ app.get("/ping", (req: Request, res: Response) => {
 })
 
 
-// routes
+// *** Routes
 app.post("/api/create", validator(itemSchema, "body"), async (req: Request, res: Response) => {
   try {
     await db.collection('items').doc('/' + req.body.id + '/')
@@ -66,5 +71,15 @@ app.post("/api/create", validator(itemSchema, "body"), async (req: Request, res:
     return res.status(500.send(error));
   }
 })
+
+
+//POST story
+//POST stories
+//GET story
+//GET stories
+//UPDATE story
+//UPDATE stories
+//POST user
+//UPDATE uesr
 
 export const api = functions.https.onRequest(app);
