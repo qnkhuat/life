@@ -3,7 +3,7 @@ import * as admin from "firebase-admin";
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as cors from "cors";
-//import * as Joi from "joi";
+import * as Joi from "joi";
 //import * as cookieParser from "cookie-parser";
 import { Request, Response } from 'express';
 import * as cert from "./credential.json";
@@ -12,29 +12,28 @@ const serviceAccount = cert as admin.ServiceAccount
 
 // *** Validation middleware
 // TODO: check to see if we can use typescript interface instead? https://stackoverflow.com/a/39146325
-//type RequestProperty = "params" | "body" | "query";
-//const validator = (schema: any, property: RequestProperty): Function => {
-//  // https://dev.to/itnext/joi-awesome-code-validation-for-node-js-and-express-35pk
-//  return (req: Request, res: Response, next: Function) => {
-//    const { error } = schema.validate(req[property]);
-//    const valid = error == null;
-//    if ( valid ) { next(); }
-//    else {
-//      const { details } = error;
-//      const message = details.map((i: any) => i.message).join(',');
-//      console.log("error", message);
-//      res.status(422).json({ error: message });
-//    }
-//  }
-//}
-//
-//// *** Schemas
-//const ItemSchema = Joi.object().keys({
-//  id: Joi.number().required(),
-//  item: Joi.object().keys({
-//    description: Joi.string(),
-//  }).required(),
-//})
+type RequestProperty = "params" | "body" | "query";
+type CallbackFunction = (req: Request, res: Response, next: Function) => void;
+const validator = (schema: Joi.Schema, property: RequestProperty): CallbackFunction => {
+  // https://dev.to/itnext/joi-awesome-code-validation-for-node-js-and-express-35pk
+  return (req: Request, res: Response, next: Function) => {
+    const validationResult = schema.validate(req[property]);
+    if ( ! validationResult.error) { next(); }
+    else {
+      const details = validationResult.error.details;
+      const message = details.map((i: any) => i.message).join(',');
+      res.status(422).json({ error: message });
+    }
+  }
+}
+
+// *** Schemas
+const ItemSchema = Joi.object().keys({
+  id: Joi.number().required(),
+  item: Joi.object().keys({
+    description: Joi.string(),
+  }).required(),
+})
 
 // *** Firebase
 admin.initializeApp({
@@ -105,7 +104,7 @@ app.get("/ping", (req: Request, res: Response) => {
   return res.status(200).send( new Date() );
 })
 
-app.post("/api/create", isAuthenticated, async (req: Request, res: Response) => {
+app.post("/api/create", validator(ItemSchema, "body"), isAuthenticated, async (req: Request, res: Response) => {
   try {
     await db.collection('items').doc('/' + req.body.id + '/')
       .create({item: req.body.item});
