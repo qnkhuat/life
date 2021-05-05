@@ -186,7 +186,7 @@ const data = {
 export default function Home() {
   return (
     <div className="container mx-auto">
-      <Board data={data} />
+      <Board events={data.events} birthday={data.birthday} maxAge={data.maxAge}/>
     </div>
   )
 }

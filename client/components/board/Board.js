@@ -8,21 +8,14 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 dayjs.extend(customParseFormat);
 
-function formatData(data){
-  const formatDate = (date) => dayjs(date, constants.dateFormat);
-  data.birthday = formatDate(data.birthday);
-  data.events.forEach(e => {
-    e.date = formatDate(e.date);
-    e.ageSince = (e.date - data.birthday)/ ( 1000 * 60 *60 *24 * 365);
-  });
-  return data;
-}
+const formatDate = (date) => dayjs(date, constants.dateFormat);
 
 class Board extends React.Component {
   constructor(props){
     super(props);
     this.today = dayjs();
-    props.data.events.push({
+
+    props.events.push({
       publish:true,
       date: this.today,
       type: "today",
@@ -30,12 +23,16 @@ class Board extends React.Component {
       imageUrls: [],
       videoUrls: [],
     })
-    const data = formatData(props.data);
+    this.birthday = formatDate(props.birthday);
+    props.events.forEach(e => {
+      e.date = formatDate(e.date);
+      e.ageSince = (e.date - this.birthday)/ ( 1000 * 60 *60 *24 * 365);
+    });
 
+    this.events = props.events;
     this.autoResize = props.autoResize || false;
-    this.data = data;
     this.state = {
-      numRows: this.data.maxAge,
+      numRows: props.maxAge,
       displayMode: props.displayMode || 'month', // week | month
       numCols: props.displayMode== "week" ? 52 : 12, 
     }
@@ -67,12 +64,12 @@ class Board extends React.Component {
   }
 
   eventsLookup(startDate, endDate){
-    var events = this.data.events.filter((e) => startDate <= e.date && e.date < endDate && e.publish);
+    var events = this.events.filter((e) => startDate <= e.date && e.date < endDate && e.publish);
     return events;
   }
 
   getTile(r, c){
-    var startDate = this.data.birthday.add((r * this.state.numCols) + c ,this.state.displayMode),
+    var startDate = this.birthday.add((r * this.state.numCols) + c ,this.state.displayMode),
       endDate = startDate.add(1, this.state.displayMode),
       events = this.eventsLookup(startDate, endDate),
       tileTitle = events.length > 0 ? events[0].title : null;
