@@ -62,7 +62,7 @@ const preventOverflow = {
 class Tile extends React.Component {
   constructor(props){
     super(props);
-    this.data = props.events; // only get the first one
+    this.events = props.events; // only get the first one
     this.startDate = props.startDate;
     this.endDate = props.endDate;
     this.type = props.type || "default";
@@ -162,7 +162,7 @@ class Tile extends React.Component {
       w-tile sm:w-sm-tile h-tile sm:h-sm-tile m-tile sm:m-sm-tile
       box-border`;
 
-    if (this.data.length > 0) { // interactive tile
+    if (this.events.length > 0) { // interactive tile
       const tileDiv = <div 
         onClick={this.handleOnClick.bind(this)}
         onMouseEnter={this.handleOnMouseEnter.bind(this)}
@@ -170,12 +170,12 @@ class Tile extends React.Component {
         className={toolDivClassName}
       >{constants.EVENTMAPPING[this.type]['icon']}</div>;
 
-      var tooltipContent = this.data.map((e, i) => <React.Fragment>{this.eventToDiv(e)}</React.Fragment>);
+      var tooltipContent = this.events.map((e, _) => <React.Fragment>{this.eventToDiv(e)}</React.Fragment>);
 
-      const tooltipClassName = "shadow-xl border-2 border border-gray-300 rounded bg-black max-h-tooltip w-tooltip sm:w-sm-tooltip";
+      const tooltipClassName = "tooltip-wrapper shadow-xl border-2 border border-gray-300 rounded bg-black max-h-tooltip w-tooltip sm:w-sm-tooltip";
 
       var tooltipWrapper;
-      //if (this.data.length === 1) { // no need carousel for this
+      //if (this.events.length === 1) { // no need carousel for this
       tooltipWrapper = <div className={tooltipClassName}>{tooltipContent}</div>;
       //} else {
       //    tooltipWrapper = <Carousel

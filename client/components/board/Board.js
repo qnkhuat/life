@@ -8,7 +8,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 dayjs.extend(customParseFormat);
 
-const formatDate = (date) => dayjs(date, constants.dateFormat);
+const formatDate = (date) => dayjs(date);
 
 class Board extends React.Component {
   constructor(props){
@@ -27,9 +27,10 @@ class Board extends React.Component {
     this.birthday = formatDate(props.birthday);
     props.events.forEach(e => {
       e.date = formatDate(e.date);
-      e.ageSince = (e.date - this.birthday)/ ( 1000 * 60 *60 *24 * 365);
+      e.ageSince = (e.date - this.birthday) / ( 1000 * 60 * 60 * 24 * 365 );
     });
 
+    // TODO this events should be an object
     this.events = props.events;
     this.autoResize = props.autoResize || false;
     this.state = {
@@ -70,13 +71,11 @@ class Board extends React.Component {
   }
 
   getTile(r, c){
-    var startDate = this.birthday.add((r * this.state.numCols) + c ,this.state.displayMode),
+    const startDate = this.birthday.add((r * this.state.numCols) + c ,this.state.displayMode),
       endDate = startDate.add(1, this.state.displayMode),
       events = this.eventsLookup(startDate, endDate),
       tileTitle = events.length > 0 ? events[0].title : null;
-    
-    //if (events.length > 0)  events = [events[0]]; // TODO: hard-coded this so tile doesn't have carousel
-
+        
     var tileType = events.length > 0 ? events[0].type : null;
     if (tileType == null) tileType = startDate < this.today ? "default" : "disable"; 
 
