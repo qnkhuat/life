@@ -140,7 +140,10 @@ app.get("/ping", (req: Request, res: Response) => {
   return res.status(200).send( new Date().toISOString() );
 })
 
-app.post("/user", isAuthenticated, validator(UserCreateSchema, "body"), async (req: Request, res: Response) => {
+app.post("/user", 
+         isAuthenticated, 
+         validator(UserCreateSchema, "body"), 
+         async (req: Request, res: Response) => {
   var userDocRef = db.collection("user").doc(req.body.username);
   userDocRef.get().then(( doc ) => {
     if (doc.exists) return res.status(409).send({ error: "User existed" });
@@ -154,7 +157,9 @@ app.post("/user", isAuthenticated, validator(UserCreateSchema, "body"), async (r
   })
 })
 
-app.get("/user/:username", isAuthenticated, validator(UsernameField, "params"), async (req: Request, res: Response) => {
+app.get("/user/:username", 
+        validator(UsernameField, "params"), 
+        async (req: Request, res: Response) => {
   db.collection("user").doc(req.params.username).get().then(( doc ) => {
     if (doc.exists) return res.status(200).send(doc.data());
     else return res.status(404).send({error: "User not found"});
@@ -164,7 +169,11 @@ app.get("/user/:username", isAuthenticated, validator(UsernameField, "params"), 
 })
 
 
-app.patch("/user/:username", validator(UsernameField, "params"), validator(UserUpdateSchema, "body"), async (req: Request, res: Response) => {
+app.patch("/user/:username", 
+          isAuthenticated, 
+          validator(UsernameField, "params"), 
+          validator(UserUpdateSchema, "body"), 
+          async (req: Request, res: Response) => {
   req.body['lastModifiedDate'] = new Date();
   db.collection("user").doc(req.params.username).update(req.body).then(( doc ) => {
     return res.status(200).send(req.body);
@@ -175,7 +184,11 @@ app.patch("/user/:username", validator(UsernameField, "params"), validator(UserU
 
 
 
-app.post("/user/:username/story", validator(UsernameField, "params"), validator(StoryCreateSchema, "body"), async (req: Request, res: Response) => {
+app.post("/user/:username/story", 
+         isAuthenticated, 
+         validator(UsernameField, "params"), 
+         validator(StoryCreateSchema, "body"), 
+         async (req: Request, res: Response) => {
   req.body['addedDate'] = new Date();
   db.collection("user").doc(req.params.username).collection("story").add(req.body).then((doc) => {
     return res.status(200).send({id: doc.id});
@@ -184,7 +197,9 @@ app.post("/user/:username/story", validator(UsernameField, "params"), validator(
   })
 })
 
-app.get("/user/:username/story/:storyId", validator(UserStoryGetScheme, "params"), async (req: Request, res: Response) => {
+app.get("/user/:username/story/:storyId", 
+        validator(UserStoryGetScheme, "params"), 
+        async (req: Request, res: Response) => {
   db.collection("user").doc(req.params.username).collection("story").doc(req.params.storyId).get().then(( doc ) => {
     if (doc.exists) return res.status(200).send(doc.data());
     else return res.status(404).send({error: "Story not found"});
@@ -194,7 +209,10 @@ app.get("/user/:username/story/:storyId", validator(UserStoryGetScheme, "params"
 })
 
 
-app.patch("/user/:username/story/:storyId", validator(StoryUpdateSchema, "params"), async (req: Request, res: Response) => {
+app.patch("/user/:username/story/:storyId", 
+          isAuthenticated,
+          validator(StoryUpdateSchema, "params"), 
+          async (req: Request, res: Response) => {
   req.body['lastModifiedDate'] = new Date();
   console.log(req.body);
   db.collection("user").doc(req.params.username).collection("story").doc(req.params.storyId).update(req.body).then(( doc ) => {
@@ -204,7 +222,10 @@ app.patch("/user/:username/story/:storyId", validator(StoryUpdateSchema, "params
   });
 })
 
-app.delete("/user/:username/story/:storyId", validator(UserStoryGetScheme, "params"), async (req: Request, res: Response) => {
+app.delete("/user/:username/story/:storyId", 
+           isAuthenticated,
+           validator(UserStoryGetScheme, "params"), 
+           async (req: Request, res: Response) => {
   var storyDocRef = db.collection("user").doc(req.params.username).collection("story").doc(req.params.storyId);
   storyDocRef.get().then(( doc ) => {
     if (!doc.exists) return res.status(409).send({ error: "Story not found" });
@@ -217,7 +238,9 @@ app.delete("/user/:username/story/:storyId", validator(UserStoryGetScheme, "para
   })
 })
 
-app.get("/user/:username/stories", validator(UsernameField, "params"), async (req: Request, res: Response) => {
+app.get("/user/:username/stories", 
+        validator(UsernameField, "params"), 
+        async (req: Request, res: Response) => {
   db.collection("user").doc(req.params.username).collection("story").get().then(( snapShot ) => {
     var docs: {[key:string]: any} = {};
     snapShot.docs.forEach( (doc) => docs[doc.id] = doc.data() );
