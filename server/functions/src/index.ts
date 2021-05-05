@@ -4,7 +4,6 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import * as yup from "yup";
-//import * as cookieParser from "cookie-parser";
 import { Request, Response } from 'express';
 import * as cert from "./credential.json";
 
@@ -143,7 +142,7 @@ app.post("/user",
   var userDocRef = db.collection("user").doc(req.body.username);
   userDocRef.get().then(( doc ) => {
     if (doc.exists) return res.status(409).send({ error: "User existed" });
-    req.body.user['addedDate'] = new Date();
+    req.body.user['addedDate'] = new Date().toISOString();
     userDocRef.set(req.body.user).then(( doc ) => {
       return res.status(200).send({ id: userDocRef.id});
     }).catch(( error ) => {
@@ -170,7 +169,7 @@ app.patch("/user/:username",
           validator(UsernameField, "params"), 
           validator(UserUpdateSchema, "body"), 
           async (req: Request, res: Response) => {
-  req.body['lastModifiedDate'] = new Date();
+  req.body['lastModifiedDate'] = new Date().toISOString();
   db.collection("user").doc(req.params.username).update(req.body).then(( doc ) => {
     return res.status(200).send(req.body);
   }).catch(( error ) => {
@@ -185,7 +184,7 @@ app.post("/user/:username/story",
          validator(UsernameField, "params"), 
          validator(StoryCreateSchema, "body"), 
          async (req: Request, res: Response) => {
-  req.body['addedDate'] = new Date();
+  req.body['addedDate'] = new Date().toISOString();
   db.collection("user").doc(req.params.username).collection("story").add(req.body).then((doc) => {
     return res.status(200).send({id: doc.id});
   }).catch(( error ) => {
@@ -209,7 +208,7 @@ app.patch("/user/:username/story/:storyId",
           isAuthenticated,
           validator(StoryUpdateSchema, "params"), 
           async (req: Request, res: Response) => {
-  req.body['lastModifiedDate'] = new Date();
+  req.body['lastModifiedDate'] = new Date().toISOString();
   console.log(req.body);
   db.collection("user").doc(req.params.username).collection("story").doc(req.params.storyId).update(req.body).then(( doc ) => {
     return res.status(200).send(req.body);
