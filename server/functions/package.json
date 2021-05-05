@@ -23,6 +23,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@firebase/testing": "^0.20.11",
     "@types/cors": "^2.8.10",
     "@types/node": "^15.0.1",
     "@typescript-eslint/eslint-plugin": "^3.9.1",

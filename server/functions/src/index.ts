@@ -7,9 +7,6 @@ import * as yup from "yup";
 //import * as cookieParser from "cookie-parser";
 import { Request, Response } from 'express';
 import * as cert from "./credential.json";
-import * as dayjs from "dayjs";
-import * as customParseFormat from 'dayjs/plugin/customParseFormat';
-dayjs.extend(customParseFormat);
 
 const serviceAccount = cert as admin.ServiceAccount
 
@@ -82,10 +79,9 @@ const UserStoryGetScheme: yup.AnySchema = yup.object({
 // *** Firebase
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://mylife-stories.firebaseio.com"
 })
-admin.firestore().settings({ timestampsInSnapshots: true })
-var db = admin.firestore();
+var db = admin.firestore()
+db.settings({ timestampsInSnapshots: true });
 
 export interface IGetUserAuthInfoRequest extends Request {
   user?: admin.auth.DecodedIdToken// or any other type
