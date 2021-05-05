@@ -51,10 +51,12 @@ function SignInScreen() {
       </div>
     );
   }
+  firebase?.auth()?.currentUser?.getIdToken().then((accessToken) => {console.log(accessToken)});
   return (
     <div>
       <h1>My App</h1>
       <p>Welcome, you're {firebase?.auth()?.currentUser?.displayName} now sgined in</p>
+      <p>Your token is {}</p>
       <a onClick={() => firebase.auth().signOut()}>Sign-out</a>
     </div>
   );
