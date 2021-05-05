@@ -7,12 +7,9 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import * as constants from "./constants";
 
-const POPUP_WIDTH  = "500px";
-const POPUP_HEIGHT = "450px";
-
 const CustomTooltip = withStyles({
   tooltip: {
-    maxWidth: "100%",
+    maxWidth: "100% !important",
     padding: "0px",
     maxHeight: "100%",
   }

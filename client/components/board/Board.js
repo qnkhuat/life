@@ -23,6 +23,7 @@ class Board extends React.Component {
       imageUrls: [],
       videoUrls: [],
     })
+
     this.birthday = formatDate(props.birthday);
     props.events.forEach(e => {
       e.date = formatDate(e.date);
