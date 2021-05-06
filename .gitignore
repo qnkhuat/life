@@ -1,9 +1,9 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
 # developemt
 *.swo
 *.swp
-repos
-/new-data
-/firebase-cache
+.DS_Store
 
 # dependencies
 node_modules
@@ -25,9 +25,4 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Firebase
-.firebaserc
-firebase-debug.log
-firestore-debug.log
-ui-debug.log
-
+.vercel
