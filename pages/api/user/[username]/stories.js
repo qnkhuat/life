@@ -6,7 +6,7 @@ const getAllStories = async (req, res) => {
     snapShot.docs.forEach( (doc) => docs[doc.id] = doc.data() );
     return res.status(200).send(docs);
   }).catch(( error ) => {
-    return res.status(500).send({ error: error.details });
+    return res.status(500).send({ error: error.message });
   });
 
 }

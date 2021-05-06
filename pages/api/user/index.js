@@ -7,11 +7,13 @@ const addUser = async (req, res) => {
   userDocRef.get().then(( doc ) => {
     if (doc.exists) return res.status(409).send({ error: "User existed" });
 
+    console.log("here");
     req.body.user['addedDate'] = new Date().toISOString();
+    console.log(req.body);
     userDocRef.set(req.body.user).then(( doc ) => {
       return res.status(200).send({ id: userDocRef.id});
     }).catch(( error ) => {
-      return res.status(500).send({ error: error.details });
+      return res.status(500).send({ error: error.message });
     })
   })
 }
@@ -20,9 +22,9 @@ const findUserByEmail = async (req, res) => {
   db.collection("user").where("email", "==", req.query.email).get().then( ( snapShot ) => {
     if (snapShot.size == 0 ) return  res.status(404).send({ message: "User not found" });
     else if (snapShot.size == 1) return res.status(200).send(snapShot.docs[0].data()); 
-    else throw new Error("Multiple user with the same email");
+    else return res.status(404).send({ message: "Exists multiple users with 1 email" });
   }).catch(( error ) => {
-    return res.status(500).send({ error: error});
+    return res.status(500).send({ error: error.message });
   })
 }
 

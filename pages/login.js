@@ -8,9 +8,14 @@ const signin = () => {
   const { auth, siginWithGoogle } = useAuth();
   const router = useRouter();
   if (auth) {
-    axios.get(`/api/user?email=${auth.email}`).catch(( error ) => {router.push("/info")});
-
-      router.push(router?.query.next || '/');
+    // First check whether user is added to database. if not direct to info page so you can add
+    axios.get(`/api/user?email=${auth.email}`).catch(( error ) => {
+      router.push(`/info?next=${router.query.next}`); 
+    });
+    // 2nd if has redirect request then driect there
+    // 3rd to home page as default
+    // Order matter here
+    router.push(router.query.next || '/'); 
   }
 
   return (

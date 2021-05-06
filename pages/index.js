@@ -5,29 +5,6 @@ import { authContext } from '../lib/auth';
 import React from "react";
 import { withRouter } from 'next/router';
 
-//export default function Home() {
-//  const { auth, loading, signOut } = useAuth();
-//
-//  const router = useRouter();
-//  useEffect(() => {
-//    if (!auth && !loading) {
-//      router.push('/login?next=/');
-//    }
-//  }, [auth, loading]);
-//
-//  const title = auth ? auth.name : "stranger";
-//
-//  return (
-//    <div className="container mx-auto">
-//      <p>{title}</p>
-//      <Button onClick={() => signOut()}>
-//        Log out
-//      </Button>
-//
-//    </div>
-//  )
-//}
-
 class Home extends React.Component{
   constructor(props){
     super(props);

@@ -7,7 +7,7 @@ const createStory = async (req, res) => {
   db.collection("user").doc(req.query.username).collection("story").add(req.body).then((doc) => {
     return res.status(200).send({id: doc.id});
   }).catch(( error ) => {
-    return res.status(500).send({ error: error.details });
+    return res.status(500).send({ error: error.message });
   })
 }
 

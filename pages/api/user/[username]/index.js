@@ -7,7 +7,7 @@ const addUser = async (req, res) => {
     if (doc.exists) return res.status(200).send(doc.data());
     else return res.status(404).send({error: "User not found"});
   }).catch(( error ) => {
-    return res.status(500).send({ error: error.details });
+    return res.status(500).send({ error: error.message });
   });
 }
 const updateUser = async (req, res) => {
@@ -15,7 +15,7 @@ const updateUser = async (req, res) => {
   db.collection("user").doc(req.query.username).update(req.body).then(( doc ) => {
     return res.status(200).send(req.body);
   }).catch(( error ) => {
-    return res.status(500).send({ error: error.details });
+    return res.status(500).send({ error: error.message });
   });
 }
 
