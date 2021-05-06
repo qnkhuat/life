@@ -19,7 +19,7 @@ const formatAuthState = (user) => ({
 
 function useProvideAuth() {
   const [auth, setAuth] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const handleAuthChange = async (authState) => {
     if (!authState) {
@@ -40,8 +40,9 @@ function useProvideAuth() {
       throw new Error('No User');
     }
     const authUser = formatAuthState(response.user);
+    console.log(response);
+    console.log(authUser);
     //await addUser({ ...authUser, provider }); // TODO : call add user
-    console.log("Calling add user baies")
   };
 
   const clear = () => {
@@ -73,9 +74,11 @@ function useProvideAuth() {
   };
 }
 
+const useAuth = () => useContext(authContext); // for function components
+
 export function AuthProvider({ children } ) {
   const auth = useProvideAuth();
   return <authContext.Provider value={auth}>{children}</authContext.Provider>;
 }
 
-export const useAuth = () => useContext(authContext);
+export {useAuth,  authContext }; // for class components
