@@ -7,7 +7,9 @@ import styles from '../styles/Home.module.css';
 import { useAuth, authContext } from '../lib/auth';
 import React from "react";
 import { withRouter } from 'next/router';
-
+import { getUser } from "../lib/services/user";
+import urljoin from "url-join";
+import axios from "axios";
 
 //export default function Home() {
 //  const { auth, loading, signOut } = useAuth();
@@ -35,15 +37,21 @@ import { withRouter } from 'next/router';
 class Home extends React.Component{
   constructor(props){
     super(props);
+    this.state = {
+      token: "nothing"
+    }
   }
   static contextType = authContext;
 
   componentDidMount() {
     const { auth, loading } = this.context;
-    console.log(auth, loading);
-    if (!auth && !loading){
+    if (!auth && !loading) {
       this.props.router.push('/login?next=/');
     }
+    if (auth){
+      this.setState({token: auth.token});
+    }
+
   }
 
   render(){
@@ -52,10 +60,10 @@ class Home extends React.Component{
     return (
       <div className="container mx-auto">
         <p>{title}</p>
+        <p>{this.state.token}</p>
         <Button onClick={() => signOut()}>
           Log out
         </Button>
-
       </div>
     )
   }

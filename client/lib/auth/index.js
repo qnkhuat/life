@@ -1,6 +1,6 @@
 // https://www.freecodecamp.org/news/how-to-build-a-quizapp-using-nextjs-chakra-ui-and-firebase/
 import { createContext, useContext, useEffect, useState } from 'react';
-import firebaseApp from './firebase';
+import firebaseApp from './firebaseApp';
 
 const authContext = createContext({
   auth: null,
@@ -40,9 +40,6 @@ function useProvideAuth() {
       throw new Error('No User');
     }
     const authUser = formatAuthState(response.user);
-    console.log(response);
-    console.log(authUser);
-    //await addUser({ ...authUser, provider }); // TODO : call add user
   };
 
   const clear = () => {
@@ -81,4 +78,4 @@ export function AuthProvider({ children } ) {
   return <authContext.Provider value={auth}>{children}</authContext.Provider>;
 }
 
-export {useAuth,  authContext }; // for class components
+export { useAuth, authContext }; // for class components
