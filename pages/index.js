@@ -38,7 +38,7 @@ class Home extends React.Component{
   static contextType = authContext;
 
   componentDidMount() {
-    const { auth, loading } = this.context;
+    const { auth, user, loading } = this.context;
     if (!auth && !loading) {
       this.props.router.push('/login?next=/');
     }
@@ -48,16 +48,25 @@ class Home extends React.Component{
 
   }
 
+  go(){
+    this.props.router.push('/info');
+  }
+
   render(){
-    const { auth, signOut } = this.context;
+    const { user, auth, signOut } = this.context;
     const title = auth ? auth.name : "stranger";
     return (
       <div className="container mx-auto">
         <p>{title}</p>
         <p>{this.state.token}</p>
+        <p>{user && user.email}</p>
         <Button onClick={() => signOut()}>
           Log out
         </Button>
+        <Button onClick={() => this.go()}>
+          GO
+        </Button>
+
       </div>
     )
   }

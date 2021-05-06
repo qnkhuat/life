@@ -4,12 +4,8 @@ import { runMiddleware } from "../../../../lib/util";
 
 const addUser = async (req, res) => {
   db.collection("user").doc(req.query.username).get().then(( doc ) => {
-    if (doc.exists) {
-      return res.status(200).send(doc.data());
-    }
-    else {
-      return res.status(404).send({error: "User not found"});
-    }
+    if (doc.exists) return res.status(200).send(doc.data());
+    else return res.status(404).send({error: "User not found"});
   }).catch(( error ) => {
     return res.status(500).send({ error: error.details });
   });
