@@ -14,12 +14,14 @@
     "@material-ui/icons": "^5.0.0-alpha.29",
     "axios": "^0.21.1",
     "dayjs": "^1.10.4",
+    "firebase": "^8.5.0",
     "next": "10.2.0",
     "next-images": "^1.7.0",
+    "nookies": "^2.5.2",
     "react": "17.0.2",
     "react-device-detect": "^1.17.0",
     "react-dom": "17.0.2",
-    "react-gallery-carousel": "^0.2.0"
+    "react-firebaseui": "^5.0.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.2.5",

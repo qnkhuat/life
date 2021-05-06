@@ -194,6 +194,7 @@ app.post("/user/:username/story",
 app.get("/user/:username/story/:storyId", 
         validator(UserStoryGetScheme, "params"), 
         async (req: Request, res: Response) => {
+  // TODO: Add firebase rules to prevent story added if user doesn't exist
   db.collection("user").doc(req.params.username).collection("story").doc(req.params.storyId).get().then(( doc ) => {
     if (doc.exists) return res.status(200).send(doc.data());
     else return res.status(404).send({error: "Story not found"});

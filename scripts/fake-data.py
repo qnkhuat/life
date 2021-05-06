@@ -188,6 +188,7 @@ for event in data:
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
+    print(response.text)
 
 
 print("Done")

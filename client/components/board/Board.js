@@ -8,12 +8,13 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 dayjs.extend(customParseFormat);
 
-const formatDate = (date) => dayjs(date);
+const roundDate = (date) => date.hour(0).minute(0).second(0).millisecond(0);
+const formatDate = (date) => roundDate(dayjs(date));
 
 class Board extends React.Component {
   constructor(props){
     super(props);
-    this.today = dayjs();
+    this.today = roundDate(dayjs());
 
     props.events.push({
       publish:true,
@@ -67,6 +68,11 @@ class Board extends React.Component {
 
   eventsLookup(startDate, endDate){
     var events = this.events.filter((e) => startDate <= e.date && e.date < endDate && e.publish);
+    if (events.length > 0){
+      console.log(startDate, endDate);
+      console.log(events);
+    }
+    
     return events;
   }
 
