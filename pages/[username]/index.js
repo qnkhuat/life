@@ -6,7 +6,6 @@ import urljoin from "url-join";
 
 function Profile({ events, birthday, maxAge }) {
   const { auth } = useAuth();
-  const router = useRouter();
   var eventsList = [];
   Object.keys(events).forEach((key) => {
     eventsList.push(events[key]);

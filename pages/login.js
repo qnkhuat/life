@@ -27,3 +27,21 @@ export default function SignIn() {
   );
 };
 
+
+export async function getServerSideProps(context) {
+  const { username } = context.query;
+  var events = null, user = null;
+  try {
+    const user_req = axios.get(`/api/user?email=${auth.email}`);
+  } catch (error){
+    return {
+      redirect: {
+        destination: '/404',
+        permanent: false,
+      }
+    }
+  }
+  
+  return { props: { events: events, birthday: user.birthday, maxAge: user.maxAge } };
+}
+
