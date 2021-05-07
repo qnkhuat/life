@@ -16,6 +16,17 @@ const addUser = async (req, res) => {
   })
 }
 
+export const findUserByEmailResult = async (email) => {
+  firestore.collection("user").where("email", "==", email).get().then( ( snapShot ) => {
+    if (snapShot.size == 0 ) return { message: "User not found" };
+    else if (snapShot.size == 1) return snapShot.docs[0].data(); 
+    else return { message: "Exists multiple users with 1 email" };
+  }).catch(( error ) => {
+    console.log("Error cmnr");
+    return;
+  })
+}
+
 const findUserByEmail = async (req, res) => {
   firestore.collection("user").where("email", "==", req.query.email).get().then( ( snapShot ) => {
     if (snapShot.size == 0 ) return  res.status(404).send({ message: "User not found" });

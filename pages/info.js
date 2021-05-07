@@ -45,21 +45,6 @@ export default function Info() {
     })
   }
 
-  function upload(e){
-    const file = e.target.files[0];
-    const filename = file.name;
-    const storageRef = storage.ref().child(`img/${filename}`);
-    const task = storageRef.put(file);
-    task.on('state_changed', function progress(snapshot) {
-      var percentage = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
-      console.log(percentage);
-    }, function error(err) {
-      console.log("error: ", error);
-    },function complete() {
-      console.log("completed");
-    });
-  }
-
   return (
     <>
       <form className="" noValidate autoComplete="off" className="flex mt-40">

@@ -8,7 +8,7 @@ export default function FirebaseUpload(props) {
     const file = e.target.files[0];
     const filename = file.name;
     const filenameSplit = filename.split(".");
-    const dest = `img/${uuidv4()}.${filenameSplit[filenameSplit.length - 1]}`;
+    const dest = `img/${props.prefix ? `${props.prefix}-` : ""}${uuidv4()}.${filenameSplit[filenameSplit.length - 1]}`;
     const storageRef = storage.ref().child(dest);
     const task = storageRef.put(file);
     task.on('state_changed', function progress(snapshot) {
