@@ -13,7 +13,6 @@ const getStory = async (req, res) => {
 
 const updateStory = async (req, res) => {
   req.body['lastModifiedDate'] = new Date().toISOString();
-  console.log(req.body);
   firestore.collection("user").doc(req.query.username).collection("story").doc(req.query.storyId).update(req.body).then(( doc ) => {
     return res.status(200).send(req.body);
   }).catch(( error ) => {

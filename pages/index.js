@@ -16,8 +16,9 @@ class Home extends React.Component{
 
   componentDidMount() {
     const { auth, user, loading } = this.context;
-    console.log(auth, loading);
+    console.log("test", !auth, !loading);
     if (!auth && !loading) {
+      console.log("testtttttttttt");
       this.props.router.push('/login?next=/');
     }
     if (auth){

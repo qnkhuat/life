@@ -4,7 +4,7 @@ import { useAuth } from '../lib/firebase/auth';
 import Button from '@material-ui/core/Button';
 import axios from "axios";
 
-export default function SignIn() {
+export default function Login() {
   const { auth, user, siginWithGoogle } = useAuth();
   const router = useRouter();
   if (auth) {
