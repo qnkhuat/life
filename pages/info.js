@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
-import { useAuth } from '../lib/auth';
+import { useAuth } from '../lib/firebase/auth';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import dayjs from "dayjs";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import axios from "axios";
+import { storage } from "../lib/firebase/client";
 
 export default function Info() {
   const { auth, loading } = useAuth();
@@ -22,7 +23,7 @@ export default function Info() {
   const [ maxAge, setMaxAge ] = useState(100);
   const [ email, setEmail] = useState(auth?.email || null);
   const [ about, setAbout ] = useState(null);
-  const [ avatar, setAvatar] = useState("");
+  const [ avatar, setAvatar] = useState(null);
 
   function submit(){
     const payload = {
@@ -39,8 +40,25 @@ export default function Info() {
     axios.post("/api/user", payload).then(( res ) => {
       router.push(router.query.next != undefined ? router.query.next : '/'); 
     }).catch(( error ) => {
-      alert("Recheck your form bitch");
+      alert("Recheck your form bitch: ", error);
     })
+  }
+
+  function uploadImage(e){
+    const file = e.target.files[0];
+    const filename = file.name;
+    const storageRef = storage.ref().child(`img/${filename}`);
+    const task = storageRef.put(file);
+    task.on('state_changed', function progress(snapshot) {
+      var percentage = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
+      console.log(percentage);
+    }, function error(err) {
+      console.log("error: ", error);
+
+    },function complete() {
+      console.log("completed");
+
+    });
   }
 
   return (
@@ -88,10 +106,10 @@ export default function Info() {
             <input
               accept="image/*"
               id="upload-button-file"
-              multiple
               type="file"
               className="hidden"
-              onChange={(e) => setAvatar(e.target.value)}
+              //onChange={(e) => setAvatar(e.target.value)}
+              onChange={uploadImage}
             />
             <label htmlFor="upload-button-file">
               <Button variant="contained" color="primary" component="span">

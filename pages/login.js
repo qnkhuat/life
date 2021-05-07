@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import React from 'react';
-import { useAuth } from '../lib/auth';
+import { useAuth } from '../lib/firebase/auth';
 import Button from '@material-ui/core/Button';
 import axios from "axios";
 

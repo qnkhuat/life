@@ -1,7 +1,7 @@
 import Button from '@material-ui/core/Button';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { authContext } from '../lib/auth';
+import { authContext } from '../lib/firebase/auth';
 import React from "react";
 import { withRouter } from 'next/router';
 

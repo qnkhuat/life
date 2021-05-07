@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import 'tailwindcss/tailwind.css'
-import { AuthProvider } from '../lib/auth';
+import { AuthProvider } from '../lib/firebase/auth';
 import axios from "axios";
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 

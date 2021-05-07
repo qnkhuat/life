@@ -1,7 +1,7 @@
-import { db } from "../../../../lib/db";
+import { firestore } from "../../../../lib/firebase/server";
 
 const getAllStories = async (req, res) => {
-  db.collection("user").doc(req.query.username).collection("story").get().then(( snapShot ) => {
+  firestore.collection("user").doc(req.query.username).collection("story").get().then(( snapShot ) => {
     var docs = {};
     snapShot.docs.forEach( (doc) => docs[doc.id] = doc.data() );
     return res.status(200).send(docs);
