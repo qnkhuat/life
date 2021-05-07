@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import axios from "axios";
 import Board from '../../components/board';
-import { useAuth } from '../../lib/firebase/auth';
+import { useAuth, withAuth } from '../../lib/firebase/auth';
 import urljoin from "url-join";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -55,9 +55,9 @@ function Edit({ events, birthday, maxAge }) {
           multiline
           variant="outlined" />
 
-          <FirebaseUpload id="info-avatar" setValueOnComplete={true} className="bg-black"/>
+          <FirebaseUpload id="info-avatar" className="bg-black"/>
         
-        <Button id="info-submit" variant="outlined" color="primary" onClick={true}>
+        <Button id="info-submit" variant="outlined" color="primary">
           Submit
         </Button>
       </form>
@@ -77,8 +77,7 @@ export async function getServerSideProps(context) {
   } catch (error){
     return {
       redirect: {
-        destination: '/404',
-        permanent: false,
+        notFound: true,
       }
     }
   }
@@ -86,5 +85,5 @@ export async function getServerSideProps(context) {
   return { props: { events: events, birthday: user.birthday, maxAge: user.maxAge } };
 }
 
-export default Edit;
+export default withAuth(Edit, true, "/login");
 

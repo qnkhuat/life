@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import axios from "axios";
 import Board from '../../components/board';
-import { useAuth } from '../../lib/firebase/auth';
+import { useAuth, withAuth } from '../../lib/firebase/auth';
 import urljoin from "url-join";
 
 function Profile({ events, birthday, maxAge }) {
@@ -27,10 +27,7 @@ export async function getServerSideProps(context) {
     user = user_req.data;
   } catch (error){
     return {
-      redirect: {
-        destination: '/404',
-        permanent: false,
-      }
+      notFound: true,
     }
   }
   
