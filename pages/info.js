@@ -40,6 +40,8 @@ export default function Info() {
     }
     axios.post("/api/user", payload).then(( res ) => {
       router.push(router.query.next != undefined ? router.query.next : '/'); 
+    }).then((res) => {
+      if (res.status == 200) router.push(`/${username}/edit`)
     }).catch(( error ) => {
       alert("Recheck your form bitch: ", error);
     })
