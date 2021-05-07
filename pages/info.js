@@ -38,7 +38,6 @@ export default function Info() {
         avatar: avatar
       }
     }
-    console.log(payload);
     axios.post("/api/user", payload).then(( res ) => {
       router.push(router.query.next != undefined ? router.query.next : '/'); 
     }).catch(( error ) => {
@@ -76,7 +75,7 @@ export default function Info() {
           required/>
         <TextField id="info-birthday" 
           onChange={(e) => setBirthday(e.target.value)}
-          label="birthday" 
+          label="Birthday" 
           variant="outlined" 
           type="datetime-local"
           InputLabelProps={{shrink: true}}
@@ -102,7 +101,7 @@ export default function Info() {
           multiline
           variant="outlined" />
 
-          <FirebaseUpload id="info-avatar" setValueOnComplete={setAvatar}/>
+          <FirebaseUpload id="info-avatar" setValueOnComplete={setAvatar} className="bg-black"/>
         
         <Button id="info-submit" variant="outlined" color="primary" onClick={submit}>
           Submit

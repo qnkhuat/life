@@ -20,7 +20,7 @@ export default function FirebaseUpload(props) {
   }
 
   return (
-    <div>
+    <>
       <input
         id={intputId}
         className="hidden"
@@ -34,8 +34,7 @@ export default function FirebaseUpload(props) {
           {props.label || "Upload"}
         </Button>
       </label>
-    </div>
-
+    </>
   )
 }
 

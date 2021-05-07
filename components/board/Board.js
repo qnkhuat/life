@@ -68,11 +68,6 @@ class Board extends React.Component {
 
   eventsLookup(startDate, endDate){
     var events = this.events.filter((e) => startDate <= e.date && e.date < endDate && e.publish);
-    if (events.length > 0){
-      console.log(startDate, endDate);
-      console.log(events);
-    }
-    
     return events;
   }
 

@@ -4,7 +4,7 @@ import { useAuth } from '../lib/firebase/auth';
 import Button from '@material-ui/core/Button';
 import axios from "axios";
 
-const signin = () => {
+export default function SignIn() {
   const { auth, siginWithGoogle } = useAuth();
   const router = useRouter();
   if (auth) {
@@ -27,4 +27,3 @@ const signin = () => {
   );
 };
 
-export default signin;

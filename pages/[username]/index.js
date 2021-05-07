@@ -1,8 +1,12 @@
 import { useRouter } from 'next/router';
 import axios from "axios";
 import Board from '../../components/board';
+import { useAuth } from '../../lib/firebase/auth';
+import urljoin from "url-join";
 
 function Profile({ events, birthday, maxAge }) {
+  const { auth } = useAuth();
+  const router = useRouter();
   var eventsList = [];
   Object.keys(events).forEach((key) => {
     eventsList.push(events[key]);
@@ -16,12 +20,22 @@ function Profile({ events, birthday, maxAge }) {
 
 export async function getServerSideProps(context) {
   const { username } = context.query;
-  const [ events, user ] = await Promise.all([
-    axios.get(`/${username}/stories`),
-    axios.get(`/${username}`)
-  ]);
-
-  return { props: { events: events.data, birthday: user.data.birthday, maxAge: user.data.maxAge } };
+  var events = null, user = null;
+  try {
+    const events_req = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}/stories`));
+    const user_req = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}`));
+    events = events_req.data;
+    user = user_req.data;
+  } catch (error){
+    return {
+      redirect: {
+        destination: '/404',
+        permanent: false,
+      }
+    }
+  }
+  
+  return { props: { events: events, birthday: user.birthday, maxAge: user.maxAge } };
 }
 
 export default Profile;

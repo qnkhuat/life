@@ -10,4 +10,4 @@ function MyApp({ Component, pageProps }) {
   </AuthProvider>
 }
 
-export default MyApp
+export default MyApp;

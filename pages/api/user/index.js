@@ -7,9 +7,7 @@ const addUser = async (req, res) => {
   userDocRef.get().then(( doc ) => {
     if (doc.exists) return res.status(409).send({ error: "User existed" });
 
-    console.log("here");
     req.body.user['addedDate'] = new Date().toISOString();
-    console.log(req.body);
     userDocRef.set(req.body.user).then(( doc ) => {
       return res.status(200).send({ id: userDocRef.id});
     }).catch(( error ) => {
