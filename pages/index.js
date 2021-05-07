@@ -16,16 +16,13 @@ class Home extends React.Component{
 
   componentDidMount() {
     const { auth, user, loading } = this.context;
+    console.log(auth, loading);
     if (!auth && !loading) {
       this.props.router.push('/login?next=/');
     }
     if (auth){
       this.setState({token: auth.token});
     }
-  }
-
-  go(){
-    this.props.router.push('/info');
   }
 
   render(){
