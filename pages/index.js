@@ -22,7 +22,6 @@ class Home extends React.Component{
     if (auth){
       this.setState({token: auth.token});
     }
-
   }
 
   go(){
