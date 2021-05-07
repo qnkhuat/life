@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import axios from "axios";
-import Board from '../../components/Board';
+import Board from '../../components/board';
 
 function Profile({ events, birthday, maxAge }) {
   var eventsList = [];

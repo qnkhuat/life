@@ -32,3 +32,9 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+
+# firebase
+.firebaserc
+firebase-debug.log
+firestore-debug.log
+ui-debug.log

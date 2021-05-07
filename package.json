@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "FIRESTORE_EMULATOR_HOST=localhost:8080 next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "serve": "firebase emulators:start"
   },
   "dependencies": {
     "@emotion/react": "^11.1.5",
