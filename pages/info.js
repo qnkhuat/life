@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import axios from "axios";
 import { storage } from "../lib/firebase/client";
+import FirebaseUpload from "../components/FirebaseUpload";
 
 export default function Info() {
   const { auth, loading } = useAuth();
@@ -37,6 +38,7 @@ export default function Info() {
         avatar: avatar
       }
     }
+    console.log(payload);
     axios.post("/api/user", payload).then(( res ) => {
       router.push(router.query.next != undefined ? router.query.next : '/'); 
     }).catch(( error ) => {
@@ -44,7 +46,7 @@ export default function Info() {
     })
   }
 
-  function uploadImage(e){
+  function upload(e){
     const file = e.target.files[0];
     const filename = file.name;
     const storageRef = storage.ref().child(`img/${filename}`);
@@ -54,10 +56,8 @@ export default function Info() {
       console.log(percentage);
     }, function error(err) {
       console.log("error: ", error);
-
     },function complete() {
       console.log("completed");
-
     });
   }
 
@@ -102,21 +102,8 @@ export default function Info() {
           multiline
           variant="outlined" />
 
-        <div id="info-avatar">
-            <input
-              accept="image/*"
-              id="upload-button-file"
-              type="file"
-              className="hidden"
-              //onChange={(e) => setAvatar(e.target.value)}
-              onChange={uploadImage}
-            />
-            <label htmlFor="upload-button-file">
-              <Button variant="contained" color="primary" component="span">
-                Upload
-              </Button>
-            </label>
-        </div>
+          <FirebaseUpload id="info-avatar" setValueOnComplete={setAvatar}/>
+        
         <Button id="info-submit" variant="outlined" color="primary" onClick={submit}>
           Submit
         </Button>
@@ -125,9 +112,3 @@ export default function Info() {
   )
 }
 
-//name
-//avatar
-//email
-//username
-//birthday
-//maxAge

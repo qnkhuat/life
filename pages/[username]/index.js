@@ -17,8 +17,8 @@ function Profile({ events, birthday, maxAge }) {
 export async function getServerSideProps(context) {
   const { username } = context.query;
   const [ events, user ] = await Promise.all([
-    axios.get(`http://localhost:5001/mylife-stories/us-central1/api/user/${username}/stories`),
-    axios.get(`http://localhost:5001/mylife-stories/us-central1/api/user/${username}`)
+    axios.get(`/${username}/stories`),
+    axios.get(`/${username}`)
   ]);
 
   return { props: { events: events.data, birthday: user.data.birthday, maxAge: user.data.maxAge } };
