@@ -22,8 +22,9 @@ function Info() {
   const [ avatar, setAvatar] = useState(null);
 
   useEffect(() => {
-    setEmail(auth?.email);
     if (user) router.push(`/${user.username}/edit`);
+
+    setEmail(auth?.email);
   }, [auth, user]);
 
   function submit(){

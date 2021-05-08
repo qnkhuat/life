@@ -1,4 +1,8 @@
-module.exports = {
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
+
+module.exports = withBundleAnalyzer({
   env: {
     FIREBASE_APIKEY: "AIzaSyCNZHbgh37PoB_nl06nuuvt0B6D2kJNEbk",
     FIREBASE_AUTHDOMAIN: "mylife-stories.firebaseapp.com",
@@ -20,4 +24,4 @@ module.exports = {
 
     return config
   }
-}
+})
