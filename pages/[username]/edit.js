@@ -1,22 +1,29 @@
-import { useState, useEffect } from "react";
-import { useRouter } from 'next/router';
+import { useState, useEffect } from "react";import { useRouter } from 'next/router';
 import axios from "axios";
-import Board from '../../components/board';
 import { useAuth, withAuth } from '../../lib/firebase/auth';
 import urljoin from "url-join";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Backdrop from '@material-ui/core/Backdrop';
+import Modal from '@material-ui/core/Modal';
+
 import FirebaseUpload from "../../components/FirebaseUpload";
 import StoriesList from "../../components/Story/StoriesList";
+import Upsert from '../../components/Story/Upsert';
+
+import IconButton from "@material-ui/core/IconButton";
+import AddIcon from '@material-ui/icons/Add';
 
 function Edit({ stories, user }) {
+  const [openAdd, setOpenAdd] = useState(false);
+ 
+  function handleOpenAdd() {setOpenAdd(true)};
+  function handleCloseAdd() {setOpenAdd(false)};
+
   const { auth, refreshUser } = useAuth();
   const router = useRouter();
-  var storiesList = [];
-  Object.keys(stories).forEach((key) => {
-    storiesList.push(stories[key]);
-  });
-
+  
+  const [ storiesState, setStoriesState ] = useState(stories);
   const [ fullname, setFullname ] = useState(user.fullname);
   const [ birthday, setBirthday ] = useState(user.birthday);
   const [ maxAge, setMaxAge ] = useState(user.maxAge);
@@ -39,6 +46,11 @@ function Edit({ stories, user }) {
         console.error("Some thing is wrong: ", error);
       })
     }
+  }
+
+  function handleStoryAdded(storyId, story){
+    stories[storyId] = story;
+    handleCloseAdd();
   }
 
   return (
@@ -98,9 +110,29 @@ function Edit({ stories, user }) {
         <Button id="profile-submit" variant="outlined" color="primary" onClick={updateProfile}>
           Submit
         </Button>
-        <StoriesList stories={stories} />
       </form>
+      <div classname="add-button">
+        <IconButton 
+          onClick={handleOpenAdd} 
+          aria-label="edit" color="primary" 
+          className="absolute top-0 right-0 bg-black bg-opacity-50 text-white w-6 h-6 mt-1 mr-1">
+          <AddIcon fontSize="small"></AddIcon>
+        </IconButton>
 
+        <Modal
+          BackdropComponent={Backdrop}
+          open={openAdd}
+          onClose={handleCloseAdd}
+          aria-labelledby="child-modal-title"
+          aria-describedby="child-modal-description"
+        >
+          <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-auto" >
+            <Upsert onComplete={handleStoryAdded}/>
+          </div>
+        </Modal>
+      </div>
+
+      <StoriesList stories={storiesState} />
     </div>
   )
 }

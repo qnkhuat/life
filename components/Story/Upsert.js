@@ -15,16 +15,15 @@ import axios from "axios";
 import dayjs from "dayjs";
 
 
-export default function Upsert({ storyId, story, username, setValueOnComplete }){
+export default function Upsert({ storyId, story, username, onComplete }){
   // exists(storyId) ? update : insert
-  console.log(story);
   const { user } = useAuth();
-  const [ title, setTitle ] = useState(story.title || null);
-  const [ content, setContent ] = useState(story.content|| null);
-  const [ date, setDate ] = useState(formatDate(story.date, "YYYY-MM-DD")|| new Date());
-  const [ imageUrls, setImageUrls ] = useState(story.imageUrls || null);
-  const [ publish, setPublish ] = useState(story.publish || true);
-  const [ type, setType ] = useState(story.type || true);
+  const [ title, setTitle ] = useState(story?.title || null);
+  const [ content, setContent ] = useState(story?.content|| null);
+  const [ date, setDate ] = useState(formatDate(story?.date, "YYYY-MM-DD")|| new Date());
+  const [ imageUrls, setImageUrls ] = useState(story?.imageUrls || null);
+  const [ publish, setPublish ] = useState(story?.publish || true);
+  const [ type, setType ] = useState(story?.type || true);
 
 
   const storyTypes = {};
@@ -34,7 +33,6 @@ export default function Upsert({ storyId, story, username, setValueOnComplete })
     })
 
   function upsertStory(){
-    console.log("Upserting");
     let payload = {
       title,
       content,
@@ -47,22 +45,19 @@ export default function Upsert({ storyId, story, username, setValueOnComplete })
     if (storyId) {
       axios.patch(`/api/user/${user.username}/story/${storyId}`, payload).then(( res ) => {
         if (res.status == 200) {
-          alert("success");
-          if (setValueOnComplete) setValueOnComplete(payload);
+          if (onComplete) onComplete(storyId, payload);
         }
       }).catch(( error ) => {
         console.error("Error updating story: ", error);
       })
     } else {
       axios.post(`/api/user/${user.username}/story`, payload).then(( res ) => {
-
         if (res.status == 200) {
-          alert("success");
-          if (setValueOnComplete) setValueOnComplete(payload);
+          const storyid = res.data['id'];
+          if (onComplete) onComplete(storyId, payload);
         }
-
       }).catch(( error ) => {
-        console.error("Error updating story: ", error);
+        console.error("Error adding story: ", error);
       })
     }
   }
@@ -103,7 +98,7 @@ export default function Upsert({ storyId, story, username, setValueOnComplete })
           value={Object.keys(storyTypes)[0]}
           onChange={(e) => setType(e.target.value)}
         >
-          {Object.keys(storyTypes).map((type) => <MenuItem value={type}>{storyTypes[type]}</MenuItem>)}
+          {Object.keys(storyTypes).map((type) => <MenuItem key={type} value={type}>{storyTypes[type]}</MenuItem>)}
         </Select>
       </FormControl>
 

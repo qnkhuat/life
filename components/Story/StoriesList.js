@@ -11,13 +11,17 @@ import Upsert from './upsert';
 function Story({ story, storyId }){
 
   const [open, setOpen] = useState(false);
-  const [storyState, setStory] = useState(story);
-  const handleOpen = () => {
-    setOpen(true);
+  const [storyState, setStoryState] = useState(story);
+ 
+  function handleOpen() {setOpen(true)};
+  function handleClose() {setOpen(false)};
+  
+  function handleOnComplete(id, story) {
+    setStoryState(story); 
+    handleClose()
   };
-  const handleClose = () => {
-    setOpen(false);
-  };
+
+
   return (
     <div className="rounded m-4 relative">
       <h1>{storyState.title}</h1>
@@ -28,24 +32,26 @@ function Story({ story, storyId }){
         alt={storyId}
         href={storyState.imageUrls[0]}/>
       }
-      <IconButton 
-        onClick={handleOpen} 
-        aria-label="close" color="primary" 
-        className="absolute top-0 right-0 bg-black bg-opacity-50 text-white w-6 h-6 mt-1 mr-1">
-        <EditIcon fontSize="small"></EditIcon>
-      </IconButton>
+      <div className="edit-button">
+        <IconButton 
+          onClick={handleOpen} 
+          aria-label="edit" color="primary" 
+          className="absolute top-0 right-0 bg-black bg-opacity-50 text-white w-6 h-6 mt-1 mr-1">
+          <EditIcon fontSize="small"></EditIcon>
+        </IconButton>
 
-      <Modal
-        BackdropComponent={Backdrop}
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="child-modal-title"
-        aria-describedby="child-modal-description"
-      >
-        <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-auto" >
-          <Upsert story={storyState} storyId={storyId} setValueOnComplete={setStory}/>
-        </div>
-      </Modal>
+        <Modal
+          BackdropComponent={Backdrop}
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="child-modal-title"
+          aria-describedby="child-modal-description"
+        >
+          <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-auto" >
+            <Upsert story={storyState} storyId={storyId} onComplete={handleOnComplete}/>
+          </div>
+        </Modal>
+      </div>
     </div>
   )
 }
@@ -58,7 +64,7 @@ export default function StoriesList({ stories, ascending=false }) {
   return (
     <>
       {orderedStoryIds && orderedStoryIds.map((id) => (
-        <Story story={stories[id]} storyId={id} />
+        <Story key={id} story={stories[id]} storyId={id} />
       ))}
     </>
   );
