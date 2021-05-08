@@ -1,4 +1,4 @@
-import { firestore } from "../../../lib/firebase/server";
+import { firestore, storageGetUrl } from "../../../lib/firebase/server";
 import isAuthenticated from "../../../lib/firebase/middleware";
 import { runMiddleware } from "../../../lib/util";
 
@@ -29,13 +29,20 @@ export const findUserByEmailResult = async (email) => {
 }
 
 const findUserByEmail = async (req, res) => {
-  firestore.collection("user").where("email", "==", req.query.email).get().then( ( snapShot ) => {
-    if (snapShot.size == 0 ) return  res.status(404).send({ message: "User not found" });
-    else if (snapShot.size == 1) return res.status(200).send(snapShot.docs[0].data()); 
-    else return res.status(404).send({ message: "Exists multiple users with 1 email" });
-  }).catch(( error ) => {
+  try {
+    const snapshot = await firestore.collection("user").where("email", "==", req.query.email).get();
+    if (snapshot.docs.length == 1) {
+      const user = snapshot.docs[0].data();
+      if (user.avatar) user.avatar = await storageGetUrl(user.avatar);
+      return res.status(200).send(user);
+    } else if (snapshot.docs.length > 1){
+      return res.status(400).send({error: "Multiple users has the same email"});
+    } else {
+      return res.status(400).send({error: "User not found"});
+    }
+  } catch (error) {
     return res.status(500).send({ error: error.message });
-  })
+  }
 }
 
 export default async (req, res) => {

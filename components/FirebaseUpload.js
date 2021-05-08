@@ -3,7 +3,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { v4 as uuidv4 } from 'uuid';
 import Button from '@material-ui/core/Button';
 
-export default function FirebaseUpload({className, label, accept, setValueOnComplete, prefix, id}) {
+export default function FirebaseUpload({className, label, accept, onComplete, prefix, id}) {
   const intputId = id || uuidv4();
   function upload(e){
     if (!e.target.files) return;
@@ -13,12 +13,11 @@ export default function FirebaseUpload({className, label, accept, setValueOnComp
     const dest = `img/${prefix ? `${prefix}/` : ""}${uuidv4()}.${filenameSplit[filenameSplit.length - 1]}`;
     const storageRef = ref(storage, dest);
     const task = uploadBytesResumable(storageRef, file);
-    console.log("Uploading");
     task.on('state_changed', 
       (snapshot) => {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log('Upload is ' + progress + '% done');
+        console.log('Uploading: ' + progress + '% done');
         switch (snapshot.state) {
           case 'paused':
             console.log('Upload is paused');
@@ -31,11 +30,7 @@ export default function FirebaseUpload({className, label, accept, setValueOnComp
       (error) => {
         console.error("Failed to upload: ", error);
       },() => {
-        // Upload completed successfully, now we can get the download URL
-        getDownloadURL(task.snapshot.ref).then((downloadURL) => {
-          console.log('File available at', downloadURL);
-        });
-        if (setValueOnComplete) setValueOnComplete(dest);
+        if (onComplete) onComplete(dest);
       }
     );
   }

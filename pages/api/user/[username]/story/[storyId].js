@@ -1,14 +1,22 @@
-import { firestore } from "../../../../../lib/firebase/server";
+import { firestore, storageGetUrl } from "../../../../../lib/firebase/server";
 import isAuthenticated from "../../../../../lib/firebase/middleware";
 import { runMiddleware } from "../../../../../lib/util";
 
 const getStory = async (req, res) => {
-  firestore.collection("user").doc(req.query.username).collection("story").doc(req.query.storyId).get().then(( doc ) => {
-    if (doc.exists) return res.status(200).send(doc.data());
-    else return res.status(404).send({error: "Story not found"});
-  }).catch(( error ) => {
+  try {
+    const story = await firestore.collection("user").doc(req.query.username).collection("story").doc(req.query.storyId).get();
+    if (story.exists) {
+      const data = story.data();
+      data.imageUrls = await Promise.all(data.imageUrls.map((url) => {
+        return storageGetUrl(url);
+      }));
+      return res.status(200).send(data);
+    } else {
+      return res.status(404).send({error: "Story not found"});
+    }
+  } catch (error) {
     return res.status(500).send({ error: error.message });
-  });
+  }
 }
 
 const updateStory = async (req, res) => {
@@ -18,7 +26,6 @@ const updateStory = async (req, res) => {
   }).catch(( error ) => {
     return res.status(500).send({ error: error.message });
   });
-
 }
 
 

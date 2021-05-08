@@ -21,7 +21,7 @@ export default function Upsert({ storyId, story, username, onComplete }){
   const [ title, setTitle ] = useState(story?.title || null);
   const [ content, setContent ] = useState(story?.content|| null);
   const [ date, setDate ] = useState(formatDate(story?.date, "YYYY-MM-DD")|| new Date());
-  const [ imageUrls, setImageUrls ] = useState(story?.imageUrls || null);
+  const [ imageUrls, setImageUrls ] = useState(story?.imageUrls || []);
   const [ publish, setPublish ] = useState(story?.publish || true);
   const [ type, setType ] = useState(story?.type || true);
 
@@ -37,7 +37,7 @@ export default function Upsert({ storyId, story, username, onComplete }){
       title,
       content,
       date,
-      imageUrls: imageUrls instanceof Array ? imageUrls : [imageUrls],
+      imageUrls: imageUrls,
       publish,
       type
     }
@@ -104,7 +104,7 @@ export default function Upsert({ storyId, story, username, onComplete }){
 
       <FormControlLabel id="story-publish" control={<Switch defaultChecked onChange={setPublish}/>} label="Label" />
 
-      <FirebaseUpload id="story-image" prefix={user.username} className="bg-black" setValueOnComplete={setImageUrls}/>
+      <FirebaseUpload id="story-image" prefix={user.username} className="bg-black" onComplete={(url) => {(url) => {setImageUrls([url])}}}/>
 
       <Button id="story-submit" variant="outlined" color="primary" onClick={upsertStory}>
         Submit

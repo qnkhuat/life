@@ -105,7 +105,7 @@ function Edit({ stories, user }) {
           multiline
           variant="outlined" />
 
-        <FirebaseUpload id="profile-avatar" prefix={user.username} className="bg-black" setValueOnComplete={setAvatar}/>
+        <FirebaseUpload id="profile-avatar" prefix={user.username} className="bg-black" onComplete={setAvatar}/>
 
         <Button id="profile-submit" variant="outlined" color="primary" onClick={updateProfile}>
           Submit

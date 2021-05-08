@@ -1,14 +1,20 @@
-import { firestore } from "../../../../lib/firebase/server";
+import { firestore, storageGetUrl } from "../../../../lib/firebase/server";
 import isAuthenticated from "../../../../lib/firebase/middleware";
 import { runMiddleware } from "../../../../lib/util";
 
-const addUser = async (req, res) => {
-  firestore.collection("user").doc(req.query.username).get().then(( doc ) => {
-    if (doc.exists) return res.status(200).send(doc.data());
-    else return res.status(404).send({error: "User not found"});
-  }).catch(( error ) => {
+const getUser = async (req, res) => {
+  try {
+    const user = await firestore.collection("user").doc(req.query.username).get();
+    if (user.exists) {
+      const data = user.data();
+      if (data.avatar) data.avatar = await storageGetUrl(data.avatar);
+      return res.status(200).send(data);
+    } else {
+      return res.status(404).send({error: "User not found"});
+    }
+  } catch (error) {
     return res.status(500).send({ error: error.message });
-  });
+  }
 }
 const updateUser = async (req, res) => {
   req.body['lastModifiedDate'] = new Date().toISOString();
@@ -22,7 +28,7 @@ const updateUser = async (req, res) => {
 export default async (req, res) => {
   switch (req.method){
     case "GET":
-      await addUser(req, res);
+      await getUser(req, res);
       break;
     case "PATCH":
       await runMiddleware(req, res, isAuthenticated)

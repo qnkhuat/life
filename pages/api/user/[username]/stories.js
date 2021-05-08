@@ -1,14 +1,22 @@
-import { firestore } from "../../../../lib/firebase/server";
+import { firestore, storageGetUrl } from "../../../../lib/firebase/server";
 
 const getAllStories = async (req, res) => {
-  firestore.collection("user").doc(req.query.username).collection("story").get().then(( snapShot ) => {
+  try {
+    const snapshot = await firestore.collection("user").doc(req.query.username).collection("story").get();
     var docs = {};
-    snapShot.docs.forEach( (doc) => docs[doc.id] = doc.data() );
-    return res.status(200).send(docs);
-  }).catch(( error ) => {
-    return res.status(500).send({ error: error.message });
-  });
 
+    for (let i in snapshot.docs){
+      const doc = snapshot.docs[i];
+      const data = doc.data();
+      data.imageUrls = await Promise.all(data.imageUrls.map((url) => {
+        return storageGetUrl(url);
+      }));
+      docs[doc.id] = data;
+    }
+    return res.status(200).send(docs);
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
 }
 
 export default async (req, res) => {
