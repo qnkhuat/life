@@ -14,9 +14,12 @@ function Edit({ events, birthday, maxAge }) {
   Object.keys(events).forEach((key) => {
     eventsList.push(events[key]);
   });
+  function go(){
+    router.replace('/');
+  }
   return (
     <div className="container mx-auto">
-    <form className="" noValidate autoComplete="off" className="flex mt-40">
+    <form className="" noValidate autoComplete="off" className="flex flex-col mt-40">
         <TextField id="info-fullname" 
           label="Full name" 
           variant="outlined" 

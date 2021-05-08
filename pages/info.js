@@ -23,9 +23,7 @@ function Info() {
 
   useEffect(() => {
     setEmail(auth?.email);
-    if (user) {
-      router.push(`/${user.username}/edit`);
-    }
+    if (user) router.push(`/${user.username}/edit`);
   }, [auth, user]);
 
   function submit(){
@@ -43,7 +41,7 @@ function Info() {
     axios.post("/api/user", payload).then(( res ) => {
       if (res.status == 200) {
         refreshUser(auth).then((res) => {
-        router.push(`/${username}/edit`);
+          router.push(`/${username}/edit`);
         }).catch((error) => {
           router.push(`/404`);
         })
@@ -55,7 +53,7 @@ function Info() {
 
   return (
     <>
-      <form className="" noValidate autoComplete="off" className="flex mt-40">
+      <form className="" noValidate autoComplete="off" className="flex flex-col mt-40">
         <TextField id="info-fullname" 
           label="Full name" 
           variant="outlined" 
