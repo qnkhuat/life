@@ -5,7 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Backdrop from '@material-ui/core/Backdrop';
 import EditIcon from '@material-ui/icons/Edit';
 import Modal from '@material-ui/core/Modal';
-import Upsert from './upsert';
+import Upsert from './Upsert';
 
 
 function Story({ story, storyId }){

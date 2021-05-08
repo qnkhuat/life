@@ -104,7 +104,7 @@ export default function Upsert({ storyId, story, username, onComplete }){
 
       <FormControlLabel id="story-publish" control={<Switch defaultChecked onChange={setPublish}/>} label="Label" />
 
-      <FirebaseUpload id="story-image" prefix={user.username} className="bg-black" onComplete={(path, url) => setImageUrls([url])}/>
+      <FirebaseUpload id="story-image" prefix={user.username} className="bg-black" onComplete={(path, url) => setImageUrls([path])}/>
 
       <Button id="story-submit" variant="outlined" color="primary" onClick={upsertStory}>
         Submit
