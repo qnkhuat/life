@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";import { useRouter } from 'next/router';
 import axios from "axios";
 import { useAuth, withAuth } from '../../lib/firebase/auth';
-import { firestore } from '../../lib/firebase/server';
 import urljoin from "url-join";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -140,12 +139,13 @@ function Edit({ stories, user }) {
 
 export async function getStaticPaths() {
   // Call an external API endpoint to get posts
-  const snapshot = await firestore.collection("user").get();
 
-  const paths = []
-  snapshot.forEach((doc) => {
-    paths.push({ params: {username: doc.id }})
-  })
+  const user_res = await axios.get(urljoin("https://life-server.vercel.app", `/api/usernames`));
+
+  // Get the paths we want to pre-render based on posts
+  const paths = user_res.data.map((username) => ({
+    params: { username: username},
+  }))
 
   // We'll pre-render only these paths at build time.
   // { fallback: false } means other routes should 404.
@@ -156,8 +156,8 @@ export async function getStaticProps({ params }) {
   const username = params.username;
   var stories = null, user = null;
   try {
-    const stories_req = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}/stories`));
-    const user_req = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}`));
+    const stories_req = await axios.get(urljoin("https://life-server.vercel.app", `/api/user/${username}/stories`));
+    const user_req = await axios.get(urljoin("https://life-server.vercel.app", `/api/user/${username}`));
     stories = stories_req.data;
     user = user_req.data;
   } catch (error){
