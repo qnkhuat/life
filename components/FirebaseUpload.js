@@ -1,22 +1,43 @@
 import { storage } from "../lib/firebase/client";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { v4 as uuidv4 } from 'uuid';
 import Button from '@material-ui/core/Button';
 
-export default function FirebaseUpload(props) {
-  const intputId = props.id || uuidv4();
+export default function FirebaseUpload({className, label, accept, setValueOnComplete, prefix, id}) {
+  const intputId = id || uuidv4();
   function upload(e){
+    if (!e.target.files) return;
     const file = e.target.files[0];
     const filename = file.name;
     const filenameSplit = filename.split(".");
-    const dest = `img/${props.prefix ? `${props.prefix}-` : ""}${uuidv4()}.${filenameSplit[filenameSplit.length - 1]}`;
-    const storageRef = storage.ref().child(dest);
-    const task = storageRef.put(file);
-    task.on('state_changed', function progress(snapshot) {
-      var percentage = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
-    }, function error(err) {
-    },function complete() {
-      if( props.setValueOnComplete ) props.setValueOnComplete(dest);
-    });
+    const dest = `img/${prefix ? `${prefix}/` : ""}${uuidv4()}.${filenameSplit[filenameSplit.length - 1]}`;
+    const storageRef = ref(storage, dest);
+    const task = uploadBytesResumable(storageRef, file);
+    console.log("Uploading");
+    task.on('state_changed', 
+      (snapshot) => {
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log('Upload is ' + progress + '% done');
+        switch (snapshot.state) {
+          case 'paused':
+            console.log('Upload is paused');
+            break;
+          case 'running':
+            console.log('Upload is running');
+            break;
+        }
+      },
+      (error) => {
+        console.error("Failed to upload: ", error);
+      },() => {
+        // Upload completed successfully, now we can get the download URL
+        getDownloadURL(task.snapshot.ref).then((downloadURL) => {
+          console.log('File available at', downloadURL);
+        });
+        if (setValueOnComplete) setValueOnComplete(dest);
+      }
+    );
   }
 
   return (
@@ -24,14 +45,14 @@ export default function FirebaseUpload(props) {
       <input
         id={intputId}
         className="hidden"
-        accept={props.accept || "image/*"}
+        accept={accept || "image/*"}
         type="file"
         onChange={upload}
       />
       <label htmlFor={intputId}>
         <Button variant="contained" color="primary" component="span" 
-          className={props.className || ""}>
-          {props.label || "Upload"}
+          className={className || ""}>
+          {label || "Upload"}
         </Button>
       </label>
     </>

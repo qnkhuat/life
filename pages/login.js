@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import axios from "axios";
 
 export default function Login() {
-  const { auth, user, siginWithGoogle } = useAuth();
+  const { auth, user, signinWithGoogle } = useAuth();
   const router = useRouter();
   if (auth) {
     // First check whether user is added to database. if not direct to info page so you can add
@@ -19,7 +19,7 @@ export default function Login() {
 
   return (
     <>
-      <Button onClick={() => siginWithGoogle()}>
+      <Button onClick={() => signinWithGoogle()}>
         Sign In with Google
       </Button>
     </>
