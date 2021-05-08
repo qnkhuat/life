@@ -165,7 +165,7 @@ export async function getStaticProps({ params }) {
       notFound: true,
     }
   }
-  return { props: {user, stories}, revalidate: 1};
+  return { props: {user, stories}, revalidate: 0.01};
 }
 
 export default withAuth(Edit, true, "/403");
