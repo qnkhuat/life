@@ -16,13 +16,13 @@ import AddIcon from '@material-ui/icons/Add';
 
 function Edit({ stories, user }) {
   const [openAdd, setOpenAdd] = useState(false);
- 
+
   function handleOpenAdd() {setOpenAdd(true)};
   function handleCloseAdd() {setOpenAdd(false)};
 
   const { auth, refreshUser } = useAuth();
   const router = useRouter();
-  
+
   const [ storiesState, setStoriesState ] = useState(stories);
   const [ fullname, setFullname ] = useState(user.fullname);
   const [ birthday, setBirthday ] = useState(user.birthday);
@@ -148,9 +148,7 @@ export async function getServerSideProps(context) {
     user = user_req.data;
   } catch (error){
     return {
-      redirect: {
-        notFound: true,
-      }
+      notFound: true,
     }
   }
   return { props: { stories: stories, user:user } };
