@@ -111,11 +111,10 @@ function Edit({ stories, user }) {
           Submit
         </Button>
       </form>
-      <div classname="add-button">
+      <div className="add-button">
         <IconButton 
           onClick={handleOpenAdd} 
-          aria-label="edit" color="primary" 
-          className="absolute top-0 right-0 bg-black bg-opacity-50 text-white w-6 h-6 mt-1 mr-1">
+          aria-label="edit" color="primary">
           <AddIcon fontSize="small"></AddIcon>
         </IconButton>
 

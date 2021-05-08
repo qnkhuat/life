@@ -28,6 +28,7 @@ export default async (req, res) => {
       await getStory(req, res);
       break;
     case "PATCH":
+      await runMiddleware(req, res, isAuthenticated);
       await updateStory(req, res);
       break;
 

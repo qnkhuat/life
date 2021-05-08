@@ -3,14 +3,11 @@ import { useRouter } from 'next/router';
 import { useAuth, withAuth } from '../lib/firebase/auth';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import dayjs from "dayjs";
-import customParseFormat from 'dayjs/plugin/customParseFormat';
 import axios from "axios";
-import { storage } from "../lib/firebase/client";
 import FirebaseUpload from "../components/FirebaseUpload";
 
 function Profile() {
-  const { auth, user, refreshUser, loading } = useAuth();
+  const { auth, user, refreshUser } = useAuth();
   const router = useRouter();
 
   const [ fullname, setFullname ] = useState(null);
