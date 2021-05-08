@@ -17,6 +17,8 @@ export default function Home (){
   return (
     <div className="container mx-auto">
       <p>{auth ? auth.name : "Stranger"}</p>
+      <p>{auth ? auth.email: "Stranger Email"}</p>
+      <p>{auth ? auth.token: "Stranger Token"}</p>
       <Button onClick={() => signOut()}>
         Log out
       </Button>

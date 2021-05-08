@@ -67,6 +67,7 @@ function Edit({ events, birthday, maxAge }) {
 }
 
 export async function getServerSideProps(context) {
+  console.log("arround here");
   const { username } = context.query;
   var events = null, user = null;
   try {
@@ -81,9 +82,7 @@ export async function getServerSideProps(context) {
       }
     }
   }
-  
   return { props: { events: events, birthday: user.birthday, maxAge: user.maxAge } };
 }
 
-export default withAuth(Edit, true, "/login");
-
+export default withAuth(Edit, true, "/403");

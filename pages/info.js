@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
-import { useAuth } from '../lib/firebase/auth';
+import { useAuth, withAuth } from '../lib/firebase/auth';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import dayjs from "dayjs";
@@ -9,22 +9,24 @@ import axios from "axios";
 import { storage } from "../lib/firebase/client";
 import FirebaseUpload from "../components/FirebaseUpload";
 
-export default function Info() {
-  const { auth, loading } = useAuth();
+function Info() {
+  const { auth, user, refreshUser, loading } = useAuth();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!auth && !loading) router.push(`/login`);
-  }, [auth, loading]);
 
   const [ fullname, setFullname ] = useState(null);
   const [ username, setUsername ] = useState(null);
-  //const [ birthday, setBirthday ] = useState(dayjs().format("yyyy-MM-ddThh:mm"));
   const [ birthday, setBirthday ] = useState("2017-05-24T10:30");
   const [ maxAge, setMaxAge ] = useState(100);
   const [ email, setEmail] = useState(auth?.email || null);
   const [ about, setAbout ] = useState(null);
   const [ avatar, setAvatar] = useState(null);
+
+  useEffect(() => {
+    setEmail(auth?.email);
+    if (user) {
+      router.push(`/${user.username}/edit`);
+    }
+  }, [auth, user]);
 
   function submit(){
     const payload = {
@@ -39,9 +41,15 @@ export default function Info() {
       }
     }
     axios.post("/api/user", payload).then(( res ) => {
-      if (res.status == 200) router.push(`/${username}/edit`)
+      if (res.status == 200) {
+        refreshUser(auth).then((res) => {
+        router.push(`/${username}/edit`);
+        }).catch((error) => {
+          router.push(`/404`);
+        })
+      }
     }).catch(( error ) => {
-      alert("Recheck your form bitch: ", error);
+      console.log("Recheck your form bitch: ", error);
     })
   }
 
@@ -70,14 +78,14 @@ export default function Info() {
           label="MaxAge" 
           variant="outlined" 
           type="number" 
-          defaultValue={100}
+          value={maxAge}
           required/>
         <TextField id="info-email" 
           onChange={(e) => setEmail(e.target.value)}
           label="Email" 
           disabled={auth?.email ? true : false}
           variant="outlined"           
-          defaultValue={auth?.email || null}
+          value={auth?.email || null}
           InputProps={{ readOnly: true}}
         />
         <TextField id="info-about" 
@@ -96,3 +104,4 @@ export default function Info() {
   )
 }
 
+export default withAuth(Info, false, "/loginnnn");
