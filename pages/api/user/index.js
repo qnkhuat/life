@@ -45,7 +45,6 @@ const findUserByEmail = async (req, res) => {
 export default async (req, res) => {
   switch (req.method){
     case "GET":
-      console.log("yoooooooooooo");
       await findUserByEmail(req, res);
       break;
     case "POST":

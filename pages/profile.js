@@ -94,7 +94,7 @@ function Profile() {
           multiline
           variant="outlined" />
 
-        <FirebaseUpload id="profile-avatar" onComplete={(path, url) => {(path, url) => setAvatar(path)}} prefix={username}  className="bg-black"/>
+        <FirebaseUpload id="profile-avatar" onComplete={(path, url) => setAvatar(path)} prefix={username}  className="bg-black"/>
 
         <Button id="profile-submit" variant="outlined" color="primary" onClick={submit}>
           Submit
