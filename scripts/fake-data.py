@@ -1,6 +1,7 @@
 import requests
 import json
 from datetime import datetime
+import os
 
 data =  [{
             "publish":True,
@@ -175,15 +176,13 @@ data =  [{
         }
     ]
 
-token = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNjM2Y0ZThiMmYxZDAyZjBlYTRiMWJkZGU1NWFkZDhiMDhiYzUzODYiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTmdvYyBLaHVhdCIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS0vQU9oMTRHaG5UaGl5TTdYUjg2aTlqQ3NSNnJ5UGRpUkhhcnRKVXQtZlF3MkYxdz1zOTYtYyIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9teWxpZmUtc3RvcmllcyIsImF1ZCI6Im15bGlmZS1zdG9yaWVzIiwiYXV0aF90aW1lIjoxNjIwMzMyNTYwLCJ1c2VyX2lkIjoieVh1WjJQOVhRUFlqNWk5Z0lxb0VCTUh0UE54MiIsInN1YiI6InlYdVoyUDlYUVBZajVpOWdJcW9FQk1IdFBOeDIiLCJpYXQiOjE2MjAzODc4MTIsImV4cCI6MTYyMDM5MTQxMiwiZW1haWwiOiJxbi5raHVhdEBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJnb29nbGUuY29tIjpbIjExMTAzMDA0NjkxMzkyMDYwODQxNiJdLCJlbWFpbCI6WyJxbi5raHVhdEBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJnb29nbGUuY29tIn19.gfQmCSNUpEibdphCvYtvd0o1WGK1Sedu7-iFYxnXjmrdMU9_gXjnhA_rj5_6aX8zhs3niHpslWjXjqtoupEZR4BzVwiWOO8E9uz-cPsElYeLvThZ6xH8EYzP9wY5w11Pogq02BhPGp_uhPmK5_ec-mXoq-4bo1G4vkzda-Z28jTrdM51ilUz0im6FUqBHvzG8TvpS1hXr4yP_84cfPsDGK_xNRFUl_LG6BjKvQmL65Zsr32PknKJY_idKh7BVm_cOAtVYdXaeXrBmYDhLX8ppqGGegKwTeZZR8Gh_oKJ-SGCM8M9VuPpAmmf1J3ihWXZ6YCukzaHMWUdUNydWIoMqg"
-
 url = "http://localhost:3000/api/user/qnkhuat/story"
 
 for event in data:
     event['date'] = datetime.strptime(event['date'], "%d/%m/%Y").strftime('%Y-%m-%dT%H:%M:%SZ')
     payload = json.dumps(event)
     headers = {
-    'Authorization': f'Bearer {token}',
+    'Authorization': f'Bearer {os.environ["TOKEN"]}',
     'Content-Type': 'application/json'
     }
 

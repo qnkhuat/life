@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import axios from "axios";
 import Board from '../../components/board';
@@ -6,63 +7,98 @@ import urljoin from "url-join";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FirebaseUpload from "../../components/FirebaseUpload";
+import StoriesList from "../../components/Story/StoriesList";
 
-function Edit({ events, birthday, maxAge }) {
-  const { auth } = useAuth();
+function Edit({ stories, user }) {
+  const { auth, refreshUser } = useAuth();
   const router = useRouter();
-  var eventsList = [];
-  Object.keys(events).forEach((key) => {
-    eventsList.push(events[key]);
+  var storiesList = [];
+  Object.keys(stories).forEach((key) => {
+    storiesList.push(stories[key]);
   });
-  function go(){
-    router.replace('/');
+
+  const [ fullname, setFullname ] = useState(user.fullname);
+  const [ birthday, setBirthday ] = useState(user.birthday);
+  const [ maxAge, setMaxAge ] = useState(user.maxAge);
+  const [ about, setAbout ] = useState(user.about);
+  const [ avatar, setAvatar] = useState(user.avatar);
+
+  function updateProfile(){
+    let payload = {
+      ...(fullname != user.fullname) && {fullname: fullname},
+      ...(birthday != user.birthday) && {birthday: birthday},
+      ...(maxAge != user.maxAge) && {maxAge: maxAge},
+      ...(about != user.about ) && {about: about},
+      ...(avatar!= user.avatar) && {avatar: avatar},
+    }
+    if (Object.keys(user).length > 0){
+      axios.patch(`/api/user/${user.username}`, payload).then(( res ) => {
+        if (res.status == 200) alert("success");
+        refreshUser();
+      }).catch(( error ) => {
+        console.error("Some thing is wrong: ", error);
+      })
+    }
   }
+
   return (
     <div className="container mx-auto">
-    <form className="" noValidate autoComplete="off" className="flex flex-col mt-40">
-        <TextField id="info-fullname" 
+      <form id="form-profile" noValidate autoComplete="off" className="flex flex-col mt-40">
+        <h3>Update your profile bitch</h3>
+        <TextField id="profile-fullname" 
           label="Full name" 
           variant="outlined" 
           onChange={(e) => setFullname(e.target.value)}
-          required/>
-        <TextField id="info-username" 
-          onChange={(e) => setUsername(e.target.value)}
+          defaultValue={fullname}
+          required
+        />
+
+        <TextField id="profile-username" 
           label="Username" 
+          disabled
+          defaultValue={user.username}
           variant="outlined" 
           required/>
-        <TextField id="info-birthday" 
+
+        <TextField id="profile-birthday" 
           onChange={(e) => setBirthday(e.target.value)}
           label="Birthday" 
           variant="outlined" 
-          type="datetime-local"
+          type="date"
+          defaultValue={birthday}
           InputLabelProps={{shrink: true}}
           required/>
-        <TextField id="info-maxage" 
+
+        <TextField id="profile-maxage" 
           onChange={(e) => setMaxAge(e.target.value)}
           label="MaxAge" 
           variant="outlined" 
+          defaultValue={maxAge}
           type="number" 
           defaultValue={100}
           required/>
-        <TextField id="info-email" 
-          onChange={(e) => setEmail(e.target.value)}
+
+        <TextField id="profile-email" 
           label="Email" 
-          disabled={auth?.email ? true : false}
+          disabled
           variant="outlined"           
-          defaultValue={auth?.email || null}
+          defaultValue={user.email}
           InputProps={{ readOnly: true}}
         />
-        <TextField id="info-about" 
+
+        <TextField id="profile-about" 
           onChange={(e) => setAbout(e.target.value)}
-          label="About your sefl" 
+          defaultValue={about}
+          label="About your self" 
           multiline
           variant="outlined" />
 
-          <FirebaseUpload id="info-avatar" className="bg-black"/>
-        
-        <Button id="info-submit" variant="outlined" color="primary">
+        <FirebaseUpload id="profile-avatar" prefix={user.username} className="bg-black" setValueOnComplete={setAvatar}/>
+
+        <Button id="profile-submit" variant="outlined" color="primary" onClick={updateProfile}>
           Submit
         </Button>
+        <StoriesList stories={stories} />
       </form>
 
     </div>
@@ -70,13 +106,12 @@ function Edit({ events, birthday, maxAge }) {
 }
 
 export async function getServerSideProps(context) {
-  console.log("arround here");
   const { username } = context.query;
-  var events = null, user = null;
+  var stories = null, user = null;
   try {
-    const events_req = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}/stories`));
+    const stories_req = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}/stories`));
     const user_req = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}`));
-    events = events_req.data;
+    stories = stories_req.data;
     user = user_req.data;
   } catch (error){
     return {
@@ -85,7 +120,7 @@ export async function getServerSideProps(context) {
       }
     }
   }
-  return { props: { events: events, birthday: user.birthday, maxAge: user.maxAge } };
+  return { props: { stories: stories, user:user } };
 }
 
 export default withAuth(Edit, true, "/403");

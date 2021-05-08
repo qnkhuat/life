@@ -9,7 +9,7 @@ export default function Login() {
   const router = useRouter();
   if (auth) {
     // First check whether user is added to database. if not direct to info page so you can add
-    if (!user) router.push(`/info?next=${router.query.next}`); 
+    if (!user) router.push(`/profile?next=${router.query.next}`); 
     
     // 2nd if has redirect request then driect there
     // 3rd to home page as default

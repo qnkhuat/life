@@ -9,13 +9,13 @@ import axios from "axios";
 import { storage } from "../lib/firebase/client";
 import FirebaseUpload from "../components/FirebaseUpload";
 
-function Info() {
+function Profile() {
   const { auth, user, refreshUser, loading } = useAuth();
   const router = useRouter();
 
   const [ fullname, setFullname ] = useState(null);
   const [ username, setUsername ] = useState(null);
-  const [ birthday, setBirthday ] = useState("2017-05-24T10:30");
+  const [ birthday, setBirthday ] = useState("2017-05-24");
   const [ maxAge, setMaxAge ] = useState(100);
   const [ email, setEmail] = useState(auth?.email || null);
   const [ about, setAbout ] = useState(null);
@@ -55,47 +55,51 @@ function Info() {
   return (
     <>
       <form className="" noValidate autoComplete="off" className="flex flex-col mt-40">
-        <TextField id="info-fullname" 
+        <TextField id="profile-fullname" 
           label="Full name" 
           variant="outlined" 
           onChange={(e) => setFullname(e.target.value)}
           required/>
-        <TextField id="info-username" 
+
+        <TextField id="profile-username" 
           onChange={(e) => setUsername(e.target.value)}
           label="Username" 
           variant="outlined" 
           required/>
-        <TextField id="info-birthday" 
+
+        <TextField id="profile-birthday" 
           onChange={(e) => setBirthday(e.target.value)}
           label="Birthday" 
           variant="outlined" 
-          type="datetime-local"
+          type="date"
           InputLabelProps={{shrink: true}}
           required/>
-        <TextField id="info-maxage" 
+
+        <TextField id="profile-maxage" 
           onChange={(e) => setMaxAge(e.target.value)}
           label="MaxAge" 
           variant="outlined" 
           type="number" 
           value={maxAge}
           required/>
-        <TextField id="info-email" 
-          onChange={(e) => setEmail(e.target.value)}
+
+        <TextField id="profile-email" 
           label="Email" 
-          disabled={auth?.email ? true : false}
+          disabled
           variant="outlined"           
-          value={auth?.email || null}
+          value={auth.email}
           InputProps={{ readOnly: true}}
         />
-        <TextField id="info-about" 
+
+        <TextField id="profile-about" 
           onChange={(e) => setAbout(e.target.value)}
           label="About your sefl" 
           multiline
           variant="outlined" />
 
-          <FirebaseUpload id="info-avatar" setValueOnComplete={setAvatar} className="bg-black"/>
-        
-        <Button id="info-submit" variant="outlined" color="primary" onClick={submit}>
+        <FirebaseUpload id="profile-avatar" setValueOnComplete={setAvatar} prefix={username}  className="bg-black"/>
+
+        <Button id="profile-submit" variant="outlined" color="primary" onClick={submit}>
           Submit
         </Button>
       </form>
@@ -103,4 +107,4 @@ function Info() {
   )
 }
 
-export default withAuth(Info, false, "/loginnnn");
+export default withAuth(Profile, false, "/login");

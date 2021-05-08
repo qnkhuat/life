@@ -38,5 +38,5 @@ yarn-error.log*
 firebase-debug.log
 firestore-debug.log
 ui-debug.log
-./.firestore-last
-./.firestore-cache
+./.firestore-export
+./.firestore-import

@@ -6,7 +6,7 @@
     "dev": "FIRESTORE_EMULATOR_HOST=localhost:8080 next dev",
     "build": "next build",
     "start": "next start",
-    "serve": "firebase emulators:start --export-on-exit=./.firestore-last"
+    "serve": "firebase emulators:start --export-on-exit=./.firestore-export --import ./.firestore-import"
   },
   "dependencies": {
     "@emotion/react": "^11.1.5",
