@@ -5,7 +5,7 @@ import { runMiddleware } from "../../../../../lib/util";
 const createStory = async (req, res) => {
   req.body['addedDate'] = new Date().toISOString();
   firestore.collection("user").doc(req.query.username).collection("story").add(req.body).then((doc) => {
-    return res.status(200).send({id: doc.id});
+    return res.status(200).send({ id: doc.id });
   }).catch(( error ) => {
     return res.status(500).send({ error: error.message });
   })

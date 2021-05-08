@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 
 export default function FirebaseUpload({className, label, accept, onComplete, prefix, id}) {
   const intputId = id || uuidv4();
+
   function upload(e){
     if (!e.target.files) return;
     const file = e.target.files[0];
@@ -17,7 +18,6 @@ export default function FirebaseUpload({className, label, accept, onComplete, pr
       (snapshot) => {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log('Uploading: ' + progress + '% done');
         switch (snapshot.state) {
           case 'paused':
             console.log('Upload is paused');
@@ -30,7 +30,13 @@ export default function FirebaseUpload({className, label, accept, onComplete, pr
       (error) => {
         console.error("Failed to upload: ", error);
       },() => {
-        if (onComplete) onComplete(dest);
+        getDownloadURL(task.snapshot.ref).then((downloadUrl) => {
+          console.log("upload done");
+          if (onComplete) {
+            console.log(dest, downloadUrl);
+            onComplete(dest, downloadUrl);
+          }
+        });
       }
     );
   }

@@ -29,7 +29,6 @@ export const findUserByEmailResult = async (email) => {
 }
 
 const findUserByEmail = async (req, res) => {
-  try {
     const snapshot = await firestore.collection("user").where("email", "==", req.query.email).get();
     if (snapshot.docs.length == 1) {
       const user = snapshot.docs[0].data();
@@ -40,14 +39,13 @@ const findUserByEmail = async (req, res) => {
     } else {
       return res.status(400).send({error: "User not found"});
     }
-  } catch (error) {
-    return res.status(500).send({ error: error.message });
-  }
+  
 }
 
 export default async (req, res) => {
   switch (req.method){
     case "GET":
+      console.log("yoooooooooooo");
       await findUserByEmail(req, res);
       break;
     case "POST":

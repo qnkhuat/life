@@ -38,6 +38,7 @@ function Edit({ stories, user }) {
       ...(about != user.about ) && {about: about},
       ...(avatar!= user.avatar) && {avatar: avatar},
     }
+    console.log(payload);
     if (Object.keys(user).length > 0){
       axios.patch(`/api/user/${user.username}`, payload).then(( res ) => {
         if (res.status == 200) alert("success");
@@ -105,7 +106,8 @@ function Edit({ stories, user }) {
           multiline
           variant="outlined" />
 
-        <FirebaseUpload id="profile-avatar" prefix={user.username} className="bg-black" onComplete={setAvatar}/>
+        <img src={avatar} alt={user.username}/>
+        <FirebaseUpload id="profile-avatar" prefix={user.username} className="bg-black" onComplete={(path, url) => setAvatar(path)}/>
 
         <Button id="profile-submit" variant="outlined" color="primary" onClick={updateProfile}>
           Submit

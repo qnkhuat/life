@@ -30,7 +30,7 @@ function Story({ story, storyId }){
       {storyState.imageUrls.length > 0 && 
       <img 
         alt={storyId}
-        href={storyState.imageUrls[0]}/>
+        src={storyState.imageUrls[0]}/>
       }
       <div className="edit-button">
         <IconButton 

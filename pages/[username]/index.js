@@ -26,6 +26,7 @@ export async function getServerSideProps(context) {
     events = events_req.data;
     user = user_req.data;
   } catch (error){
+    console.log("Errorrrrrrrrrrrrrrr", error);
     return {
       notFound: true,
     }
