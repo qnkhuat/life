@@ -138,8 +138,22 @@ function Edit({ stories, user }) {
   )
 }
 
-export async function getServerSideProps(context) {
-  const { username } = context.query;
+export async function getStaticPaths() {
+  // Call an external API endpoint to get posts
+  const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/usernames`));
+
+  // Get the paths we want to pre-render based on posts
+  const paths = user_res.data.map((username) => ({
+    params: { username: username},
+  }))
+
+  // We'll pre-render only these paths at build time.
+  // { fallback: false } means other routes should 404.
+  return { paths, fallback: false }
+}
+
+export async function getStaticProps({ params }) {
+  const username = params.username;
   var stories = null, user = null;
   try {
     const stories_req = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}/stories`));
