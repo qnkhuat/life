@@ -20,10 +20,10 @@ function Profile() {
   const [ avatar, setAvatar] = useState(null);
 
   useEffect(() => {
-    if (user) router.push('/edit');
+    if (user && !loading) router.push('/edit');
 
     setEmail(auth?.email);
-  }, [auth, user]);
+  }, [auth, user, loading]);
 
   function submit(){
     const payload = {

@@ -12,7 +12,7 @@ export default function Login() {
       if (!user) router.push(`/profile?next=${router.query.next}`); 
       router.push(router.query.next || '/'); 
     }
-  }, [auth, user]);
+  }, [auth, user, loading]);
 
   return (
     <>
