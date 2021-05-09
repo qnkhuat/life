@@ -12,6 +12,11 @@ function Profile({ events, birthday, maxAge }) {
 
   const { auth } = useAuth();
   var eventsList = [];
+  if (events == null){
+    return (
+      <h3>oh ho</h3>
+    )
+  }
   
   Object.keys(events).forEach((key) => {
     eventsList.push(events[key]);
@@ -39,10 +44,10 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const username = params.username;
-  var events = null, user = null;
+  var events = {}, user = null;
   try {
-    const events_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}/stories`));
     const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}`));
+    const events_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}/stories`));
     events = events_res.data;
     user = user_res.data;
   } catch (error){
@@ -50,6 +55,7 @@ export async function getStaticProps({ params }) {
       notFound: true,
     }
   }
+
   return { 
     props: { events: events, birthday: user.birthday, maxAge: user.maxAge } , 
     revalidate: 1};

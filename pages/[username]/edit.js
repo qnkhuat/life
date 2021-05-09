@@ -17,7 +17,7 @@ import AddIcon from '@material-ui/icons/Add';
 function Edit({ stories, user }) {
   const router = useRouter();
   if (router.fallback) {
-      return (<h3>Loading</h3>)
+    return (<h3>Loading</h3>)
   }
 
   const [openAdd, setOpenAdd] = useState(false);
@@ -158,7 +158,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const username = params.username;
-  var stories = null, user = null;
+  var stories = {}, user = null;
   try {
     const stories_req = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}/stories`));
     const user_req = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}`));
@@ -168,6 +168,12 @@ export async function getStaticProps({ params }) {
     return {
       notFound: true,
     }
+  }
+  if (user == null){
+    return {
+      notFound: true,
+    }
+
   }
   return { props: {user, stories}, revalidate: 1};
 }
