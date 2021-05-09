@@ -16,7 +16,7 @@ function useProvideAuth() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const handleAuthChange = async (authState) => {
+  const handleAuthChange = async (authState) => { 
     // this is also called on each refresh
     if (!authState) {
       setLoading(false);
@@ -62,7 +62,7 @@ function useProvideAuth() {
 
   const signinWithGoogle = async () => {
     setLoading(true);
-    return signInWithPopup(firebaseAuth, new GoogleAuthProvider()).then(() => {setLoading(false)});;
+    return signInWithPopup(firebaseAuth, new GoogleAuthProvider());;
   };
 
 
