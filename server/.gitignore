@@ -1,0 +1,42 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# dev 
+.swo
+*.swp
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# firebase
+.firebaserc
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+.firestore-export
+.firestore-import
