@@ -16,10 +16,7 @@ import AddIcon from '@material-ui/icons/Add';
 
 function Edit({ stories, user }) {
   const router = useRouter();
-  if (router.fallback) {
-    return (<h3>Loading</h3>)
-  }
-
+  
   const [openAdd, setOpenAdd] = useState(false);
 
   function handleOpenAdd() {setOpenAdd(true)};
@@ -152,8 +149,7 @@ export async function getStaticPaths() {
   }))
 
   // We'll pre-render only these paths at build time.
-  // { fallback: false } means other routes should 404.
-  return { paths, fallback: true }
+  return { paths, fallback: "blocking" }
 }
 
 export async function getStaticProps({ params }) {

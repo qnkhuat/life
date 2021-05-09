@@ -6,9 +6,6 @@ import urljoin from "url-join";
 
 function Profile({ events, birthday, maxAge }) {
   const router = useRouter();
-  if (router.fallback){
-    return <h3>Hang in there</h3>
-  }
 
   const { auth } = useAuth();
   var eventsList = [];
@@ -21,6 +18,7 @@ function Profile({ events, birthday, maxAge }) {
   Object.keys(events).forEach((key) => {
     eventsList.push(events[key]);
   });
+
   return (
     <div className="container mx-auto">
       <Board events={eventsList} birthday={birthday} maxAge={maxAge}/>
@@ -38,7 +36,7 @@ export async function getStaticPaths() {
 
   // We'll pre-render only these paths at build time.
   // { fallback: false } means other routes should 404.
-  return { paths, fallback: true};
+  return { paths, fallback: "fallback"};
 }
 
 
