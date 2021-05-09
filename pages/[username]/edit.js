@@ -15,13 +15,17 @@ import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/Add';
 
 function Edit({ stories, user }) {
+  const router = useRouter();
+  if (router.fallback) {
+      return (<h3>Loading</h3>)
+  }
+
   const [openAdd, setOpenAdd] = useState(false);
 
   function handleOpenAdd() {setOpenAdd(true)};
   function handleCloseAdd() {setOpenAdd(false)};
 
   const { auth, refreshUser } = useAuth();
-  const router = useRouter();
 
   const [ storiesState, setStoriesState ] = useState(stories);
   const [ fullname, setFullname ] = useState(user.fullname);
@@ -149,7 +153,7 @@ export async function getStaticPaths() {
 
   // We'll pre-render only these paths at build time.
   // { fallback: false } means other routes should 404.
-  return { paths, fallback: 'blocking' }
+  return { paths, fallback: true }
 }
 
 export async function getStaticProps({ params }) {

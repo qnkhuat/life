@@ -5,12 +5,14 @@ import { useAuth, withAuth } from '../../lib/firebase/auth';
 import urljoin from "url-join";
 
 function Profile({ events, birthday, maxAge }) {
-  const { auth } = useAuth();
-  var eventsList = [];
-  if (!events) {
-    return (<h3>Hello world</h3>);
+  const router = useRouter();
+  if (router.fallback){
+    return <h3>Hang in there</h3>
   }
 
+  const { auth } = useAuth();
+  var eventsList = [];
+  
   Object.keys(events).forEach((key) => {
     eventsList.push(events[key]);
   });
@@ -31,7 +33,7 @@ export async function getStaticPaths() {
 
   // We'll pre-render only these paths at build time.
   // { fallback: false } means other routes should 404.
-  return { paths, fallback: 'blocking'};
+  return { paths, fallback: true};
 }
 
 
