@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import axios from "axios";
 import FirebaseUpload from "../components/FirebaseUpload";
+import urljoin from "url-join";
 
 function Profile() {
   const { auth, user, refreshUser } = useAuth();
@@ -36,7 +37,7 @@ function Profile() {
         avatar: avatar
       }
     }
-    axios.post("/api/user", payload).then(( res ) => {
+    axios.post(urljoin(process.env.BASE_URL, "/api/user"), payload).then(( res ) => {
       if (res.status == 200) {
         refreshUser(auth).then((res) => {
           router.push(`/[username]/edit`, `/${user.username}/edit`);

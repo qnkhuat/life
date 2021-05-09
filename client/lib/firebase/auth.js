@@ -1,11 +1,13 @@
 // Auth for client side
 // https://www.freecodecamp.org/news/how-to-build-a-quizapp-using-nextjs-chakra-ui-and-firebase/
+import { parseCookies, setCookie, destroyCookie } from 'nookies'
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useState } from 'react';
 import { auth as firebaseAuth } from './client';
 import axios from "axios";
 import { onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut as firebaseSignout } from 'firebase/auth';
 import urljoin from "url-join";
+import nookies from 'nookies';
 
 const authContext = createContext({});
 
@@ -23,16 +25,29 @@ function useProvideAuth() {
     authState.token = await authState.getIdToken();
     setAuth(authState);
     axios.defaults.headers.common = {'Authorization': `Bearer ${authState.token}`}
-    await refreshUser(authState);
+    var cookies = parseCookies();
+    if (! user){
+      if(! cookies.hasOwnProperty("user")) await refreshUser(authState);
+      else {
+        const userInfo = "user" in cookies ? JSON.parse(cookies.user) : null;
+        setUser(userInfo);
+      }
+    }
     setLoading(false);
   };
 
   const refreshUser = async (auth) => {
     if(!auth) return;
-    console.log("Refresh user");
     await axios.get(urljoin(process.env.BASE_URL, `/api/user?email=${auth.email}`)).then((res) => {
-      if (res.data) setUser(res.data);
+      if (res.data) {
+        setUser(res.data);
+        setCookie(null, "user", JSON.stringify(res.data), {
+          maxAge: 30 * 24 * 60 * 60,
+          path: '/',
+        });
+      }
     }).catch((error) => {
+      console.log("Failed to get user info: ", error);
       return;
     });
   }
@@ -41,17 +56,20 @@ function useProvideAuth() {
     axios.defaults.headers.common = {'Authorization': `Bearer ${null}`}
     setAuth(null);
     setLoading(true);
+    destroyCookie(null, "user");
     setUser(null);
   };
 
   const signinWithGoogle = async () => {
     setLoading(true);
-    return signInWithPopup(firebaseAuth, new GoogleAuthProvider()).then(() => {setLoading(false)});
+    return signInWithPopup(firebaseAuth, new GoogleAuthProvider()).then(() => {setLoading(false)});;
   };
+
 
   const signOut = async () => {
     return firebaseSignout(firebaseAuth).then(clear);
   };
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, handleAuthChange);
@@ -72,7 +90,7 @@ const useAuth = () => useContext(authContext); // for function components
 
 export const withAuth = (WrappedComponent, authorizedOnly=false, redirectTo="/login") => {
   return (props) => {
-    const { auth, loading, user } = useAuth();
+    const { auth, user, loading } = useAuth();
     const router = useRouter();
     const [verified, setVerified] = useState(false);
 
@@ -86,7 +104,7 @@ export const withAuth = (WrappedComponent, authorizedOnly=false, redirectTo="/lo
           setVerified(true);
         }
       }
-    }, [auth, user, loading]);
+    }, [auth, loading, user]);
 
     if (verified) return <WrappedComponent {...props} />;
     else return null;
