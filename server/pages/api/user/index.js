@@ -1,6 +1,7 @@
 import { firestore, storageGetUrl } from "../../../lib/firebase/server";
 import isAuthenticated from "../../../lib/firebase/middleware";
 import { cors, runMiddleware } from "../../../lib/util";
+import { parseCookies, setCookie, destroyCookie } from 'nookies';
 
 const addUser = async (req, res) => {
   const userDocRef = firestore.collection("user").doc(req.body.username);
@@ -29,6 +30,8 @@ export const findUserByEmailResult = async (email) => {
 }
 
 const findUserByEmail = async (req, res) => {
+    const parsedCookies = parseCookies({ req });
+    console.log("Find user by email cookies", parseCookies);
     const snapshot = await firestore.collection("user").where("email", "==", req.query.email).get();
     if (snapshot.docs.length == 1) {
       const user = snapshot.docs[0].data();

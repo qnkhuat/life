@@ -12,7 +12,7 @@ import * as constants from "../Board/constants";
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import axios from "axios";
-import dayjs from "dayjs";
+import urljoin from "url-join";
 
 
 export default function Upsert({ storyId, story, username, onComplete }){

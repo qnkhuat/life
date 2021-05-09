@@ -20,7 +20,7 @@ function Profile() {
   const [ avatar, setAvatar] = useState(null);
 
   useEffect(() => {
-    if (user) router.push(`/[username]/edit`, `/${user.username}/edit`);
+    if (user) router.push('/edit');
 
     setEmail(auth?.email);
   }, [auth, user]);
@@ -40,8 +40,7 @@ function Profile() {
     axios.post(urljoin(process.env.BASE_URL, "/api/user"), payload).then(( res ) => {
       if (res.status == 200) {
         refreshUser(auth).then((res) => {
-          router.push(`/[username]/edit`, `/${user.username}/edit`);
-
+          router.push('/edit');
         }).catch((error) => {
           router.push(`/404`);
         })
