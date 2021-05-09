@@ -1,36 +1,37 @@
 {
-  "name": "client",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "FIRESTORE_EMULATOR_HOST=localhost:8080 next dev",
-    "build": "next build",
-    "start": "next start",
-    "serve": "firebase emulators:start --export-on-exit=./.firestore-export --import ./.firestore-import"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.1.5",
-    "@emotion/styled": "^11.3.0",
-    "@material-ui/core": "^5.0.0-alpha.32",
-    "@material-ui/icons": "^5.0.0-alpha.29",
-    "@next/bundle-analyzer": "^10.2.0",
-    "axios": "^0.21.1",
-    "cors": "^2.8.5",
-    "dayjs": "^1.10.4",
-    "firebase": "^9.0.0-beta.1",
-    "firebase-admin": "^9.7.0",
-    "next": "10.2.0",
-    "nprogress": "^0.2.0",
-    "react": "17.0.2",
-    "react-device-detect": "^1.17.0",
-    "react-dom": "17.0.2",
-    "react-firebaseui": "^5.0.2",
-    "url-join": "^4.0.1",
-    "uuid": "^8.3.2"
-  },
-  "devDependencies": {
-    "autoprefixer": "^10.2.5",
-    "postcss": "^8.2.13",
-    "tailwindcss": "^2.1.2"
-  }
+    "name": "client",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "FIRESTORE_EMULATOR_HOST=localhost:8080 next dev",
+        "build": "next build",
+        "start": "next start",
+        "serve": "firebase emulators:start --export-on-exit=./.firestore-export --import ./.firestore-import"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.1.5",
+        "@emotion/styled": "^11.3.0",
+        "@material-ui/core": "^5.0.0-alpha.32",
+        "@material-ui/icons": "^5.0.0-alpha.29",
+        "@next/bundle-analyzer": "^10.2.0",
+        "axios": "^0.21.1",
+        "cors": "^2.8.5",
+        "dayjs": "^1.10.4",
+        "firebase": "^9.0.0-beta.1",
+        "firebase-admin": "^9.7.0",
+        "next": "10.2.0",
+        "nprogress": "^0.2.0",
+        "react": "17.0.2",
+        "react-device-detect": "^1.17.0",
+        "react-dom": "17.0.2",
+        "react-firebaseui": "^5.0.2",
+        "url-join": "^4.0.1",
+        "uuid": "^8.3.2"
+    },
+    "devDependencies": {
+        "@tailwindcss/postcss7-compat": "^2.1.2",
+        "autoprefixer": "^10.2.5",
+        "postcss": "^8.2.14",
+        "tailwindcss": "^2.1.2"
+    }
 }
