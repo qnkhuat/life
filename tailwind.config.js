@@ -1,9 +1,9 @@
 module.exports = {
   important:true,
   purge: {
-    content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
+    content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html', "./example/src/index.js"],
     options: {
-      safelist: [],
+      safelist: [/^bg/],
     }
   },
   darkMode: false, // or 'media' or 'class'
