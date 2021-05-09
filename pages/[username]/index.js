@@ -48,7 +48,9 @@ export async function getStaticProps({ params }) {
       notFound: true,
     }
   }
-  return { props: { events: events, birthday: user.birthday, maxAge: user.maxAge } , revalidate: 1};
+  return { 
+    props: { events: events, birthday: user.birthday, maxAge: user.maxAge } , 
+    revalidate: 1};
 }
 
 export default Profile;
