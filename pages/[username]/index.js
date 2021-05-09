@@ -10,6 +10,7 @@ function Profile({ events, birthday, maxAge }) {
   if (!events) {
     return (<h3>Hello world</h3>);
   }
+
   Object.keys(events).forEach((key) => {
     eventsList.push(events[key]);
   });
@@ -30,7 +31,7 @@ export async function getStaticPaths() {
 
   // We'll pre-render only these paths at build time.
   // { fallback: false } means other routes should 404.
-  return { paths, fallback: true};
+  return { paths, fallback: 'blocking'};
 }
 
 
@@ -48,7 +49,7 @@ export async function getStaticProps({ params }) {
     }
   }
   
-  return { props: { events: events, birthday: user.birthday, maxAge: user.maxAge } , revalidate: 0.01};
+  return { props: { events: events, birthday: user.birthday, maxAge: user.maxAge } , revalidate: 1};
 }
 
 export default Profile;
