@@ -40,7 +40,7 @@ function Edit({ stories, user }) {
       ...(avatar!= user.avatar) && {avatar: avatar},
     }
     if (Object.keys(user).length > 0){
-      axios.patch(`/api/user/${user.username}`, payload).then(( res ) => {
+      axios.patch(urljoin(process.env.BASE_URL,`/api/user/${user.username}`), payload).then(( res ) => {
         if (res.status == 200) alert("success");
         refreshUser();
       }).catch(( error ) => {

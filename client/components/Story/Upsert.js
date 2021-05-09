@@ -43,7 +43,7 @@ export default function Upsert({ storyId, story, username, onComplete }){
     }
 
     if (storyId) {
-      axios.patch(`/api/user/${user.username}/story/${storyId}`, payload).then(( res ) => {
+      axios.patch(urljoin(process.env.BASE_URL, `/api/user/${user.username}/story/${storyId}`), payload).then(( res ) => {
         if (res.status == 200) {
           if (onComplete) onComplete(storyId, payload);
         }
@@ -51,7 +51,7 @@ export default function Upsert({ storyId, story, username, onComplete }){
         console.error("Error updating story: ", error);
       })
     } else {
-      axios.post(`/api/user/${user.username}/story`, payload).then(( res ) => {
+      axios.post(urljoin(process.env.BASE_URL, `/api/user/${user.username}/story`), payload).then(( res ) => {
         if (res.status == 200) {
           const storyid = res.data['id'];
           if (onComplete) onComplete(storyId, payload);
