@@ -8,7 +8,7 @@ import FirebaseUpload from "../components/FirebaseUpload";
 import urljoin from "url-join";
 
 function Profile() {
-  const { auth, user, refreshUser } = useAuth();
+  const { auth, user, refreshUser, loading } = useAuth();
   const router = useRouter();
 
   const [ fullname, setFullname ] = useState(null);
