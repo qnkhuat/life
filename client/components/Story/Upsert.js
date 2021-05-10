@@ -15,7 +15,7 @@ import axios from "axios";
 import urljoin from "url-join";
 
 
-export default function Upsert({ storyId, story, username, onComplete }){
+export default function Upsert({ storyId, story, onComplete }){
   // exists(storyId) ? update : insert
   const { user } = useAuth();
   const [ title, setTitle ] = useState(story?.title || null);
@@ -27,7 +27,8 @@ export default function Upsert({ storyId, story, username, onComplete }){
 
 
   const storyTypes = {};
-  Object.keys(constants.EVENTMAPPING).filter((key) => constants.EVENTMAPPING[key]['icon']).
+  Object.keys(constants.EVENTMAPPING).
+    filter((key) => constants.EVENTMAPPING[key]['icon']).
     map((type, index) => {
       storyTypes[type] = `${type} - ${constants.EVENTMAPPING[type]['icon']}`;
     })
@@ -42,16 +43,21 @@ export default function Upsert({ storyId, story, username, onComplete }){
       type
     }
 
-    if (storyId) {
-      axios.patch(urljoin(process.env.BASE_URL, `/api/user/${user.username}/story/${storyId}`), payload).then(( res ) => {
+    if (storyId) { // update
+      console.log("Update");
+      axios.patch(urljoin(process.env.BASE_URL, `/api/user/${user.id}/story/${storyId}`), payload).then(( res ) => {
+        console.log("Completed");
         if (res.status == 200) {
+          console.log("success");
           if (onComplete) onComplete(storyId, payload);
         }
       }).catch(( error ) => {
         console.error("Error updating story: ", error);
       })
-    } else {
-      axios.post(urljoin(process.env.BASE_URL, `/api/user/${user.username}/story`), payload).then(( res ) => {
+    } else { // insert
+      console.log("INSERT");
+      axios.post(urljoin(process.env.BASE_URL, `/api/user/${user.id}/story`), payload).then(( res ) => {
+        console.log("Completed");
         if (res.status == 200) {
           const storyid = res.data['id'];
           if (onComplete) onComplete(storyId, payload);
@@ -104,7 +110,7 @@ export default function Upsert({ storyId, story, username, onComplete }){
 
       <FormControlLabel id="story-publish" control={<Switch defaultChecked onChange={setPublish}/>} label="Label" />
 
-      <FirebaseUpload id="story-image" prefix={user.username} className="bg-black" onComplete={(path, url) => setImageUrls([path])}/>
+      <FirebaseUpload id="story-image" prefix={user.id} className="bg-black" onComplete={(path, url) => setImageUrls([path])}/>
 
       <Button id="story-submit" variant="outlined" color="primary" onClick={upsertStory}>
         Submit

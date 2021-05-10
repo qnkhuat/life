@@ -8,7 +8,7 @@ const getUser = async (req, res) => {
     if (user.exists) {
       const data = user.data();
       if (data.avatar) data.avatar = await storageGetUrl(data.avatar);
-      return res.status(200).send(data);
+      return res.status(200).send({id: req.query.userId, user: data});
     } else {
       return res.status(404).send({error: "User not found"});
     }

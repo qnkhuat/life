@@ -36,6 +36,7 @@ function Profile( { data }) {
       getData(router.query.username).then((data) => {
         setState({updated: true, stateData:data})
       }).catch((error) => {
+        console.log("failed to fetch new data");
       });
     }
   })

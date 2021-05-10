@@ -1,41 +1,62 @@
-import { useState, useEffect } from "react";import { useRouter } from 'next/router';
+import { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
 import axios from "axios";
-import { useAuth, withAuth } from '../lib/firebase/auth';
+import { useAuth, withAuth } from '../../lib/firebase/auth';
 import urljoin from "url-join";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Backdrop from '@material-ui/core/Backdrop';
 import Modal from '@material-ui/core/Modal';
 
-import FirebaseUpload from "../components/FirebaseUpload";
-import StoriesList from "../components/Story/StoriesList";
-import Upsert from '../components/Story/Upsert';
+import FirebaseUpload from "../../components/FirebaseUpload";
+import StoriesList from "../../components/Story/StoriesList";
+import Upsert from '../../components/Story/Upsert';
 
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/Add';
+import { v4 as uuidv4 } from 'uuid';
 import { parseCookies, setCookie, destroyCookie } from 'nookies'
 
-function Edit() {
-  const router = useRouter();
-  const cookies = parseCookies()
-  const user = "user" in cookies ? JSON.parse(cookies.user) : null;
 
-  const [ stories, setStories] = useState(null);
-  const [ fullname, setFullname ] = useState(user.fullname);
-  const [ birthday, setBirthday ] = useState(user.birthday);
-  const [ maxAge, setMaxAge ] = useState(user.maxAge);
-  const [ about, setAbout ] = useState(user.about);
-  const [ avatar, setAvatar] = useState(user.avatar);
+const getData = async (username) => {
+  const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user?username=${username}`));
+  const user = user_res.data;
+  const events_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`));
+  const events = events_res.data;
+  return {
+    events:events,
+    user: user,
+  }
+}
+
+function Edit({ data }) {
+  const router = useRouter();
+  const stateKey = uuidv4();
+  const [ state, setState ] = useState({updated: false, stateData: data });
+  const { updated, stateData } = state;
+  const { events , user } = stateData;
+  const [ stories, setStories] = useState(events);
+  const [ fullname, setFullname ] = useState(user.user.fullname);
+  const [ birthday, setBirthday ] = useState(user.user.birthday);
+  const [ maxAge, setMaxAge ] = useState(user.user.maxAge);
+  const [ about, setAbout ] = useState(user.user.about);
+  const [ avatar, setAvatar] = useState(user.user.avatar);
 
 
   if (!user) return router.push("/login?next=/edit");
-
   useEffect(() => {
-    if(stories == null) {// call it once
-      const stories_req = axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.username}/stories`)).then((res) => {
-      //const stories_req = axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`)).then((res) => {
-        setStories(res.data);
-      }).catch((error) => console.log("We are fucked: ", error));
+    if (router.query.username && !updated) {
+      getData(router.query.username).then((data) => {
+        const userInfo = data.user.user;
+        setFullname(userInfo.fullname);
+        setBirthday(userInfo.birthday);
+        setMaxAge(userInfo.maxAge);
+        setAbout(userInfo.about);
+        setAvatar(userInfo.avatar);
+        setState({updated: true, stateData:data})
+      }).catch((error) => {
+        console.log("failed to fetch new data");
+      });
     }
   })
 
@@ -43,12 +64,13 @@ function Edit() {
     return <h3> Hang in there </h3>
 
   }
-  const [openAdd, setOpenAdd] = useState(false);
 
+  // Add Story button controller
+  const [openAdd, setOpenAdd] = useState(false);
   function handleOpenAdd() {setOpenAdd(true)};
   function handleCloseAdd() {setOpenAdd(false)};
 
-  const { auth, refreshUser } = useAuth();
+  const { refreshUser } = useAuth();
 
   function updateProfile(){
     let payload = {
@@ -76,7 +98,7 @@ function Edit() {
 
   return (
     <div className="container mx-auto">
-      <form id="form-profile" noValidate autoComplete="off" className="flex flex-col mt-40">
+      <form id="form-profile" noValidate autoComplete="off" className="flex flex-col mt-40" key={stateKey}>
         <h3>Update your profile bitch</h3>
         <TextField id="profile-fullname" 
           label="Full name" 
@@ -151,9 +173,41 @@ function Edit() {
             <Upsert onComplete={handleStoryAdded}/>
           </div>
         </Modal>
-        <StoriesList stories={stories != null ? stories : {}} />
+        <StoriesList key={updated} stories={stories != null ? stories : {}} />
       </div>
 
     </div>
   )
 }
+export async function getStaticPaths() {
+  // Call an external API endpoint to get posts
+  const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/usernames`));
+
+  // Get the paths we want to pre-render based on posts
+  const paths = user_res.data.map((username) => ({
+    params: { username: username},
+  })) 
+
+  // We'll pre-render only these paths at build time.
+  // { fallback: false } means other routes should 404.
+  return { paths, fallback: true };
+}
+
+
+export async function getStaticProps({ params }) {
+  const username = params.username;
+  var data = {};
+  try {
+    data = await getData(username);
+  } catch (error){
+    return {
+      notFound: true,
+    }
+  }
+  return { 
+    props: {data:data},
+    revalidate: 60,
+  };
+}
+
+export default withAuth(Edit);
