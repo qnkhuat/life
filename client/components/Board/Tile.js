@@ -5,6 +5,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import OutsideDetector from "./OutsideDetector";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from '@material-ui/icons/Close';
+import { v4 as uuidv4 } from 'uuid';
 
 import * as constants from "./constants";
 
@@ -171,7 +172,7 @@ class Tile extends React.Component {
         className={toolDivClassName}
       >{constants.EVENTMAPPING[this.type]['icon']}</div>;
 
-      var tooltipContent = this.events.map((e, _) => <React.Fragment>{this.eventToDiv(e)}</React.Fragment>);
+      var tooltipContent = this.events.map((e, i) => <div key={i}>{this.eventToDiv(e)}</div>);
 
       const tooltipClassName = "tooltip-wrapper shadow-xl border-2 border border-gray-300 rounded bg-black max-h-tooltip w-tooltip sm:w-sm-tooltip";
 
@@ -219,9 +220,9 @@ class Tile extends React.Component {
     }
 
     return (
-      <React.Fragment>
+      <>
         {toolTip}
-      </React.Fragment>
+      </>
     )
   }
 }

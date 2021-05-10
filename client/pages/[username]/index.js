@@ -14,7 +14,7 @@ function Profile({ events, birthday, maxAge }) {
       <h3>oh ho</h3>
     )
   }
-  
+
   Object.keys(events).forEach((key) => {
     eventsList.push(events[key]);
   });
@@ -25,22 +25,22 @@ function Profile({ events, birthday, maxAge }) {
     </div>
   )
 }
-export async function getStaticPaths() {
-  // Call an external API endpoint to get posts
-  const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/usernames`));
+//export async function getStaticPaths() {
+//  // Call an external API endpoint to get posts
+//  const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/usernames`));
+//
+//  // Get the paths we want to pre-render based on posts
+//  const paths = user_res.data.map((username) => ({
+//    params: { username: username},
+//  })) 
+//
+//  // We'll pre-render only these paths at build time.
+//  // { fallback: false } means other routes should 404.
+//  return { paths, fallback: "blocking"};
+//}
 
-  // Get the paths we want to pre-render based on posts
-  const paths = user_res.data.map((username) => ({
-    params: { username: username},
-  })) 
 
-  // We'll pre-render only these paths at build time.
-  // { fallback: false } means other routes should 404.
-  return { paths, fallback: "blocking"};
-}
-
-
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
   const username = params.username;
   var events = {}, user = null;
   try {
@@ -55,8 +55,8 @@ export async function getStaticProps({ params }) {
   }
 
   return { 
-    props: { events: events, birthday: user.birthday, maxAge: user.maxAge } , 
-    revalidate: 1};
+    props: { events: events, birthday: user.birthday, maxAge: user.maxAge }}
+    //revalidate: 1};
 }
 
 export default Profile;

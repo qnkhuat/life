@@ -12,8 +12,8 @@ module.exports = withBundleAnalyzer({
     FIREBASE_PROJECTID: "mylife-stories",
     FIREBASE_PRIVATEKEY: process.env.FIREBASE_PRIVATKEY,
     FIREBASE_CLIENTEMAIL: "firebase-adminsdk-46bv6@mylife-stories.iam.gserviceaccount.com",
-    //BASE_URL: process.env.BASE_URL || "http://localhost:3001"
-    BASE_URL: process.env.BASE_URL || "https://life-server.vercel.app"
+    BASE_URL: process.env.BASE_URL || "http://localhost:3001"
+    //BASE_URL: process.env.BASE_URL || "https://life-server.vercel.app"
   },
   
   webpack: (config, { isServer }) => {
