@@ -1,7 +1,7 @@
 import Cors from 'cors';
 
 export const cors = Cors({
-  methods: ['GET', 'HEAD', 'POST', 'OPTIONS', 'PATCH'],
+  methods: ['GET', 'HEAD', 'POST', 'OPTIONS', 'PATCH', 'DELETE'],
 })
 
 export function runMiddleware(req, res, fn) {

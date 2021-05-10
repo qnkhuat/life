@@ -44,12 +44,12 @@ function Edit({ data }) {
   const [ avatar, setAvatar] = useState(user.user.avatar);
 
   const setUser = (user) => {
-    setFullname(userInfo.fullname);
-    setUsername(userInfo.username);
-    setBirthday(userInfo.birthday);
-    setMaxAge(userInfo.maxAge);
-    setAbout(userInfo.about);
-    setAvatar(userInfo.avatar);
+    setFullname(user.fullname);
+    setUsername(user.username);
+    setBirthday(user.birthday);
+    setMaxAge(user.maxAge);
+    setAbout(user.about);
+    setAvatar(user.avatar);
   }
 
 
@@ -61,15 +61,10 @@ function Edit({ data }) {
         setUser(data.user.user);
         setState({updated: true, stateData:data});
       }).catch((error) => {
-        console.log("failed to fetch new data");
+        console.error("failed to fetch new data", error);
       });
     }
   })
-
-  if (!user) {
-    return <h3> Hang in there </h3>
-
-  }
 
   // Add Story button controller
   const [openAdd, setOpenAdd] = useState(false);
@@ -155,7 +150,7 @@ function Edit({ data }) {
           variant="outlined" />
 
         <img src={avatar} alt={username}/>
-        <FirebaseUpload id="profile-avatar" prefix={username} className="bg-black" onComplete={(path, url) => setAvatar(path)}/>
+        <FirebaseUpload id="profile-avatar" prefix={username} className="bg-black" onComplete={(path, url) => setAvatar(url)}/>
 
         <Button id="profile-submit" variant="outlined" color="primary" onClick={updateProfile}>
           Submit
@@ -179,7 +174,7 @@ function Edit({ data }) {
             <Upsert onComplete={handleStoryAdded}/>
           </div>
         </Modal>
-        <StoriesList key={updated} stories={stories != null ? stories : {}} />
+        <StoriesList key={updated} stories={stories} />
       </div>
 
     </div>

@@ -17,15 +17,6 @@ import urljoin from "url-join";
 
 export default function Upsert({ storyId, story, onComplete }){
   // exists(storyId) ? update : insert
-  const { user } = useAuth();
-  const [ title, setTitle ] = useState(story?.title || null);
-  const [ content, setContent ] = useState(story?.content|| null);
-  const [ date, setDate ] = useState(formatDate(story?.date, "YYYY-MM-DD")|| new Date());
-  const [ imageUrls, setImageUrls ] = useState(story?.imageUrls || []);
-  const [ publish, setPublish ] = useState(story?.publish || true);
-  const [ type, setType ] = useState(story?.type || true);
-
-
   const storyTypes = {};
   Object.keys(constants.EVENTMAPPING).
     filter((key) => constants.EVENTMAPPING[key]['icon']).
@@ -33,33 +24,50 @@ export default function Upsert({ storyId, story, onComplete }){
       storyTypes[type] = `${type} - ${constants.EVENTMAPPING[type]['icon']}`;
     })
 
-  function upsertStory(){
+  const { user } = useAuth();
+  const [ title, setTitle ] = useState(story?.title || null);
+  const [ content, setContent ] = useState(story?.content|| null);
+  const [ date, setDate ] = useState(formatDate(story?.date, "YYYY-MM-DD")|| new Date());
+  const [ imageUrls, setImageUrls ] = useState(story?.imageUrls || []);
+  //const [ imageAbsoluteUrl, setImageUrls ] = useState(story?.imageUrls || []);
+  const [ publish, setPublish ] = useState(story?.publish || true);
+  const [ type, setType ] = useState(story?.type || Object.keys(storyTypes)[0]);
+
+
+  // ImageUrls is for DB to store since it only store image path on Google Storage
+  // imageDisplayUrls is a full url of uploaded image, we return it so client can preview
+  const [ imageDisplayUrls, setImageDisplayUrls ] = useState(story?.imageUrls || []);
+
+
+  function handleUploadComplete(path, url) {
+    setImageUrls([path]);
+    setImageDisplayUrls([url]);
+  }
+
+  function handleUpsertStory(){
     let payload = {
       title,
       content,
       date,
-      imageUrls: imageUrls,
+      imageUrls,
       publish,
       type
     }
 
     if (storyId) { // update
-      console.log("Update");
       axios.patch(urljoin(process.env.BASE_URL, `/api/user/${user.id}/story/${storyId}`), payload).then(( res ) => {
-        console.log("Completed");
         if (res.status == 200) {
-          console.log("success");
+          payload['imageUrls'] = imageDisplayUrls;
           if (onComplete) onComplete(storyId, payload);
         }
       }).catch(( error ) => {
         console.error("Error updating story: ", error);
       })
     } else { // insert
-      console.log("INSERT");
       axios.post(urljoin(process.env.BASE_URL, `/api/user/${user.id}/story`), payload).then(( res ) => {
-        console.log("Completed");
         if (res.status == 200) {
-          const storyid = res.data['id'];
+          let storyId = res.data.id;
+          payload['imageUrls'] = imageDisplayUrls;
           if (onComplete) onComplete(storyId, payload);
         }
       }).catch(( error ) => {
@@ -101,18 +109,19 @@ export default function Upsert({ storyId, story, onComplete }){
           labelId="story-type"
           id="story-type"
           label="Type"
-          value={Object.keys(storyTypes)[0]}
+          value={type}
           onChange={(e) => setType(e.target.value)}
         >
           {Object.keys(storyTypes).map((type) => <MenuItem key={type} value={type}>{storyTypes[type]}</MenuItem>)}
         </Select>
       </FormControl>
 
-      <FormControlLabel id="story-publish" control={<Switch defaultChecked onChange={setPublish}/>} label="Label" />
+      <FormControlLabel id="story-publish" control={<Switch defaultChecked onChange={(e) => setPublish(e.target.checked)}/>} label="Label" />
 
-      <FirebaseUpload id="story-image" prefix={user.id} className="bg-black" onComplete={(path, url) => setImageUrls([path])}/>
+      <FirebaseUpload id="story-image" prefix={user.id} className="bg-black" onComplete={handleUploadComplete}/>
+      {(imageUrls.length > 0 || imageDisplayUrls.length > 0) && <img src={imageDisplayUrls[0] || imageUrls}/>}
 
-      <Button id="story-submit" variant="outlined" color="primary" onClick={upsertStory}>
+      <Button id="story-submit" variant="outlined" color="primary" onClick={handleUpsertStory}>
         Submit
       </Button>
     </form>

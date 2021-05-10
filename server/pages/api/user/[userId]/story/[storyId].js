@@ -28,6 +28,13 @@ const updateStory = async (req, res) => {
   });
 }
 
+const deleteStory = async (req, res) => {
+  firestore.collection("user").doc(req.query.userId).collection("story").doc(req.query.storyId).delete().then(() => {
+    return res.status(200).send({ message: "success" });
+  }).catch(( error ) => {
+    return res.status(500).send({ error: error.message });
+  });
+}
 
 export default async (req, res) => {
   await runMiddleware(req, res, cors);
@@ -35,10 +42,17 @@ export default async (req, res) => {
     case "GET":
       await getStory(req, res);
       break;
+
     case "PATCH":
       await runMiddleware(req, res, isAuthenticated);
       await updateStory(req, res);
       break;
+
+    case "DELETE":
+      await runMiddleware(req, res, isAuthenticated);
+      await deleteStory(req, res);
+      break;
+
 
     default:
       res.status(405).json({ message: 'Method Not Allowed' });

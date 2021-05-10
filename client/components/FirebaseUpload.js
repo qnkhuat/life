@@ -31,7 +31,6 @@ export default function FirebaseUpload({className, label, accept, onComplete, pr
         console.error("Failed to upload: ", error);
       },() => {
         getDownloadURL(task.snapshot.ref).then((downloadUrl) => {
-          console.log("upload done");
           if (onComplete) {
             console.log(dest, downloadUrl);
             onComplete(dest, downloadUrl);
