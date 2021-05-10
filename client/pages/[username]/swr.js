@@ -21,6 +21,12 @@ function Profile( props ) {
 
   const router = useRouter();
   const { data } = useSWR(router.query.username, fetcher, { initialData: props.data });
+  if (!data){
+    return (
+      <h3>oh ho</h3>
+    )
+  }
+
   const { events, birthday, maxAge } = data;
 
   if (router.isFallback) {
@@ -28,12 +34,7 @@ function Profile( props ) {
   }
 
   var eventsList = [];
-  if (events == null){
-    return (
-      <h3>oh ho</h3>
-    )
-  }
-
+  
   Object.keys(events).forEach((key) => {
     eventsList.push(events[key]);
   });
