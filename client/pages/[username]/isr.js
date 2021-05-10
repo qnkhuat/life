@@ -6,6 +6,9 @@ import urljoin from "url-join";
 
 function Profile({ events, birthday, maxAge }) {
   const router = useRouter();
+  if (router.isFallback) {
+    return <div>Loading...</div>
+  }
 
   const { auth } = useAuth();
   var eventsList = [];
@@ -25,22 +28,22 @@ function Profile({ events, birthday, maxAge }) {
     </div>
   )
 }
-//export async function getStaticPaths() {
-//  // Call an external API endpoint to get posts
-//  const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/usernames`));
-//
-//  // Get the paths we want to pre-render based on posts
-//  const paths = user_res.data.map((username) => ({
-//    params: { username: username},
-//  })) 
-//
-//  // We'll pre-render only these paths at build time.
-//  // { fallback: false } means other routes should 404.
-//  return { paths, fallback: "blocking"};
-//}
+export async function getStaticPaths() {
+  // Call an external API endpoint to get posts
+  const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/usernames`));
+
+  // Get the paths we want to pre-render based on posts
+  const paths = user_res.data.map((username) => ({
+    params: { username: username},
+  })) 
+
+  // We'll pre-render only these paths at build time.
+  // { fallback: false } means other routes should 404.
+  return { paths, fallback: true};
+}
 
 
-export async function getServerSideProps({ params }) {
+export async function getStaticProps({ params }) {
   const username = params.username;
   var events = {}, user = null;
   try {
@@ -54,8 +57,8 @@ export async function getServerSideProps({ params }) {
     }
   }
   return { 
-    props: { events: events, birthday: user.user.birthday, maxAge: user.user.maxAge }}
-    //revalidate: 1};
+    props: { events: events, birthday: user.user.birthday, maxAge: user.user.maxAge },
+    revalidate: 1};
 }
 
 export default Profile;
