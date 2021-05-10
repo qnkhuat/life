@@ -41,7 +41,7 @@ function Profile() {
     axios.post(urljoin(process.env.BASE_URL, "/api/user"), payload).then(( res ) => {
       if (res.status == 200) {
         refreshUser(auth).then((res) => {
-          router.push('/edit');
+          router.push("/[username]/edit", `/${username}/edit`);
         }).catch((error) => {
           router.push(`/404`);
         })

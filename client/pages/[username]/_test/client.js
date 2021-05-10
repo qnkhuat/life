@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import axios from "axios";
-import Board from '../../components/Board';
-import { useAuth, withAuth } from '../../lib/firebase/auth';
+import Board from '../../../components/Board';
+import { useAuth, withAuth } from '../../../lib/firebase/auth';
 import urljoin from "url-join";
 import { useState, useEffect } from 'react';
 

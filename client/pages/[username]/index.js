@@ -26,6 +26,11 @@ const getData = async (username) => {
 //
 // This is the best of both world: static make the site load fast. The second fetch make the site up-to-date
 function Profile( { data }) {
+  if (!data){
+    console.error("Failed to render", data);
+    return  <h3>Failed to render</h3>
+
+  }
   const router = useRouter();
   const [ state, setState ] = useState({updated: false, stateData: data });
   const { updated, stateData } = state;
@@ -36,7 +41,7 @@ function Profile( { data }) {
       getData(router.query.username).then((data) => {
         setState({updated: true, stateData:data})
       }).catch((error) => {
-        console.log("failed to fetch new data");
+        console.error("Failed to fetch new data", error);
       });
     }
   })
