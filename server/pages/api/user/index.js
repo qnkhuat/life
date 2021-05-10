@@ -17,18 +17,18 @@ const addUser = async (req, res) => {
 }
 
 const findUserByUsername = async (req, res) => {
-    const parsedCookies = parseCookies({ req });
-    const snapshot = await firestore.collection("user").where("username", "==", req.query.username).get();
-    if (snapshot.docs.length == 1) {
-      const doc = snapshot.docs[0];
-      const user = doc.data();
-      if (user.avatar) user.avatar = await storageGetUrl(user.avatar);
-      return res.status(200).send({id: doc.id, user: user});
-    } else if (snapshot.docs.length > 1){
-      return res.status(400).send({error: "Multiple users has the same email"});
-    } else {
-      return res.status(400).send({error: "User not found"});
-    }
+  const parsedCookies = parseCookies({ req });
+  //if (!req.query.username) return res.status(400).send({error: "Must provide username"});
+  const snapshot = await firestore.collection("user").where("username", "==", req.query.username).get();
+  if (snapshot.docs.length == 1) {
+    const doc = snapshot.docs[0];
+    const user = doc.data();
+    return res.status(200).send({id: doc.id, user: user});
+  } else if (snapshot.docs.length > 1){
+    return res.status(400).send({error: "Multiple users has the same email"});
+  } else {
+    return res.status(400).send({error: "User not found"});
+  }
 }
 
 export default async (req, res) => {

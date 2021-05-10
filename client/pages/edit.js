@@ -33,6 +33,7 @@ function Edit() {
   useEffect(() => {
     if(stories == null) {// call it once
       const stories_req = axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.username}/stories`)).then((res) => {
+      //const stories_req = axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`)).then((res) => {
         setStories(res.data);
       }).catch((error) => console.log("We are fucked: ", error));
     }
@@ -60,7 +61,7 @@ function Edit() {
       ...(avatar!= user.avatar) && {avatar: avatar},
     }
     if (Object.keys(user).length > 0){
-      axios.patch(urljoin(process.env.BASE_URL,`/api/user/${user.username}`), payload).then(( res ) => {
+      axios.patch(urljoin(process.env.BASE_URL,`/api/user/${user.id}`), payload).then(( res ) => {
         if (res.status == 200) alert("success");
         refreshUser();
       }).catch(( error ) => {
@@ -90,7 +91,7 @@ function Edit() {
         <TextField id="profile-username" 
           label="Username" 
           disabled
-          defaultValue={user.username}
+          defaultValue={user.user.username}
           variant="outlined" 
           required/>
 
@@ -127,8 +128,8 @@ function Edit() {
           multiline
           variant="outlined" />
 
-        <img src={avatar} alt={user.username}/>
-        <FirebaseUpload id="profile-avatar" prefix={user.username} className="bg-black" onComplete={(path, url) => setAvatar(path)}/>
+        <img src={avatar} alt={user.user.username}/>
+        <FirebaseUpload id="profile-avatar" prefix={user.user.username} className="bg-black" onComplete={(path, url) => setAvatar(path)}/>
 
         <Button id="profile-submit" variant="outlined" color="primary" onClick={updateProfile}>
           Submit
