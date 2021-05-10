@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import axios from "axios";
 import Board from '../../components/Board';
@@ -54,4 +55,6 @@ function Profile() {
   )
 }
 
-export default Profile;
+export default dynamic(() => Promise.resolve(Profile), {
+  ssr: false
+})
