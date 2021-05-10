@@ -3,59 +3,52 @@ import axios from "axios";
 import Board from '../../components/Board';
 import { useAuth, withAuth } from '../../lib/firebase/auth';
 import urljoin from "url-join";
+import { useState, useEffect } from 'react';
 
-function Profile({ events, birthday, maxAge }) {
+function Profile() {
   const router = useRouter();
 
-  const { auth } = useAuth();
-  var eventsList = [];
-  if (events == null){
-    return (
-      <h3>oh ho</h3>
-    )
+  const [ eventsList, setEventsList ] = useState([]);
+  const [ birthday, setBirthday ] = useState("1998-05-17");
+  const [ maxAge, setMaxAge ] = useState(100);
+  const [ user, setUser ] = useState({});
+
+  useEffect(() => {
+    if (user == null) {
+      axios.get(urljoin(process.env.BASE_URL, `/api/user?username=qnkhuat`)).then((res) => {
+        const userInfo = res.data.user;
+        setUser(userInfo);
+        setBirthday(user.birthday);
+        setMaxAge(user.maxAge);
+        axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`)).then((res) => {
+          const events = res.data;
+          const eventsTemp = [];
+          Object.keys(events).forEach((key) => {
+            eventsTemp.push(events[key]);
+          });
+          setEventsList([]);
+        }).catch((error) => {
+          console.error("Failed to get user stories", error);
+          router.push("/404");
+        });
+
+      }).catch((error) => {
+        console.log("User not found ", error);
+        router.push("/usernotfound")
+      });
+    }
+  })
+
+  if (user == null) {
+    return (<h3> Loading </h3>)
   }
 
-  Object.keys(events).forEach((key) => {
-    eventsList.push(events[key]);
-  });
 
   return (
     <div className="container mx-auto">
       <Board events={eventsList} birthday={birthday} maxAge={maxAge}/>
     </div>
   )
-}
-//export async function getStaticPaths() {
-//  // Call an external API endpoint to get posts
-//  const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/usernames`));
-//
-//  // Get the paths we want to pre-render based on posts
-//  const paths = user_res.data.map((username) => ({
-//    params: { username: username},
-//  })) 
-//
-//  // We'll pre-render only these paths at build time.
-//  // { fallback: false } means other routes should 404.
-//  return { paths, fallback: "blocking"};
-//}
-
-
-export async function getServerSideProps({ params }) {
-  const username = params.username;
-  var events = {}, user = null;
-  try {
-    const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user?username=${username}`));
-    user = user_res.data;
-    const events_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`));
-    events = events_res.data;
-  } catch (error){
-    return {
-      notFound: true,
-    }
-  }
-  return { 
-    props: { events: events, birthday: user.user.birthday, maxAge: user.user.maxAge }}
-    //revalidate: 1};
 }
 
 export default Profile;

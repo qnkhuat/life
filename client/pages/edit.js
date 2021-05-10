@@ -39,8 +39,6 @@ function Edit() {
     }
   })
 
-
-
   if (!user) {
     return <h3> Hang in there </h3>
 
