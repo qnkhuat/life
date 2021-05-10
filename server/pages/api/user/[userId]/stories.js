@@ -14,7 +14,6 @@ const getAllStories = async (req, res) => {
       }));
       docs[doc.id] = data;
     }
-    console.log("return ", docs);
     return res.status(200).send(docs);
   } catch (error) {
     return res.status(500).send({ error: error.message });
