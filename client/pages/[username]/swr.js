@@ -20,7 +20,7 @@ const fetcher = async (username) => {
 function Profile( props ) {
 
   const router = useRouter();
-  const { data } = useSWR(router.query.username, fetcher, { initialData: props.data }, , { refreshInterval: 1000 });
+  const { data } = useSWR(router.query.username, fetcher, { initialData: props.data }, { refreshInterval: 1000 });
   if (!data){
     return (
       <h3>oh ho</h3>
@@ -77,3 +77,4 @@ export async function getStaticProps({ params }) {
 }
 
 export default Profile;
+
