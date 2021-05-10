@@ -3,7 +3,7 @@ import { cors, runMiddleware } from "../../../../lib/util";
 
 const getAllStories = async (req, res) => {
   try {
-    const snapshot = await firestore.collection("user").doc(req.query.username).collection("story").get();
+    const snapshot = await firestore.collection("user").doc(req.query.userId).collection("story").get();
     var docs = {};
 
     for (let i in snapshot.docs){

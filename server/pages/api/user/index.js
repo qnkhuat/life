@@ -4,11 +4,9 @@ import { cors, runMiddleware } from "../../../lib/util";
 import { parseCookies, setCookie, destroyCookie } from 'nookies';
 
 const addUser = async (req, res) => {
-  const userDocRef = firestore.collection("user").doc(req.body.username);
+  const userDocRef = firestore.collection("user").doc(req.body.id);
   userDocRef.get().then(( doc ) => {
     if (doc.exists) return res.status(409).send({ error: "User existed" });
-
-    req.body.user['username'] = req.body.username;
     req.body.user['addedDate'] = new Date().toISOString();
     userDocRef.set(req.body.user).then(( doc ) => {
       return res.status(200).send({ id: userDocRef.id});
@@ -18,38 +16,26 @@ const addUser = async (req, res) => {
   })
 }
 
-export const findUserByEmailResult = async (email) => {
-  firestore.collection("user").where("email", "==", email).get().then( ( snapShot ) => {
-    if (snapShot.size == 0 ) return { message: "User not found" };
-    else if (snapShot.size == 1) return snapShot.docs[0].data(); 
-    else return { message: "Exists multiple users with 1 email" };
-  }).catch(( error ) => {
-    console.log("Error cmnr");
-    return;
-  })
-}
-
-const findUserByEmail = async (req, res) => {
+const findUserByUsername = async (req, res) => {
     const parsedCookies = parseCookies({ req });
-    console.log("Find user by email cookies", parseCookies);
-    const snapshot = await firestore.collection("user").where("email", "==", req.query.email).get();
+    const snapshot = await firestore.collection("user").where("username", "==", req.query.username).get();
     if (snapshot.docs.length == 1) {
-      const user = snapshot.docs[0].data();
+      const doc = snapshot.docs[0];
+      const user = doc.data();
       if (user.avatar) user.avatar = await storageGetUrl(user.avatar);
-      return res.status(200).send(user);
+      return res.status(200).send({id: doc.id, user: user});
     } else if (snapshot.docs.length > 1){
       return res.status(400).send({error: "Multiple users has the same email"});
     } else {
       return res.status(400).send({error: "User not found"});
     }
-  
 }
 
 export default async (req, res) => {
   await runMiddleware(req, res, cors);
   switch (req.method){
     case "GET":
-      await findUserByEmail(req, res);
+      await findUserByUsername(req, res);
       break;
     case "POST":
       await runMiddleware(req, res, isAuthenticated)

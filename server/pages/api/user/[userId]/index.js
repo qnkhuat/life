@@ -4,7 +4,7 @@ import { cors, runMiddleware } from "../../../../lib/util";
 
 const getUser = async (req, res) => {
   try {
-    const user = await firestore.collection("user").doc(req.query.username).get();
+    const user = await firestore.collection("user").doc(req.query.userId).get();
     if (user.exists) {
       const data = user.data();
       if (data.avatar) data.avatar = await storageGetUrl(data.avatar);
@@ -18,7 +18,7 @@ const getUser = async (req, res) => {
 }
 const updateUser = async (req, res) => {
   req.body['lastModifiedDate'] = new Date().toISOString();
-  firestore.collection("user").doc(req.query.username).update(req.body).then(( doc ) => {
+  firestore.collection("user").doc(req.query.userId).update(req.body).then(( doc ) => {
     return res.status(200).send(req.body);
   }).catch(( error ) => {
     return res.status(500).send({ error: error.message });

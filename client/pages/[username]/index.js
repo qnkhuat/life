@@ -44,10 +44,10 @@ export async function getServerSideProps({ params }) {
   const username = params.username;
   var events = {}, user = null;
   try {
-    const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}`));
-    const events_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${username}/stories`));
-    events = events_res.data;
+    const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user?username=${username}`));
     user = user_res.data;
+    const events_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`));
+    events = events_res.data;
   } catch (error){
     return {
       notFound: true,
@@ -55,7 +55,7 @@ export async function getServerSideProps({ params }) {
   }
 
   return { 
-    props: { events: events, birthday: user.birthday, maxAge: user.maxAge }}
+    props: { events: events, birthday: user.user.birthday, maxAge: user.user.maxAge }}
     //revalidate: 1};
 }
 

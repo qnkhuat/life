@@ -27,8 +27,9 @@ function Profile() {
 
   function submit(){
     const payload = {
-      username: username,
+      id: auth.uid,
       user: {
+        username: username,
         fullname: fullname,
         birthday: birthday,
         maxAge: maxAge,

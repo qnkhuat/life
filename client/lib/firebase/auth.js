@@ -38,7 +38,7 @@ function useProvideAuth() {
 
   const refreshUser = async (auth) => {
     if(!auth) return;
-    await axios.get(urljoin(process.env.BASE_URL, `/api/user?email=${auth.email}`)).then((res) => {
+    await axios.get(urljoin(process.env.BASE_URL, `/api/user/${auth.uid}`)).then((res) => {
       if (res.data) {
         setUser(res.data);
         setCookie(null, "user", JSON.stringify(res.data), {

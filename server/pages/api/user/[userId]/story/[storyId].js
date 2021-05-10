@@ -4,7 +4,7 @@ import { cors, runMiddleware } from "../../../../../lib/util";
 
 const getStory = async (req, res) => {
   try {
-    const story = await firestore.collection("user").doc(req.query.username).collection("story").doc(req.query.storyId).get();
+    const story = await firestore.collection("user").doc(req.query.userId).collection("story").doc(req.query.storyId).get();
     if (story.exists) {
       const data = story.data();
       data.imageUrls = await Promise.all(data.imageUrls.map((url) => {
@@ -21,7 +21,7 @@ const getStory = async (req, res) => {
 
 const updateStory = async (req, res) => {
   req.body['lastModifiedDate'] = new Date().toISOString();
-  firestore.collection("user").doc(req.query.username).collection("story").doc(req.query.storyId).update(req.body).then(( doc ) => {
+  firestore.collection("user").doc(req.query.userId).collection("story").doc(req.query.storyId).update(req.body).then(( doc ) => {
     return res.status(200).send(req.body);
   }).catch(( error ) => {
     return res.status(500).send({ error: error.message });

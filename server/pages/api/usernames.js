@@ -7,7 +7,7 @@ const getAllStories = async (req, res) => {
     var usernames = [];
 
     snapshot.forEach((doc) => {
-      usernames.push(doc.id);
+      usernames.push(doc.data().username);
     })
     return res.status(200).send(usernames);
   } catch (error) {
