@@ -1,16 +1,32 @@
+import useSWR from "swr";
 import { useRouter } from 'next/router';
 import axios from "axios";
 import Board from '../../components/Board';
 import { useAuth, withAuth } from '../../lib/firebase/auth';
 import urljoin from "url-join";
 
-function Profile({ events, birthday, maxAge }) {
+const fetcher = async (username) => {
+  const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user?username=${username}`));
+  const user = user_res.data;
+  const events_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`));
+  const events = events_res.data;
+  return {
+    events:events,
+    birthday: user.user.birthday,
+    maxAge: user.user.maxAge,
+  }
+}
+
+function Profile( props ) {
+
   const router = useRouter();
+  const { data } = useSWR(router.query.username, fetcher, { initialData: props.data });
+  const { events, birthday, maxAge } = data;
+
   if (router.isFallback) {
     return <div>Loading...</div>
   }
 
-  const { auth } = useAuth();
   var eventsList = [];
   if (events == null){
     return (
@@ -29,7 +45,6 @@ function Profile({ events, birthday, maxAge }) {
   )
 }
 export async function getStaticPaths() {
-  console.log("Generating");
   // Call an external API endpoint to get posts
   const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/usernames`));
 
@@ -40,26 +55,23 @@ export async function getStaticPaths() {
 
   // We'll pre-render only these paths at build time.
   // { fallback: false } means other routes should 404.
-  return { paths, fallback: true};
+  return { paths, fallback: true };
 }
 
 
 export async function getStaticProps({ params }) {
   const username = params.username;
-  var events = {}, user = null;
+  var data = {};
   try {
-    const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user?username=${username}`));
-    user = user_res.data;
-    const events_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`));
-    events = events_res.data;
+    data = await fetcher(username);
   } catch (error){
     return {
       notFound: true,
     }
   }
   return { 
-    props: { events: events, birthday: user.user.birthday, maxAge: user.user.maxAge },
-    revalidate: 1};
+    props: {data:data},
+  };
 }
 
 export default Profile;

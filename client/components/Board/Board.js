@@ -93,7 +93,6 @@ class Board extends React.Component {
   }
 
   render(){
-    console.log("rendering", this.events);
     return (
       <div id="board" className="relative flex flex-col">
         {this.state.numRows > 0 && Array.from(Array(this.state.numRows + 1).keys()).map((r) =>
