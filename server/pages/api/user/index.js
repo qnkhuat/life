@@ -18,7 +18,7 @@ const addUser = async (req, res) => {
 
 const findUserByUsername = async (req, res) => {
   const parsedCookies = parseCookies({ req });
-  //if (!req.query.username) return res.status(400).send({error: "Must provide username"});
+  if (!req.query.username) return res.status(400).send({error: "Must provide username"});
   const snapshot = await firestore.collection("user").where("username", "==", req.query.username).get();
   if (snapshot.docs.length == 1) {
     const doc = snapshot.docs[0];

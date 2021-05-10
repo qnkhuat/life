@@ -19,6 +19,7 @@ export default function Home (){
       <p>{auth ? auth.name : "Stranger"}</p>
       <p>{auth ? auth.email: "Stranger Email"}</p>
       <p>{auth ? auth.token: "Stranger Token"}</p>
+      <p>{user ? user.username: "Stranger username"}</p>
       <Button onClick={() => signOut()}>
         Log out
       </Button>

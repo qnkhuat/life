@@ -8,45 +8,48 @@ import { useState, useEffect } from 'react';
 function Profile() {
   const router = useRouter();
 
-  const [ eventsList, setEventsList ] = useState([]);
-  const [ birthday, setBirthday ] = useState("1998-05-17");
-  const [ maxAge, setMaxAge ] = useState(100);
-  const [ user, setUser ] = useState({});
+  const [ state, setState ] = useState({
+    loading:true,
+    eventsList: [],
+    birthday: null,
+    maxAge:null,
+  });
 
   useEffect(() => {
-    if (user == null) {
-      axios.get(urljoin(process.env.BASE_URL, `/api/user?username=qnkhuat`)).then((res) => {
-        const userInfo = res.data.user;
-        setUser(userInfo);
-        setBirthday(user.birthday);
-        setMaxAge(user.maxAge);
+    if (state.loading && router.query.username) {
+        axios.get(urljoin(process.env.BASE_URL, `/api/user?username=${router.query.username}`)).then((res) => {
+        const user = res.data;
         axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`)).then((res) => {
           const events = res.data;
-          const eventsTemp = [];
+          var eventsTemp = [];
           Object.keys(events).forEach((key) => {
             eventsTemp.push(events[key]);
           });
-          setEventsList([]);
+          setState({
+            loading:false,
+            eventsList: eventsTemp,
+            birthday: user.user.birthday,
+            maxAge: user.user.maxAge,
+          })
         }).catch((error) => {
-          console.error("Failed to get user stories", error);
+          console.error("Failed to get user stories", error.message);
           router.push("/404");
         });
-
       }).catch((error) => {
         console.log("User not found ", error);
-        router.push("/usernotfound")
+        router.push("/404")
       });
     }
-  })
+  }, [state, router])
 
-  if (user == null) {
+  if (state.loading) {
     return (<h3> Loading </h3>)
   }
-
-
   return (
     <div className="container mx-auto">
-      <Board events={eventsList} birthday={birthday} maxAge={maxAge}/>
+      <Board events={state.eventsList} 
+        birthday={state.birthday} 
+        maxAge={state.maxAge}/>
     </div>
   )
 }

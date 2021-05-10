@@ -15,8 +15,8 @@ class Board extends React.Component {
   constructor(props){
     super(props);
     this.today = roundDate(dayjs());
-
-    props.events.push({
+    this.events = props.events.slice();
+    this.events.push({
       publish:true,
       date: this.today,
       type: "today",
@@ -26,13 +26,12 @@ class Board extends React.Component {
     })
 
     this.birthday = formatDate(props.birthday);
-    props.events.forEach(e => {
+    this.events.forEach(e => {
       e.date = formatDate(e.date);
       e.ageSince = (e.date - this.birthday) / ( 1000 * 60 * 60 * 24 * 365 );
     });
 
     // TODO this events should be an object
-    this.events = props.events;
     this.autoResize = props.autoResize || false;
     this.state = {
       numRows: props.maxAge,
@@ -94,6 +93,7 @@ class Board extends React.Component {
   }
 
   render(){
+    console.log("rendering", this.events);
     return (
       <div id="board" className="relative flex flex-col">
         {this.state.numRows > 0 && Array.from(Array(this.state.numRows + 1).keys()).map((r) =>
