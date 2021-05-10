@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useRouter } from 'next/router';
+import { useState, useEffect } from "react";import { useRouter } from 'next/router';
 import { useAuth, withAuth } from '../lib/firebase/auth';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -21,6 +20,7 @@ function Profile() {
 
   useEffect(() => {
     if (user && !loading) router.push("/[username]/edit", `/${username}/edit`);
+    //if (user && !loading) router.push("/edit");
 
     setEmail(auth?.email);
   }, [auth, user, loading]);
@@ -42,6 +42,7 @@ function Profile() {
       if (res.status == 200) {
         refreshUser(auth).then((res) => {
           router.push("/[username]/edit", `/${username}/edit`);
+          //router.push("edit");
         }).catch((error) => {
           router.push(`/404`);
         })
