@@ -25,7 +25,7 @@ const getData = async (username) => {
 //
 // This is the best of both world: static make the site load fast. The second fetch make the site up-to-date
 function Profile({ data }) {
-  const router = useRouter()
+  const router = useRouter();
 
   if (router.isFallback) {
     return <div>loading...</div>
@@ -51,8 +51,7 @@ function Profile({ data }) {
 
   return (
     <div className="container mx-auto">
-      <h3>{user.birthday}</h3>
-      <Board key={updated} events={eventsList} birthday={user.birthday} maxAge={user.maxAge}/>
+      <Board key={updated} events={eventsList} birthday={user.user.birthday} maxAge={user.user.maxAge}/>
     </div>
   )
 }
