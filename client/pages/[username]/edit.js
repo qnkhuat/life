@@ -21,6 +21,7 @@ import { parseCookies, setCookie, destroyCookie } from 'nookies'
 const getData = async (username) => {
   const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user?username=${username}`));
   const user = user_res.data;
+  console.log("User data", user);
   const events_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`));
   const events = events_res.data;
   return {
@@ -37,23 +38,29 @@ function Edit({ data }) {
   const { events , user } = stateData;
   const [ stories, setStories] = useState(events);
   const [ fullname, setFullname ] = useState(user.user.fullname);
+  const [ username, setUsername ] = useState(user.user.username);
   const [ birthday, setBirthday ] = useState(user.user.birthday);
   const [ maxAge, setMaxAge ] = useState(user.user.maxAge);
   const [ about, setAbout ] = useState(user.user.about);
   const [ avatar, setAvatar] = useState(user.user.avatar);
 
+  const setUser = (user) => {
+    setFullname(userInfo.fullname);
+    setUsername(userInfo.username);
+    setBirthday(userInfo.birthday);
+    setMaxAge(userInfo.maxAge);
+    setAbout(userInfo.about);
+    setAvatar(userInfo.avatar);
+  }
+
 
   if (!user) return router.push("/login?next=/edit");
+
   useEffect(() => {
     if (router.query.username && !updated) {
       getData(router.query.username).then((data) => {
-        const userInfo = data.user.user;
-        setFullname(userInfo.fullname);
-        setBirthday(userInfo.birthday);
-        setMaxAge(userInfo.maxAge);
-        setAbout(userInfo.about);
-        setAvatar(userInfo.avatar);
-        setState({updated: true, stateData:data})
+        setUser(data.user.user);
+        setState({updated: true, stateData:data});
       }).catch((error) => {
         console.log("failed to fetch new data");
       });
@@ -111,7 +118,7 @@ function Edit({ data }) {
         <TextField id="profile-username" 
           label="Username" 
           disabled
-          defaultValue={user.username}
+          defaultValue={username}
           variant="outlined" 
           required/>
 
@@ -137,7 +144,7 @@ function Edit({ data }) {
           label="Email" 
           disabled
           variant="outlined"           
-          defaultValue={user.email}
+          defaultValue={user.user.email}
           InputProps={{ readOnly: true}}
         />
 
@@ -148,8 +155,8 @@ function Edit({ data }) {
           multiline
           variant="outlined" />
 
-        <img src={avatar} alt={user.username}/>
-        <FirebaseUpload id="profile-avatar" prefix={user.username} className="bg-black" onComplete={(path, url) => setAvatar(path)}/>
+        <img src={avatar} alt={username}/>
+        <FirebaseUpload id="profile-avatar" prefix={username} className="bg-black" onComplete={(path, url) => setAvatar(path)}/>
 
         <Button id="profile-submit" variant="outlined" color="primary" onClick={updateProfile}>
           Submit

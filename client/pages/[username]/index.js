@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import axios from "axios";
 import Board from '../../components/Board';
-import { useAuth, withAuth } from '../../lib/firebase/auth';
 import urljoin from "url-join";
 import { useEffect, useState } from "react";
 
@@ -10,11 +9,11 @@ const getData = async (username) => {
   const user = user_res.data;
   const events_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`));
   const events = events_res.data;
-  return {
+  const result  = {
     events:events,
-    birthday: user.user.birthday,
-    maxAge: user.user.maxAge,
+    user: user,
   }
+  return result;
 }
 
 // Note on how this page render
@@ -25,16 +24,15 @@ const getData = async (username) => {
 // But inside the Profile after user access, It'll fetch data to make sure the page is up-to-date
 //
 // This is the best of both world: static make the site load fast. The second fetch make the site up-to-date
-function Profile( { data }) {
-  if (!data){
-    console.error("Failed to render", data);
-    return  <h3>Failed to render</h3>
+function Profile({ data }) {
+  const router = useRouter()
 
+  if (router.isFallback) {
+    return <div>loading...</div>
   }
-  const router = useRouter();
   const [ state, setState ] = useState({updated: false, stateData: data });
   const { updated, stateData } = state;
-  const { events , birthday, maxAge } = stateData;
+  const { events , user } = stateData;
 
   useEffect(() => {
     if (router.query.username && !updated) {
@@ -53,8 +51,8 @@ function Profile( { data }) {
 
   return (
     <div className="container mx-auto">
-      <h3>{birthday}</h3>
-      <Board key={updated} events={eventsList} birthday={birthday} maxAge={maxAge}/>
+      <h3>{user.birthday}</h3>
+      <Board key={updated} events={eventsList} birthday={user.birthday} maxAge={user.maxAge}/>
     </div>
   )
 }
