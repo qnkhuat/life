@@ -91,7 +91,7 @@ function Edit() {
         <TextField id="profile-username" 
           label="Username" 
           disabled
-          defaultValue={user.user.username}
+          defaultValue={user.username}
           variant="outlined" 
           required/>
 
@@ -128,8 +128,8 @@ function Edit() {
           multiline
           variant="outlined" />
 
-        <img src={avatar} alt={user.user.username}/>
-        <FirebaseUpload id="profile-avatar" prefix={user.user.username} className="bg-black" onComplete={(path, url) => setAvatar(path)}/>
+        <img src={avatar} alt={user.username}/>
+        <FirebaseUpload id="profile-avatar" prefix={user.username} className="bg-black" onComplete={(path, url) => setAvatar(path)}/>
 
         <Button id="profile-submit" variant="outlined" color="primary" onClick={updateProfile}>
           Submit

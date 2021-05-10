@@ -53,7 +53,6 @@ export async function getServerSideProps({ params }) {
       notFound: true,
     }
   }
-
   return { 
     props: { events: events, birthday: user.user.birthday, maxAge: user.user.maxAge }}
     //revalidate: 1};
