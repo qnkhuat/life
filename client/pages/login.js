@@ -9,7 +9,7 @@ export default function Login() {
   const router = useRouter();
   useEffect(() => {
     if(auth && !loading){
-      if (!user) router.push(`/profile?next=${router.query.next}`); 
+      if (!user) router.push(`/settings?next=${router.query.next}`); 
       router.push(router.query.next || '/'); 
     }
   }, [auth, user, loading]);

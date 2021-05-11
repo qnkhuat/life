@@ -107,4 +107,4 @@ function Profile() {
   )
 }
 
-export default withAuth(Profile, false, "/login");
+export

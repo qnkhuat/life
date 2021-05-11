@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import axios from "axios";
 import Board from '../../components/Board';
+import Loading from '../../components/Loading';
 import urljoin from "url-join";
 import { useEffect, useState } from "react";
 
@@ -28,7 +29,7 @@ function Profile({ data }) {
   const router = useRouter();
 
   if (router.isFallback) {
-    return <div>loading...</div>
+    return <Loading />
   }
   const [ state, setState ] = useState({updated: false, stateData: data });
   const { updated, stateData } = state;

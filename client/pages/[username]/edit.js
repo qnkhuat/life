@@ -11,6 +11,7 @@ import Modal from '@material-ui/core/Modal';
 import FirebaseUpload from "../../components/FirebaseUpload";
 import StoriesList from "../../components/Story/StoriesList";
 import Upsert from '../../components/Story/Upsert';
+import Layout from '../../components/Layout';
 
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/Add';
@@ -51,7 +52,6 @@ function Edit({ data }) {
     setAbout(user.about);
     setAvatar(user.avatar);
   }
-
 
   if (!user) return router.push("/login?next=/edit");
 
@@ -98,86 +98,88 @@ function Edit({ data }) {
   }
 
   return (
-    <div className="container mx-auto">
-      <form id="form-profile" noValidate autoComplete="off" className="flex flex-col mt-40" key={stateKey}>
-        <h3>Update your profile bitch</h3>
-        <TextField id="profile-fullname" 
-          label="Full name" 
-          variant="outlined" 
-          onChange={(e) => setFullname(e.target.value)}
-          defaultValue={fullname}
-          required
-        />
+    <Layout>
+      <div className="container mx-auto">
+        <form id="form-profile" noValidate autoComplete="off" className="flex flex-col mt-40" key={stateKey}>
+          <h3>Update your profile bitch</h3>
+          <TextField id="profile-fullname" 
+            label="Full name" 
+            variant="outlined" 
+            onChange={(e) => setFullname(e.target.value)}
+            defaultValue={fullname}
+            required
+          />
 
-        <TextField id="profile-username" 
-          label="Username" 
-          disabled
-          defaultValue={username}
-          variant="outlined" 
-          required/>
+          <TextField id="profile-username" 
+            label="Username" 
+            disabled
+            defaultValue={username}
+            variant="outlined" 
+            required/>
 
-        <TextField id="profile-birthday" 
-          onChange={(e) => setBirthday(e.target.value)}
-          label="Birthday" 
-          variant="outlined" 
-          type="date"
-          defaultValue={birthday}
-          InputLabelProps={{shrink: true}}
-          required/>
+          <TextField id="profile-birthday" 
+            onChange={(e) => setBirthday(e.target.value)}
+            label="Birthday" 
+            variant="outlined" 
+            type="date"
+            defaultValue={birthday}
+            InputLabelProps={{shrink: true}}
+            required/>
 
-        <TextField id="profile-maxage" 
-          onChange={(e) => setMaxAge(e.target.value)}
-          label="MaxAge" 
-          variant="outlined" 
-          defaultValue={maxAge}
-          type="number" 
-          defaultValue={100}
-          required/>
+          <TextField id="profile-maxage" 
+            onChange={(e) => setMaxAge(e.target.value)}
+            label="MaxAge" 
+            variant="outlined" 
+            defaultValue={maxAge}
+            type="number" 
+            defaultValue={100}
+            required/>
 
-        <TextField id="profile-email" 
-          label="Email" 
-          disabled
-          variant="outlined"           
-          defaultValue={user.user.email}
-          InputProps={{ readOnly: true}}
-        />
+          <TextField id="profile-email" 
+            label="Email" 
+            disabled
+            variant="outlined"           
+            defaultValue={user.user.email}
+            InputProps={{ readOnly: true}}
+          />
 
-        <TextField id="profile-about" 
-          onChange={(e) => setAbout(e.target.value)}
-          defaultValue={about}
-          label="About your self" 
-          multiline
-          variant="outlined" />
+          <TextField id="profile-about" 
+            onChange={(e) => setAbout(e.target.value)}
+            defaultValue={about}
+            label="About your self" 
+            multiline
+            variant="outlined" />
 
-        <img src={avatar} alt={username}/>
-        <FirebaseUpload id="profile-avatar" prefix={username} className="bg-black" onComplete={(path, url) => setAvatar(url)}/>
+          <img src={avatar} alt={username}/>
+          <FirebaseUpload id="profile-avatar" prefix={username} className="bg-black" onComplete={(path, url) => setAvatar(url)}/>
 
-        <Button id="profile-submit" variant="outlined" color="primary" onClick={updateProfile}>
-          Submit
-        </Button>
-      </form>
-      <div className="add-button">
-        <IconButton 
-          onClick={handleOpenAdd} 
-          aria-label="edit" color="primary">
-          <AddIcon fontSize="small"></AddIcon>
-        </IconButton>
+          <Button id="profile-submit" variant="outlined" color="primary" onClick={updateProfile}>
+            Submit
+          </Button>
+        </form>
+        <div className="add-button">
+          <IconButton 
+            onClick={handleOpenAdd} 
+            aria-label="edit" color="primary">
+            <AddIcon fontSize="small"></AddIcon>
+          </IconButton>
 
-        <Modal
-          BackdropComponent={Backdrop}
-          open={openAdd}
-          onClose={handleCloseAdd}
-          aria-labelledby="child-modal-title"
-          aria-describedby="child-modal-description"
-        >
-          <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-auto" >
-            <Upsert onComplete={handleStoryAdded}/>
-          </div>
-        </Modal>
-        <StoriesList key={updated} stories={stories} />
+          <Modal
+            BackdropComponent={Backdrop}
+            open={openAdd}
+            onClose={handleCloseAdd}
+            aria-labelledby="child-modal-title"
+            aria-describedby="child-modal-description"
+          >
+            <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-auto" >
+              <Upsert onComplete={handleStoryAdded}/>
+            </div>
+          </Modal>
+          <StoriesList key={updated} stories={stories} />
+        </div>
+
       </div>
-
-    </div>
+    </Layout>
   )
 }
 export async function getStaticPaths() {
