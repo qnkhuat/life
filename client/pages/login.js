@@ -1,3 +1,4 @@
+
 import { useRouter } from 'next/router';
 import React, { useEffect } from "react";
 import { useAuth } from '../lib/firebase/auth';
@@ -57,4 +58,3 @@ export default function Login() {
     </>
   );
 };
-
