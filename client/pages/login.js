@@ -22,15 +22,15 @@ export default function Login() {
               <div id="logo" className="w-44 mb-8 mx-auto">
                 <img alt="logo" src="/logo-small.jpeg" className='w-full'/>
               </div>
-              <p className='text-center'>Archive your life  
+              <p className='text-center font-bold'>Archive your life  
                 <span> </span>
-                <span className="text-red-500">s </span>
-                <span className="text-yellow-500">t </span>
-                <span className="text-yellow-400">o </span>
-                <span className="text-green-500">r </span>
-                <span className="text-green-400">i </span>
-                <span className="text-blue-500">e </span>
-                <span className="text-blue-400">s </span>
+                <span className="text-lg font-bold text-red-500">s </span>
+                <span className="text-lg font-bold text-yellow-500">t </span>
+                <span className="text-lg font-bold text-yellow-400">o </span>
+                <span className="text-lg font-bold text-green-500">r </span>
+                <span className="text-lg font-bold text-green-400">i </span>
+                <span className="text-lg font-bold text-blue-500">e </span>
+                <span className="text-lg font-bold text-blue-400">s </span>
               </p>
             </div>
             <div id="provider" className="w-full flex flex-col place-content-center items-center">
