@@ -11,7 +11,7 @@ export default function Layout({ children }) {
   const { isMobile }= useDeviceDetect();
   const temp = "fixed w-screen bottom-0 left-0 z-10 overflow-hidden";
   return (
-    <div className={`flex ${isMobile() ? "flex-col" : "flex-col-reverse"} h-screen justify-between`}>
+    <div className={`flex ${isMobile() ? "flex-col justify-between" : "flex-col-reverse justify-end"} h-screen `}>
       <div className="overflow-auto">
         {children && children}
       </div>
@@ -20,7 +20,6 @@ export default function Layout({ children }) {
         <Link
           href="/"
           passHref>
-
           <Button 
             className="text-gray-700 outline-none p-2 w-14 overflow-hidden"
             component="a"
@@ -40,9 +39,8 @@ export default function Layout({ children }) {
           </IconButton>
         </Link>
         <Link
-          href={`/${user.user.username}`}
+          href={`/${user ? user.user.username : "/settings"}`}
           passHref>
-
           <IconButton 
             className="text-gray-700 outline-none rounded p-2 w-14"
             onClick={() => {}} 

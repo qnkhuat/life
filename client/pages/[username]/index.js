@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import axios from "axios";
 import Board from '../../components/Board';
 import Loading from '../../components/Loading';
+import Layout from '../../components/Layout';
 import urljoin from "url-join";
 import { useEffect, useState } from "react";
 
@@ -51,9 +52,9 @@ function Profile({ data }) {
   });
 
   return (
-    <div className="container mx-auto">
+    <Layout>
       <Board key={updated} events={eventsList} birthday={user.user.birthday} maxAge={user.user.maxAge}/>
-    </div>
+    </Layout>
   )
 }
 

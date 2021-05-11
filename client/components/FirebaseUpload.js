@@ -3,7 +3,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { v4 as uuidv4 } from 'uuid';
 import Button from '@material-ui/core/Button';
 
-export default function FirebaseUpload({className, label, accept, onComplete, prefix, id}) {
+export default function FirebaseUpload({children, className, label, accept, onComplete, prefix, id}) {
   const intputId = id || uuidv4();
 
   function upload(e){
@@ -50,10 +50,12 @@ export default function FirebaseUpload({className, label, accept, onComplete, pr
         onChange={upload}
       />
       <label htmlFor={intputId}>
+        {children || 
         <Button variant="contained" color="primary" component="span" 
           className={className || ""}>
           {label || "Upload"}
         </Button>
+        }
       </label>
     </>
   )

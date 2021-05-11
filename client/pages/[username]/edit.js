@@ -12,6 +12,7 @@ import FirebaseUpload from "../../components/FirebaseUpload";
 import StoriesList from "../../components/Story/StoriesList";
 import Upsert from '../../components/Story/Upsert';
 import Layout from '../../components/Layout';
+import Loading from '../../components/Loading';
 
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/Add';
@@ -32,6 +33,9 @@ const getData = async (username) => {
 
 function Edit({ data }) {
   const router = useRouter();
+  if (router.isFallback) {
+    return <Loading />
+  }
   const stateKey = uuidv4();
   const [ state, setState ] = useState({updated: false, stateData: data });
   const { updated, stateData } = state;

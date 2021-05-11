@@ -2,6 +2,7 @@ import Button from '@material-ui/core/Button';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../lib/firebase/auth';
+import Layout from '../components/Layout';
 import React from "react";
 
 export default function Home (){
@@ -15,7 +16,7 @@ export default function Home (){
   }, [auth, loading]);
 
   return (
-    <div className="container mx-auto">
+    <Layout>
       <p>{auth ? auth.name : "Stranger"}</p>
       <p>{auth ? auth.email: "Stranger Email"}</p>
       <p>{auth ? auth.token: "Stranger Token"}</p>
@@ -23,6 +24,6 @@ export default function Home (){
       <Button onClick={() => signOut()}>
         Log out
       </Button>
-    </div>
+    </Layout>
   )
 }

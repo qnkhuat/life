@@ -1,4 +1,3 @@
-
 import { useRouter } from 'next/router';
 import React, { useEffect } from "react";
 import { useAuth } from '../lib/firebase/auth';
@@ -38,7 +37,7 @@ export default function Login() {
                 <Button className="text-white normal-case w-full" onClick={() => signinWithGoogle().catch((error) => {console.log(error);})}>
                   <img src="./google-icon.svg" alt="google-icon" className="w-4 h-4"/>
                   <span className="pl-2">
-                    Sign Up using Google
+                    Sign up using Google
                   </span>
                 </Button>
               </div>
@@ -50,7 +49,7 @@ export default function Login() {
                 <Button className="text-black normal-case w-full" onClick={() => signinWithGoogle().catch((error) => {console.log(error);})}>
                   <img src="./google-icon.svg" alt="google-icon" className="w-4 h-4"/>
                   <span className="pl-2">
-                    Sign In using Google
+                    Log in using Google
                   </span>
                 </Button>
               </div>
