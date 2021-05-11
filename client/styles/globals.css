@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {  
+  /* Fix scroll when 100vh on safari*/
+    height: 100vh;
+    height: -webkit-fill-available;
+    overflow: hidden;
+}
