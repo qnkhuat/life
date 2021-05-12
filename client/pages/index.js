@@ -3,11 +3,13 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../lib/firebase/auth';
 import Layout from '../components/Layout';
+import Loading from '../components/Loading';
 import React from "react";
 
 export default function Home (){
   const { auth, user, signOut, loading } = useAuth();
   const router = useRouter();
+  if (loading) return <Loading/>
 
   useEffect(() => {
     if (!auth && !loading) {

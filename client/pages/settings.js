@@ -18,21 +18,43 @@ import urljoin from "url-join";
 import axios from "axios";
 
 function Settings() {
-  var { auth, user, refreshUser, loading } = useAuth();
+  const { auth, refreshUser, loading } = useAuth();
+
+  const [ user, setUser ] = useState(null);
+  const [ updated, setUpdated ] = useState(false);
+  const [ fullname, setFullname ] = useState(auth.displayName || null);
+  const [ username, setUsername ] = useState(null);
+  const [ birthday, setBirthday ] = useState(null);
+  const [ maxAge, setMaxAge ] = useState(100);
+  const [ about, setAbout ] = useState(null);
+  const [ avatar, setAvatar] = useState(null);
+  const [ displayAvatar, setDisplayAvatar] = useState(null);
 
   const router = useRouter();
-  const [ fullname, setFullname ] = useState(user?.user.fullname || auth.displayName || null);
-  const [ username, setUsername ] = useState(user?.user.username || null);
-  const [ birthday, setBirthday ] = useState(formatDate(user?.user.birthday, "YYYY-MM-DD") || null);
-  const [ maxAge, setMaxAge ] = useState(user?.user.maxAge || 100);
-  const [ about, setAbout ] = useState(user?.user.about || null);
-  const [ avatar, setAvatar] = useState(user?.user.avatar || null);
-  const [ displayAvatar, setDisplayAvatar] = useState(user?.user.avatar || null);
 
   function handleUpdateComplete (path, url) {
     setAvatar(path);
     setDisplayAvatar(url);
   }
+
+  useEffect(() => {
+    if (!updated){
+      refreshUser().then((user) => {
+        if (!user) return;
+        setUser(user);
+        setFullname(user.user.fullname);
+        setUsername(user.user.username);
+        setBirthday(user.user.birthday);
+        setBirthday(formatDate(user?.user.birthday, "YYYY-MM-DD"));
+        setMaxAge(user.user.maxAge);
+        setAbout(user.user.about);
+        setAvatar(user.user.avatar);
+        setDisplayAvatar(user.user.avatar);
+      }).catch((error) => console.error("Error fetching user info: ", error)).finally(() => setUpdated(true));
+    }
+  })
+
+  if (!updated || loading) return <Loading />;
 
   async function submit(){
     if (user) { // Update
@@ -47,7 +69,7 @@ function Settings() {
       if(Object.keys(payload).length > 0){
         await axios.patch(urljoin(process.env.BASE_URL,`/api/user/${user.id}`), payload).then(( res ) => {
           if (res.status == 200) alert("success");
-          refreshUser(auth);
+          refreshUser();
         }).catch(( error ) => {
           console.error("Some thing is wrong: ", error);
         })
@@ -67,7 +89,7 @@ function Settings() {
       }
       await axios.post(urljoin(process.env.BASE_URL, "/api/user"), payload).then(( res ) => {
         if (res.status == 200) {
-          refreshUser(auth).then((res) => {
+          refreshUser().then((res) => {
             router.push("/[username]", `/${username}`);
           }).catch((error) => {
             router.push(`/404`);
@@ -82,7 +104,7 @@ function Settings() {
 
   return (
     <Layout>
-      <form className="" noValidate autoComplete="off" className="flex flex-col items-center">
+      <form key={updated} className="" noValidate autoComplete="off" className="flex flex-col items-center">
         <div className="relative">
           <Avatar
             className="w-32 h-32 text-4xl border rounded-full shadow mb-4"
@@ -137,7 +159,7 @@ function Settings() {
           label="Email" 
           disabled
           variant="outlined"           
-          value={auth.email}
+          defaultValue={auth.email}
           InputProps={{readOnly: true}}
           required
         />

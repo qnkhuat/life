@@ -64,7 +64,7 @@ export async function getStaticPaths() {
 
   // Get the paths we want to pre-render based on posts
   const paths = user_res.data.map((username) => ({
-    params: { username: username},
+    params: { username: username },
   })) 
 
   // We'll pre-render only these paths at build time.

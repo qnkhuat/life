@@ -36,16 +36,17 @@ function useProvideAuth() {
     setLoading(false);
   };
 
-  const refreshUser = async (auth) => {
+  const refreshUser = async () => {
     if(!auth) return;
-    await axios.get(urljoin(process.env.BASE_URL, `/api/user/${auth.uid}`)).then((res) => {
+    return await axios.get(urljoin(process.env.BASE_URL, `/api/user/${auth.uid}`)).then((res) => {
       if (res.data) {
         setUser(res.data);
         setCookie(null, "user", JSON.stringify(res.data), {
-          maxAge: 2 * 24 * 60 * 60,
+          maxAge: 30*24*60*60, // in seconds
           path: '/',
         });
       }
+      return res.data;
     }).catch((error) => {
       console.log("Failed to get user info: ", error);
       return;
