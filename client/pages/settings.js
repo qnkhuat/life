@@ -70,7 +70,7 @@ function Settings() {
       });
       axios.get(urljoin(process.env.API_URL, "/api/usernames")).
         then((res) => setUsernames(res.data)).
-        catch((error) => console.error("Error fetch username lists: ", error));
+        catch((error) => console.error("Error fetch username lists: ", error?.response.data.error));
     }
   }, [])
 
@@ -104,8 +104,7 @@ function Settings() {
         if (res.status == 200) alert("success");
         refreshUser();
       }).catch(( error ) => {
-        alert("error");
-        console.error("Some thing is wrong: ", error);
+        console.error("Failed to update user: ", error?.response.data.error);
       })
     } else { // Add user
       const payload = {
@@ -121,14 +120,14 @@ function Settings() {
           })
         }
       }).catch(( error ) => {
-        console.log("Recheck your form bitch: ", error);
+        console.log("Recheck your form bitch: ", error?.response.data.error);
       })
     }
   }
 
   return (
     <Layout>
-      <form key={data.updated} className="" noValidate autoComplete="off" className="flex flex-col items-center w-4/5 m-auto mt-4">
+      <form key={data.updated} className="" noValidate autoComplete="off" className="flex flex-col items-center m-auto mt-4">
         <div className="relative">
           <Avatar
             className="w-32 h-32 text-4xl border rounded-full shadow mb-4"
@@ -169,7 +168,7 @@ function Settings() {
         <TextField id="profile-birthday" 
           className="w-full mt-6"
           onChange={(e) => setUserInfoByField("birthday", new Date(e.target.value))}
-          defaultValue={data?.user ? formatDate(data?.userInfo.user.birhtday, "YYYY-MM-DD") : ""}
+          defaultValue={data?.userInfo ? formatDate(data?.userInfo.user.birthday, "YYYY-MM-DD") : ""}
           label="Birthday" 
           variant="outlined" 
           type="date"

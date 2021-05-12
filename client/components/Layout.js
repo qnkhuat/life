@@ -12,11 +12,12 @@ export default function Layout({ children }) {
 
   return (
     <div className={`flex flex-col justify-between md:flex-col-reverse md:justify-end h-screen `}>
-      <div className="overflow-auto">
+      <div className="overflow-auto container mx-auto">
         {children && children}
       </div>
       <div id="navbar"
-        className={`flex justify-around border-t md:border-b bg-white`}>
+        className={`border-t md:border-b bg-white`}>
+        <div className='container flex justify-between m-auto'>
         <Link
           href="/"
           passHref>
@@ -48,6 +49,7 @@ export default function Layout({ children }) {
             <AccountCircleIcon></AccountCircleIcon>
           </IconButton>
         </Link>
+      </div>
       </div>
     </div>
   )
