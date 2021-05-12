@@ -9,14 +9,13 @@ import useDeviceDetect from "../lib/device";
 export default function Layout({ children }) {
   const { user } = useAuth();
   const { isMobile }= useDeviceDetect();
-  const temp = "fixed w-screen bottom-0 left-0 z-10 overflow-hidden";
   return (
-    <div className={`flex ${isMobile() ? "flex-col justify-between" : "flex-col-reverse justify-end"} h-screen `}>
+    <div className={`flex ${!isMobile() ? "flex-col-reverse justify-end" : "flex-col justify-between"} h-screen `}>
       <div className="overflow-auto">
         {children && children}
       </div>
       <div id="navbar"
-        className={`flex justify-around ${isMobile() ? "border-t" : "border-b"} bg-white`}>
+        className={`flex justify-around ${!isMobile() ? "border-b" : "border-t"} bg-white`}>
         <Link
           href="/"
           passHref>
