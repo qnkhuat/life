@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, forwardRef } from "react";
 import { useRouter } from 'next/router';
 
 import Button from '@material-ui/core/Button';
@@ -6,6 +6,8 @@ import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/core/Alert';
 
 import { useAuth, withAuth } from '../lib/firebase/auth';
 import { formatDate  } from "../lib/util";
@@ -18,6 +20,11 @@ import urljoin from "url-join";
 import axios from "axios";
 
 import * as config from "../config";
+
+const Alert = forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 
 function Settings() {
   const { auth, refreshUser, loading } = useAuth();
@@ -38,6 +45,18 @@ function Settings() {
       }
     }
   });
+
+  const [ alertOpen, setAlertOpen] = useState(false);
+  const [ alert, setAlert ] = useState({
+    severity: "success",
+    message: "",
+  });
+
+  function handleCloseAlert() {
+    setAlertOpen(false);
+  }
+
+
   const [ currentUsername, setCurrentUsername] = useState(null);
   const [ usernames, setUsernames ] = useState([]);
   const [ displayAvatar, setDisplayAvatar] = useState(null);
@@ -98,11 +117,15 @@ function Settings() {
   }
 
   async function submit(){
+    
     if (data?.userInfo.id) { // Update
       let payload = data.userInfo.user;
       await axios.patch(urljoin(process.env.API_URL,`/api/user/${data.userInfo.id}`), payload).then(( res ) => {
-        if (res.status == 200) alert("success");
-        refreshUser();
+        if (res.status == 200) {
+          refreshUser();
+          setAlert({severity: "success", message: "Saved sucessfully" });
+          setAlertOpen(true);
+        }
       }).catch(( error ) => {
         console.error("Failed to update user: ", error?.response.data.error);
       })
@@ -127,7 +150,8 @@ function Settings() {
 
   return (
     <Layout>
-      <form key={data.updated} className="" noValidate autoComplete="off" className="flex flex-col items-center m-auto mt-4">
+      <p className="text-center text-xl font-bold my-8">Account settings</p>
+      <form key={data.updated} className="" noValidate autoComplete="off" className="flex flex-col items-center m-auto w-4/5">
         <div className="relative">
           <Avatar
             className="w-32 h-32 text-4xl border rounded-full shadow mb-4"
@@ -203,10 +227,16 @@ function Settings() {
           label="About yourself" 
           variant="outlined" 
         />
-        <Button id="profile-submit" className="my-6" variant="outlined" onClick={submit}>
+        <Button id="profile-submit" className="my-6 text-black border-black" variant="outlined" onClick={submit}>
           Save 
         </Button>
       </form>
+
+      <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleCloseAlert}>
+        <Alert onClose={handleCloseAlert} severity={alert.severity} sx={{ width: '100%' }}>
+          {alert.message}
+        </Alert>
+      </Snackbar>
     </Layout>
   )
 }
