@@ -9,7 +9,7 @@ import React from "react";
 export default function Home (){
   const { auth, user, signOut, loading } = useAuth();
   const router = useRouter();
-  if (loading) return <Loading/>
+  if (loading) return <Loading/>;
 
   useEffect(() => {
     if (!auth && !loading) {

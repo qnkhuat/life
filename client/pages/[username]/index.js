@@ -18,7 +18,7 @@ const getData = async (username) => {
   return result;
 }
 
-// Note on how this page render
+// Note on how this page renders
 // It uses ISR (Incremental static rendering)
 // means every time the request comes, it'll return the cached
 // HTML of this page, it will not process to render a new one
@@ -29,9 +29,7 @@ const getData = async (username) => {
 function Profile({ data }) {
   const router = useRouter();
 
-  if (router.isFallback) {
-    return <Loading />
-  }
+  if (router.isFallback) return <Loading />
   const [ state, setState ] = useState({updated: false, stateData: data });
   const { updated, stateData } = state;
   const { events , user } = stateData;

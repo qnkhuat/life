@@ -1,4 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document';
+import Div100vh from 'react-div-100vh';
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -12,9 +13,9 @@ class MyDocument extends Document {
         <Head>
         </Head>
         <body>
-          <Main />
-          <NextScript />
-        </body>
+          <Main></Main>
+          <NextScript></NextScript>
+      </body>
       </Html>
     )
   }
