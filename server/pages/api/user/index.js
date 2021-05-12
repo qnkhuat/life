@@ -1,8 +1,29 @@
 import { firestore, storageGetUrl } from "../../../lib/firebase/server";
 import isAuthenticated from "../../../lib/firebase/middleware";
-import { cors, runMiddleware } from "../../../lib/util";
+import { cors, runMiddleware, createValidator } from "../../../lib/util";
 import { parseCookies, setCookie, destroyCookie } from 'nookies';
+import * as yup from "yup";
 
+// *** Schemes
+const AddUserScheme = yup.object({
+  id: yup.string().required(),
+  user: yup.object({
+    username: yup.string().required(),
+    fullname: yup.string().required(),
+    maxAge: yup.number().required(),
+    avatar: yup.string().defined().nullable(),
+    about: yup.string().defined().nullable(),
+    private: yup.boolean().default(false),
+    birthday: yup.date().required(),
+  })
+});
+
+const FindUserScheme = yup.object({
+  username: yup.string().required()
+});
+
+
+// *** Handlers
 const addUser = async (req, res) => {
   const userDocRef = firestore.collection("user").doc(req.body.id);
   userDocRef.get().then(( doc ) => {
@@ -35,10 +56,12 @@ export default async (req, res) => {
   await runMiddleware(req, res, cors);
   switch (req.method){
     case "GET":
+      await runMiddleware(req, res, createValidator(FindUserScheme, "query"));
       await findUserByUsername(req, res);
       break;
     case "POST":
-      await runMiddleware(req, res, isAuthenticated)
+      await runMiddleware(req, res, isAuthenticated);
+      await runMiddleware(req, res, createValidator(AddUserScheme, "body"));
       await addUser(req, res);
       break;
     default:

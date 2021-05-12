@@ -14,3 +14,14 @@ export function runMiddleware(req, res, fn) {
     })
   })
 }
+
+export const createValidator = (schema, property) => {
+  return async (req, res , next ) => {
+    schema.validate(req[property], {strict: false, abortEarly: false}).then((value) => {
+      next();
+    }).catch((error) => {
+      res.status(422).send({error: error?.errors.join(". ")});
+    })
+  }
+}
+

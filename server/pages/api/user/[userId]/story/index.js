@@ -1,7 +1,25 @@
 import { firestore } from "../../../../../lib/firebase/server";
 import isAuthenticated from "../../../../../lib/firebase/middleware";
-import { cors, runMiddleware } from "../../../../../lib/util";
+import { cors, runMiddleware, createValidator } from "../../../../../lib/util";
+import * as yup from "yup";
 
+// *** Schemes
+const QueryScheme = yup.object({
+  userId: yup.string().required(),
+  storyId: yup.string().required()
+});
+
+const CreateStoryScheme = yup.object({
+  title: yup.string().required(),
+  description: yup.string().nullable(),
+  date: yup.date().required(),
+  imageUrls: yup.array(yup.string()).nullable(),
+  publish: yup.boolean().requried(),
+  type: yup.string().requried(),
+})
+
+
+// *** Handlers
 const createStory = async (req, res) => {
   req.body['addedDate'] = new Date().toISOString();
   firestore.collection("user").doc(req.query.userId).collection("story").add(req.body).then((doc) => {
@@ -16,6 +34,7 @@ export default async (req, res) => {
   switch (req.method){
     case "POST":
       await runMiddleware(req, res, isAuthenticated);
+      await runMiddleware(req, res, createValidator(CreateStoryScheme, "body"));
       await createStory(req, res);
       break;
     default:

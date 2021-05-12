@@ -1,6 +1,13 @@
 import { firestore, storageGetUrl } from "../../../../lib/firebase/server";
-import { cors, runMiddleware } from "../../../../lib/util";
+import { cors, runMiddleware, createValidator } from "../../../../lib/util";
+import * as yup from "yup";
 
+// *** Schemes
+const QueryScheme = yup.object({
+  userId: yup.string().required()
+});
+
+// *** Handlers
 const getAllStories = async (req, res) => {
   try {
     const snapshot = await firestore.collection("user").doc(req.query.userId).collection("story").get();
@@ -24,6 +31,7 @@ export default async (req, res) => {
   await runMiddleware(req, res, cors);
   switch (req.method){
     case "GET":
+      await runMiddleware(req, res, createValidator(QueryScheme, "query"));
       await getAllStories(req, res);
       break;
     default:

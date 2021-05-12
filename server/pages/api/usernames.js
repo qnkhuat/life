@@ -16,9 +16,9 @@ const getAllStories = async (req, res) => {
 }
 
 export default async (req, res) => {
+  await runMiddleware(req, res, cors);
   switch (req.method){
     case "GET":
-      await runMiddleware(req, res, cors);
       await getAllStories(req, res);
       break;
     default:
