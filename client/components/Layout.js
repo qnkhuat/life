@@ -11,45 +11,43 @@ export default function Layout({ children }) {
   const { user } = useAuth();
 
   return (
-    <div>
-      <div className="container mx-auto mb-10 md:mt-10">
+    <div className={`flex flex-col justify-between md:flex-col-reverse md:justify-end h-screen`}>
+      <div className="overflow-auto">
         {children && children}
       </div>
       <div id="navbar"
-        className={`fixed bottom-0 left-0 border-t md:top-0 md:bottom-auto  md:border-b bg-white w-full`}>
-        <div className='container flex justify-between m-auto'>
-          <Link
-            href="/"
-            passHref>
-            <Button 
-              className="text-gray-700 outline-none py-2 w-14 overflow-hidden"
-              component="a"
-              onClick={() => {}} 
-              aria-label="Home">
-              <img className="w-6" src="/Tilde.svg" alt="logo"></img>
-            </Button>
-          </Link>
-          <Link
-            href="/search"
-            passHref>
-            <IconButton 
-              className="text-gray-700 outline-none rounded py-2 w-14"
-              onClick={() => {}} 
-              aria-label="Search">
-              <SearchIcon></SearchIcon>
-            </IconButton>
-          </Link>
-          <Link
-            href={`/${user ? user.user.username : "/settings"}`}
-            passHref>
-            <IconButton 
-              className="text-gray-700 outline-none rounded py-2 w-14"
-              onClick={() => {}} 
-              aria-label="Account">
-              <AccountCircleIcon></AccountCircleIcon>
-            </IconButton>
-          </Link>
-        </div>
+        className={`flex justify-around border-t md:border-b bg-white`}>
+        <Link
+          href="/"
+          passHref>
+          <Button
+            className="text-gray-700 outline-none p-2 w-14 overflow-hidden"
+            component="a"
+            onClick={() => {}}
+            aria-label="Home">
+            <img className="w-6" src="/Tilde.svg" alt="logo"></img>
+          </Button>
+        </Link>
+        <Link
+          href="/search"
+          passHref>
+          <IconButton
+            className="text-gray-700 outline-none rounded p-2 w-14"
+            onClick={() => {}}
+            aria-label="Search">
+            <SearchIcon></SearchIcon>
+          </IconButton>
+        </Link>
+        <Link
+          href={`/${user ? user.user.username : "/settings"}`}
+          passHref>
+          <IconButton
+            className="text-gray-700 outline-none rounded p-2 w-14"
+            onClick={() => {}}
+            aria-label="Account">
+            <AccountCircleIcon></AccountCircleIcon>
+          </IconButton>
+        </Link>
       </div>
     </div>
   )
