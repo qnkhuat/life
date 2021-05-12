@@ -22,7 +22,7 @@ export default function Layout({ children }) {
             href="/"
             passHref>
             <Button 
-              className="text-gray-700 outline-none p-2 w-14 overflow-hidden"
+              className="text-gray-700 outline-none py-2 w-14 overflow-hidden"
               component="a"
               onClick={() => {}} 
               aria-label="Home">
@@ -33,7 +33,7 @@ export default function Layout({ children }) {
             href="/search"
             passHref>
             <IconButton 
-              className="text-gray-700 outline-none rounded p-2 w-14"
+              className="text-gray-700 outline-none rounded py-2 w-14"
               onClick={() => {}} 
               aria-label="Search">
               <SearchIcon></SearchIcon>
@@ -43,7 +43,7 @@ export default function Layout({ children }) {
             href={`/${user ? user.user.username : "/settings"}`}
             passHref>
             <IconButton 
-              className="text-gray-700 outline-none rounded p-2 w-14"
+              className="text-gray-700 outline-none rounded py-2 w-14"
               onClick={() => {}} 
               aria-label="Account">
               <AccountCircleIcon></AccountCircleIcon>

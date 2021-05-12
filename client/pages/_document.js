@@ -1,6 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 
-import Div100vh from 'react-div-100vh';
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
     const initialProps = await Document.getInitialProps(ctx)
@@ -20,10 +19,8 @@ class MyDocument extends Document {
           <meta name="theme-color" content="#ffffff"></meta>
         </Head>
         <body>
-          <Div100vh>
             <Main></Main>
             <NextScript></NextScript>
-          </Div100vh>
         </body>
       </Html>
     )
