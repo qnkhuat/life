@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { formatDate } from '../../lib/util';
 import { useAuth } from '../../lib/firebase/auth';
-import * as constants from "../../constants";
+import * as config from "../../config";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import Backdrop from '@material-ui/core/Backdrop';
@@ -27,7 +27,7 @@ function Story({ story, storyId }){
   };
 
   function handleDeleteStory(storyId){
-    const stories_req = axios.delete(urljoin(process.env.BASE_URL, `/api/user/${user.id}/story/${storyId}`)).then((res) => {
+    const stories_req = axios.delete(urljoin(process.env.API_URL, `/api/user/${user.id}/story/${storyId}`)).then((res) => {
       setOpenDelete(false);
       setDeleted(true);
     }).catch((error) => console.error("Failed to delete story", error));
@@ -37,7 +37,7 @@ function Story({ story, storyId }){
     <div className={`rounded m-4 relative ${deleted && "hidden"}`}>
       <h1>{storyState.title}</h1>
       {storyState.content&& <h3>{storyState.content}</h3>}
-      <h1>{formatDate(storyState.date, constants.DATE_FORMAT)}</h1>
+      <h1>{formatDate(storyState.date, config.DATE_FORMAT)}</h1>
       {storyState.imageUrls.length > 0 && 
       <img 
         alt={storyId}

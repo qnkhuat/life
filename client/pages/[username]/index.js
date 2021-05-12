@@ -7,9 +7,9 @@ import urljoin from "url-join";
 import { useEffect, useState } from "react";
 
 const getData = async (username) => {
-  const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user?username=${username}`));
+  const user_res = await axios.get(urljoin(process.env.API_URL, `/api/user?username=${username}`));
   const user = user_res.data;
-  const events_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`));
+  const events_res = await axios.get(urljoin(process.env.API_URL, `/api/user/${user.id}/stories`));
   const events = events_res.data;
   const result  = {
     events:events,
@@ -42,9 +42,10 @@ function Profile({ data }) {
         setState({updated: true, stateData:data})
       }).catch((error) => {
         console.error("Failed to fetch new data", error);
+        setState({updated: true, stateData:stateData})
       });
     }
-  })
+  }, []);
 
   var eventsList = [];
   Object.keys(events).forEach((key) => {
@@ -60,7 +61,7 @@ function Profile({ data }) {
 
 export async function getStaticPaths() {
   // Call an external API endpoint to get posts
-  const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/usernames`));
+  const user_res = await axios.get(urljoin(process.env.API_URL, `/api/usernames`));
 
   // Get the paths we want to pre-render based on posts
   const paths = user_res.data.map((username) => ({

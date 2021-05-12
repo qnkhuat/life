@@ -31,7 +31,7 @@ function Profile({ events, birthday, maxAge }) {
 export async function getStaticPaths() {
   console.log("Generating");
   // Call an external API endpoint to get posts
-  const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/usernames`));
+  const user_res = await axios.get(urljoin(process.env.API_URL, `/api/usernames`));
 
   // Get the paths we want to pre-render based on posts
   const paths = user_res.data.map((username) => ({
@@ -48,9 +48,9 @@ export async function getStaticProps({ params }) {
   const username = params.username;
   var events = {}, user = null;
   try {
-    const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user?username=${username}`));
+    const user_res = await axios.get(urljoin(process.env.API_URL, `/api/user?username=${username}`));
     user = user_res.data;
-    const events_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`));
+    const events_res = await axios.get(urljoin(process.env.API_URL, `/api/user/${user.id}/stories`));
     events = events_res.data;
   } catch (error){
     return {

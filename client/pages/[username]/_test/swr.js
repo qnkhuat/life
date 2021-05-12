@@ -6,9 +6,9 @@ import { useAuth, withAuth } from '../../../lib/firebase/auth';
 import urljoin from "url-join";
 
 const fetcher = async (username) => {
-  const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user?username=${username}`));
+  const user_res = await axios.get(urljoin(process.env.API_URL, `/api/user?username=${username}`));
   const user = user_res.data;
-  const events_res = await axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`));
+  const events_res = await axios.get(urljoin(process.env.API_URL, `/api/user/${user.id}/stories`));
   const events = events_res.data;
   return {
     events:events,
@@ -47,7 +47,7 @@ function Profile( props ) {
 }
 export async function getStaticPaths() {
   // Call an external API endpoint to get posts
-  const user_res = await axios.get(urljoin(process.env.BASE_URL, `/api/usernames`));
+  const user_res = await axios.get(urljoin(process.env.API_URL, `/api/usernames`));
 
   // Get the paths we want to pre-render based on posts
   const paths = user_res.data.map((username) => ({

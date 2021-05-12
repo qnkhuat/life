@@ -38,18 +38,18 @@ function useProvideAuth() {
 
   const refreshUser = async () => {
     if(!auth) return;
-    return await axios.get(urljoin(process.env.BASE_URL, `/api/user/${auth.uid}`)).then((res) => {
+    return await axios.get(urljoin(process.env.API_URL, `/api/user/${auth.uid}`)).then((res) => {
       if (res.data) {
         setUser(res.data);
         setCookie(null, "user", JSON.stringify(res.data), {
-          maxAge: 30*24*60*60, // in seconds
+          maxAge: 24*60*60, // in seconds
           path: '/',
         });
       }
       return res.data;
     }).catch((error) => {
       console.log("Failed to get user info: ", error);
-      return;
+      throw error;
     });
   }
 
@@ -99,11 +99,10 @@ export const withAuth = (WrappedComponent, authorizedOnly=false, redirectTo="/lo
       if (!loading){
         // This is a very primitive way to authenticate user. It's only check if the username in query equal user's username
         if (!auth || (authorizedOnly&& (!user || router.query.username != user.username))) {
-          router.replace(redirectTo);
+          console.log(router.query);
+          router.push(redirectTo);
         }
-        else {
-          setVerified(true);
-        }
+        else setVerified(true);
       }
     }, [auth, loading, user]);
 

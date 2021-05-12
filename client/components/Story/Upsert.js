@@ -55,7 +55,7 @@ export default function Upsert({ storyId, story, onComplete }){
     }
 
     if (storyId) { // update
-      axios.patch(urljoin(process.env.BASE_URL, `/api/user/${user.id}/story/${storyId}`), payload).then(( res ) => {
+      axios.patch(urljoin(process.env.API_URL, `/api/user/${user.id}/story/${storyId}`), payload).then(( res ) => {
         if (res.status == 200) {
           payload['imageUrls'] = imageDisplayUrls;
           if (onComplete) onComplete(storyId, payload);
@@ -64,7 +64,7 @@ export default function Upsert({ storyId, story, onComplete }){
         console.error("Error updating story: ", error);
       })
     } else { // insert
-      axios.post(urljoin(process.env.BASE_URL, `/api/user/${user.id}/story`), payload).then(( res ) => {
+      axios.post(urljoin(process.env.API_URL, `/api/user/${user.id}/story`), payload).then(( res ) => {
         if (res.status == 200) {
           let storyId = res.data.id;
           payload['imageUrls'] = imageDisplayUrls;

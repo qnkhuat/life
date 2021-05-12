@@ -17,9 +17,9 @@ function Profile() {
 
   useEffect(() => {
     if (state.loading && router.query.username) {
-        axios.get(urljoin(process.env.BASE_URL, `/api/user?username=${router.query.username}`)).then((res) => {
+        axios.get(urljoin(process.env.API_URL, `/api/user?username=${router.query.username}`)).then((res) => {
         const user = res.data;
-        axios.get(urljoin(process.env.BASE_URL, `/api/user/${user.id}/stories`)).then((res) => {
+        axios.get(urljoin(process.env.API_URL, `/api/user/${user.id}/stories`)).then((res) => {
           const events = res.data;
           var eventsTemp = [];
           Object.keys(events).forEach((key) => {

@@ -17,80 +17,105 @@ import Layout from "../components/Layout";
 import urljoin from "url-join";
 import axios from "axios";
 
+import * as config from "../config";
+
 function Settings() {
   const { auth, refreshUser, loading } = useAuth();
 
-  const [ user, setUser ] = useState(null);
-  const [ updated, setUpdated ] = useState(false);
-  const [ fullname, setFullname ] = useState(auth.displayName || null);
-  const [ username, setUsername ] = useState(null);
-  const [ birthday, setBirthday ] = useState(null);
-  const [ maxAge, setMaxAge ] = useState(100);
-  const [ about, setAbout ] = useState(null);
-  const [ avatar, setAvatar] = useState(null);
+  const [ userNameValidation, setUsernameValidation ] = useState({valid:false, msg: ""});
+  const [ data, setData] = useState({ 
+    updated: false,
+    userInfo: {
+      id: null,
+      user: {
+        fullname: auth.displayName,
+        maxAge: 100,
+        username: null,
+        birthday: null,
+        email:auth.email,
+        about:null,
+        avatar:null
+      }
+    }
+  });
+  const [ currentUsername, setCurrentUsername] = useState(null);
+  const [ usernames, setUsernames ] = useState([]);
   const [ displayAvatar, setDisplayAvatar] = useState(null);
 
   const router = useRouter();
 
-  function handleUpdateComplete (path, url) {
-    setAvatar(path);
+  function setUserInfoByField(field, value){
+    data.userInfo.user[field] = value;
+    setData(data);
+  }
+
+
+  function handleUploadComplete(path, url) {
+    // when user upload avatar
+    data.userInfo.user.avatar = path;
+    setData(data);
     setDisplayAvatar(url);
   }
 
   useEffect(() => {
-    if (!updated){
+    if (!data.updated){
       refreshUser().then((user) => {
         if (!user) return;
-        setUser(user);
-        setFullname(user.user.fullname);
-        setUsername(user.user.username);
-        setBirthday(user.user.birthday);
-        setBirthday(formatDate(user?.user.birthday, "YYYY-MM-DD"));
-        setMaxAge(user.user.maxAge);
-        setAbout(user.user.about);
-        setAvatar(user.user.avatar);
+        setData({updated:true, userInfo: user});
+        setCurrentUsername(user.user.username);
+        validateUserName(user.user.username);
         setDisplayAvatar(user.user.avatar);
-      }).catch((error) => console.error("Error fetching user info: ", error)).finally(() => setUpdated(true));
+      }).catch((error) => {
+        setData({updated:true, userInfo: data.userInfo});
+      });
+      axios.get(urljoin(process.env.API_URL, "/api/usernames")).
+        then((res) => setUsernames(res.data)).
+        catch((error) => console.error("Error fetch username lists: ", error));
     }
-  })
+  }, [])
 
-  if (!updated || loading) return <Loading />;
+  if (!data.updated || loading) return <Loading />;
+
+  function validateUserName(value){
+    if (!value || !(value.length >= 6 && value.length <= 20) ){
+      setUsernameValidation({valid: false, msg: "Min 8 characters, max 20 characters"});
+    }
+    else if (config.usernameRegex.test(value)) {
+      if (usernames.includes(value) && value != currentUsername){
+        setUsernameValidation({valid:false, msg: "Username existed"});
+      } else {
+        setUsernameValidation({valid:true, 
+          msg: "Your profile link: " + urljoin(process.env.BASE_URL, value ? value : "/").
+          replace("http://", "").
+          replace("https://", "")});
+      }
+    } else setUsernameValidation({valid: false, msg: "Username must contain only letters, numbers, period(.), and underscore(_)"});
+  }
+
+  function handleOnChangeUsername(value) {
+    validateUserName(value);
+    setUserInfoByField("username", value);
+  }
 
   async function submit(){
-    if (user) { // Update
-      let payload = {
-        ...(fullname != user?.user.fullname) && {fullname: fullname},
-        ...(username != user?.user.username) && {username: username},
-        ...(birthday != user?.user.birthday) && {birthday: new Date(birthday)},
-        ...(maxAge != user?.user.maxAge) && {maxAge: maxAge},
-        ...(about != user?.user.about ) && {about: about},
-        ...(avatar!= user?.user.avatar) && {avatar: avatar},
-      }
-      if(Object.keys(payload).length > 0){
-        await axios.patch(urljoin(process.env.BASE_URL,`/api/user/${user.id}`), payload).then(( res ) => {
-          if (res.status == 200) alert("success");
-          refreshUser();
-        }).catch(( error ) => {
-          console.error("Some thing is wrong: ", error);
-        })
-      }
+    if (data?.userInfo.id) { // Update
+      let payload = data.userInfo.user;
+      await axios.patch(urljoin(process.env.API_URL,`/api/user/${data.userInfo.id}`), payload).then(( res ) => {
+        if (res.status == 200) alert("success");
+        refreshUser();
+      }).catch(( error ) => {
+        alert("error");
+        console.error("Some thing is wrong: ", error);
+      })
     } else { // Add user
       const payload = {
         id: auth.uid,
-        user: {
-          username: username,
-          fullname: fullname,
-          birthday: birthday,
-          maxAge: maxAge,
-          email: auth.email,
-          about: about,
-          avatar: avatar
-        }
+        user: data.userInfo.user,
       }
-      await axios.post(urljoin(process.env.BASE_URL, "/api/user"), payload).then(( res ) => {
+      await axios.post(urljoin(process.env.API_URL, "/api/user"), payload).then(( res ) => {
         if (res.status == 200) {
           refreshUser().then((res) => {
-            router.push("/[username]", `/${username}`);
+            router.push("/[username]", `/${res.user.username}`);
           }).catch((error) => {
             router.push(`/404`);
           })
@@ -99,21 +124,20 @@ function Settings() {
         console.log("Recheck your form bitch: ", error);
       })
     }
-
   }
 
   return (
     <Layout>
-      <form key={updated} className="" noValidate autoComplete="off" className="flex flex-col items-center">
+      <form key={data.updated} className="" noValidate autoComplete="off" className="flex flex-col items-center w-4/5 m-auto mt-4">
         <div className="relative">
           <Avatar
             className="w-32 h-32 text-4xl border rounded-full shadow mb-4"
-            alt={fullname}
+            alt={data?.userInfo.user.avatar}
             src={displayAvatar || "/fake-image.jpg"}
           >
           </Avatar>
 
-          <FirebaseUpload id="profile-avatar" onComplete={ handleUpdateComplete } prefix={username}  className="bg-black">
+          <FirebaseUpload id="profile-avatar" onComplete={ handleUploadComplete } prefix={data?.userInfo.user.username ? data?.userInfo.user.username : "avatar"}  className="bg-black w-full">
             <IconButton component="span"
               className="outline-none absolute right-2 bottom-2 bg-blue-400 bg-opacity-40 p-2"
               aria-label="Search">
@@ -124,23 +148,28 @@ function Settings() {
         </div>
 
         <TextField id="profile-username" 
-          defaultValue={username}
-          onChange={(e) => setUsername(e.target.value)}
+          className="w-full mt-6"
+          error={!userNameValidation['valid']}
+          defaultValue={data?.userInfo.user.username}
+          onChange={(e) => handleOnChangeUsername(e.target.value)}
           label="Username" 
           variant="outlined" 
-          required/>
-
+          required
+          helperText={userNameValidation['msg']}
+        />
 
         <TextField id="profile-fullname" 
-          defaultValue={fullname}
+          className="w-full mt-6"
+          onChange={(e) => setUserInfoByField("fullname", e.target.value)}
           label="Full name" 
           variant="outlined" 
-          onChange={(e) => setFullname(e.target.value)}
+          defaultValue={data?.userInfo.user.fullname}
           required/>
 
         <TextField id="profile-birthday" 
-          defaultValue={birthday}
-          onChange={(e) => setBirthday(new Date(e.target.value))}
+          className="w-full mt-6"
+          onChange={(e) => setUserInfoByField("birthday", new Date(e.target.value))}
+          defaultValue={data?.user ? formatDate(data?.userInfo.user.birhtday, "YYYY-MM-DD") : ""}
           label="Birthday" 
           variant="outlined" 
           type="date"
@@ -148,33 +177,35 @@ function Settings() {
           required/>
 
         <TextField id="profile-maxage" 
-          onChange={(e) => setMaxAge(e.target.value)}
-          defaultValue={maxAge}
+          className="w-full mt-6"
+          onChange={(e) => setUserInfoByField("maxAge", e.target.value)}
+          defaultValue={data?.userInfo.user.maxAge}
           label="Life expectency" 
           variant="outlined" 
           type="number" 
         />
 
         <TextField id="profile-email" 
+          className="w-full mt-6"
           label="Email" 
           disabled
           variant="outlined"           
-          defaultValue={auth.email}
+          defaultValue={data?.userInfo.user.email}
           InputProps={{readOnly: true}}
           required
         />
 
         <TextField id="profile-about" 
-          onChange={(e) => setAbout(e.target.value)}
-          defaultValue={about}
+          className="w-full mt-6"
+          onChange={(e) => setUserInfoByField("about", e.target.value)}
+          defaultValue={data?.userInfo.user.about}
           multiline
           rows={3}
           label="About yourself" 
-          variant="outlined" />
-
-
-        <Button id="profile-submit" variant="outlined" color="primary" onClick={submit}>
-          Submit
+          variant="outlined" 
+        />
+        <Button id="profile-submit" className="my-6" variant="outlined" onClick={submit}>
+          Save 
         </Button>
       </form>
     </Layout>
