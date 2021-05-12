@@ -6,12 +6,14 @@ import SearchIcon from '@material-ui/icons/Search';
 import HomeIcon from '@material-ui/icons/Home';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import useDeviceDetect from "../lib/device";
+import Div100vh from 'react-div-100vh';
+
 
 export default function Layout({ children }) {
   const { user } = useAuth();
 
   return (
-    <div className={`flex flex-col justify-between md:flex-col-reverse md:justify-end h-screen`}>
+    <Div100vh className={`flex flex-col justify-between md:flex-col-reverse md:justify-end`}>
       <div className="overflow-auto">
         {children && children}
       </div>
@@ -49,6 +51,6 @@ export default function Layout({ children }) {
           </IconButton>
         </Link>
       </div>
-    </div>
+    </Div100vh>
   )
 }
