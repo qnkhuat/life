@@ -6,16 +6,17 @@ import SearchIcon from '@material-ui/icons/Search';
 import HomeIcon from '@material-ui/icons/Home';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import useDeviceDetect from "../lib/device";
+
 export default function Layout({ children }) {
   const { user } = useAuth();
-  const { isMobile }= useDeviceDetect();
+
   return (
-    <div className={`flex ${!isMobile() ? "flex-col-reverse justify-end" : "flex-col justify-between"} h-screen `}>
+    <div className={`flex flex-col justify-between md:flex-col-reverse md:justify-end h-screen `}>
       <div className="overflow-auto">
         {children && children}
       </div>
       <div id="navbar"
-        className={`flex justify-around ${!isMobile() ? "border-b" : "border-t"} bg-white`}>
+        className={`flex justify-around border-t md:border-b bg-white`}>
         <Link
           href="/"
           passHref>

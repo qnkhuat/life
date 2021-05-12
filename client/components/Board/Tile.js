@@ -1,4 +1,4 @@
-// TODO: remove use of material-ui
+import { isMobile } from 'react-device-detect';
 import React from 'react';
 import { withStyles } from "@material-ui/core/styles";
 import Tooltip from '@material-ui/core/Tooltip';
@@ -69,7 +69,7 @@ class Tile extends React.Component {
     this.endDate = props.endDate;
     this.type = props.type || "default";
     if (!this.type in constants.EVENTMAPPING) this.type = "default";
-    this.isMobile = props.isMobile == undefined ? true : props.isMobile;
+    this.isMobile = isMobile;
     this.state = {
       open:false,
       clickOpen:false,

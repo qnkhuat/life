@@ -1,4 +1,3 @@
-import { isMobile } from 'react-device-detect';
 import React from 'react';
 import Tile from "./Tile";
 import * as constants from "./constants";
@@ -86,7 +85,6 @@ class Board extends React.Component {
           endDate={endDate}
           type={tileType}
           events={events}
-          isMobile={isMobile}
         />
       </div>
     )
