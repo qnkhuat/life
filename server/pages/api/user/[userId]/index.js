@@ -4,7 +4,6 @@ import { cors, runMiddleware, createValidator } from "../../../../lib/util";
 import * as yup from "yup";
 import * as config from "../../../../config";
 
-
 // *** Schemes
 const QueryScheme = yup.object({
   userId: yup.string().required()
@@ -39,8 +38,14 @@ const getUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const usernameDoc = await firestore.collection("user").where("username", "==", req.body.username).get();
   if (usernameDoc.docs.length > 0){
-    console.log("username existed");
-    return res.status(400).send({ error: "Username existed"});
+    let isCurrentUser = false;
+    for (let i in usernameDoc.docs){
+      if (usernameDoc.docs[i].id == req.query.userId){
+        isCurrentUser = true;
+        break;
+      }
+    }
+    if (!isCurrentUser) return res.status(400).send({ error: "Username existed"});
   }
 
   req.body['lastModifiedDate'] = new Date().toISOString();

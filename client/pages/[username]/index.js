@@ -1,10 +1,14 @@
 import { useRouter } from 'next/router';
-import axios from "axios";
+import { useEffect, useState } from "react";
+
 import Board from '../../components/Board';
 import Loading from '../../components/Loading';
 import Layout from '../../components/Layout';
+
+import Avatar from '@material-ui/core/Avatar';
+
+import axios from "axios";
 import urljoin from "url-join";
-import { useEffect, useState } from "react";
 
 const getData = async (username) => {
   const user_res = await axios.get(urljoin(process.env.API_URL, `/api/user?username=${username}`));
@@ -29,7 +33,7 @@ const getData = async (username) => {
 function Profile({ data }) {
   const router = useRouter();
 
-  if (router.isFallback) return <Loading />
+  if (router.isFallback) return <Loading />;
   const [ state, setState ] = useState({updated: false, stateData: data });
   const { updated, stateData } = state;
   const { events , user } = stateData;
@@ -52,6 +56,14 @@ function Profile({ data }) {
 
   return (
     <Layout>
+      <div id="info">
+        <Avatar
+          className="w-32 h-32 text-4xl border rounded-full shadow mb-4"
+          alt={user.user.fullname}
+          src={user.user.avatar || "/fake-image.jpg"}>
+        </Avatar>
+      </div>
+
       <Board key={updated} events={eventsList} birthday={user.user.birthday} maxAge={user.user.maxAge}/>
     </Layout>
   )
