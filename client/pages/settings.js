@@ -91,11 +91,11 @@ function Settings() {
       });
       axios.get(urljoin(process.env.API_URL, "/api/usernames")).
         then((res) => {
-
-          usernames.push(...config.usernameBlacklist);
-          setUsernames(usernames)
+          const listUsernames = res.data;
+          listUsernames.push(...config.usernameBlacklist);
+          setUsernames(listUsernames)
         }).
-        catch((error) => console.error("Error fetch username lists: ", error?.response?.data?.error));
+        catch((error) => console.error("Error fetch username lists: ", error));
     }
   }, [])
 
@@ -122,18 +122,22 @@ function Settings() {
     setUserInfoByField("username", value);
   }
 
-  async function submit(){
+  function submit(){
 
     if (data?.userInfo.id) { // Update
       let payload = data.userInfo.user;
-      await axios.patch(urljoin(process.env.API_URL,`/api/user/${data.userInfo.id}`), payload).then(( res ) => {
+      axios.patch(urljoin(process.env.API_URL,`/api/user/${data.userInfo.id}`), payload).then(( res ) => {
         if (res.status == 200) {
-          refreshUser();
-          setAlert({severity: "success", message: "Saved sucessfully" });
-          setAlertOpen(true);
+          refreshUser().then((res) => {
+            setAlert({severity: "success", message: "Saved sucessfully" });
+            setAlertOpen(true);
+          }).catch((error) => {
+            setAlert({severity: "error", message: "Failed to update user info" });
+            setAlertOpen(true);
+          });
         }
       }).catch(( error ) => {
-        console.error("Failed to update user: ", error?.response?.data?.error);
+        console.error("Failed to update user: ", error);
         setAlert({severity: "error", message: "Please fill in all the required fields" });
         setAlertOpen(true);
       })
@@ -142,7 +146,7 @@ function Settings() {
         id: auth.uid,
         user: data.userInfo.user,
       }
-      await axios.post(urljoin(process.env.API_URL, "/api/user"), payload).then(( res ) => {
+      axios.post(urljoin(process.env.API_URL, "/api/user"), payload).then(( res ) => {
         if (res.status == 200) {
           refreshUser().then((res) => {
             router.push("/[username]", `/${res.user.username}`);
@@ -153,7 +157,7 @@ function Settings() {
       }).catch(( error ) => {
         setAlert({severity: "error", message: "Please fill in all the required fields" });
         setAlertOpen(true);
-        console.log("Recheck your form bitch: ", error?.response?.data?.error);
+        console.log("Failed to add user: ", error);
       })
     }
   }

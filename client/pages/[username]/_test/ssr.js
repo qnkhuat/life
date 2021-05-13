@@ -18,7 +18,6 @@ function Profile({ events, birthday, maxAge }) {
   Object.keys(events).forEach((key) => {
     eventsList.push(events[key]);
   });
-  console.log(eventsList);
 
   return (
     <div className="container mx-auto">

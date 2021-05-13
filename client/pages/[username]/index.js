@@ -42,7 +42,7 @@ function Profile({ data }) {
         console.error("Failed to fetch new data", error);
         setState({updated: true, stateData:stateData})
       });
-    }
+    } 
   }, []);
 
   var eventsList = [];
@@ -64,7 +64,7 @@ export async function getStaticPaths() {
   // Get the paths we want to pre-render based on posts
   const paths = user_res.data.map((username) => ({
     params: { username: username },
-  })) 
+  }));
 
   // We'll pre-render only these paths at build time.
   // { fallback: false } means other routes should 404.
@@ -77,7 +77,9 @@ export async function getStaticProps({ params }) {
   var data = {};
   try {
     data = await getData(username);
+    console.log("got data", data);
   } catch (error){
+    console.log("error generate ", error);
     return {
       notFound: true,
     }

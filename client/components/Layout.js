@@ -43,7 +43,7 @@ export default function Layout({ children }) {
           </IconButton>
         </Link>
         <Link
-          href={`/${user ? user.user.username : "/settings"}`}
+          href={`/${user ? user.user.username : "settings"}`}
           passHref>
           <IconButton
             className="text-gray-700 outline-none rounded p-2 w-14"

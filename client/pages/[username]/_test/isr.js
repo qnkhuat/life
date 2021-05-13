@@ -29,7 +29,6 @@ function Profile({ events, birthday, maxAge }) {
   )
 }
 export async function getStaticPaths() {
-  console.log("Generating");
   // Call an external API endpoint to get posts
   const user_res = await axios.get(urljoin(process.env.API_URL, `/api/usernames`));
 
