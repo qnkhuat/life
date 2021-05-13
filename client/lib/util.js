@@ -4,6 +4,17 @@ dayjs.extend(customParseFormat);
 
 export const formatDate = (date, format) => dayjs(date).format(format);
 
+export const formatMultilineText = (text) => {
+  return text.split('\n').map(function(item, key) {
+    return (
+      <span key={key}>
+        {item}
+        <br/>
+      </span>
+    )
+  })
+}
+
 export function formatAge(birthdayString){
   var now = dayjs();
   const birthday = dayjs(birthdayString);

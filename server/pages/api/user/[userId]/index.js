@@ -13,7 +13,7 @@ const UpdateBodyUserScheme = yup.object({
   username: yup.string().required().matches(config.usernameRegex),
   fullname: yup.string().required(),
   maxAge: yup.number().required(),
-  avatar: yup.string().nullable().defined(),
+  avatar: yup.string().nullable(),
   about: yup.string().nullable().defined(),
   private: yup.boolean().nullable(),
   birthday: yup.date().required(),

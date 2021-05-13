@@ -6,6 +6,7 @@ import OutsideDetector from "./OutsideDetector";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from '@material-ui/icons/Close';
 import { v4 as uuidv4 } from 'uuid';
+import { formatMultilineText } from "../../lib/util";
 
 import * as constants from "./constants";
 
@@ -16,17 +17,6 @@ const CustomTooltip = withStyles({
     maxHeight: "100%",
   }
 })(Tooltip);
-
-const formatText = (text) => {
-  return text.split('\n').map(function(item, key) {
-    return (
-      <span key={key}>
-        {item}
-        <br/>
-      </span>
-    )
-  })
-}
 
 const DATE_RANGE_FORMAT = "DD/MM/YYYY";
 
@@ -100,7 +90,7 @@ class Tile extends React.Component {
     const text = <div 
         className={`tooltip-text bg-white px-5 py-5 text-black text-left ${isMedia ? "max-h-tooltip-text" : "max-h-tooltip"} overflow-x-hidden overflow-y-auto`}>
         <p className="text-lg font-bold overflow-ellipsis">{e.title}</p>
-        {isText && e.content && <p className="text-base mb-2">{formatText(e.content)}</p>}
+        {isText && e.content && <p className="text-base mb-2">{formatMultilineText(e.content)}</p>}
         <hr/>
         <p className="text-sm text-gray-500">{e.date.format(DATE_RANGE_FORMAT)} - {Math.floor(e.ageSince)} Years old</p>
       </div>

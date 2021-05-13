@@ -5,7 +5,7 @@ import Board from '../../components/Board';
 import Loading from '../../components/Loading';
 import Layout from '../../components/Layout';
 
-import { formatDate, formatAge }from '../../lib/util';
+import { formatDate, formatAge, formatMultilineText }from '../../lib/util';
 
 import Avatar from '@material-ui/core/Avatar';
 
@@ -56,25 +56,31 @@ function Profile({ data }) {
     eventsList.push(events[key]);
   });
 
+  console.log(user.user.about);
   return (
     <Layout>
-      <div id="info" className="flex mt-10">
-        <Avatar
-          className="w-32 h-32 text-4xl torder rounded-full shadow mb-4 mr-4"
-          alt={user.user.fullname}
-          src={user.user.avatar || "/fake-image.jpg"}>
-        </Avatar>
+      <div className="my-2">
+      <div id="info" className="flex flex-col">
+        <div className="flex">
+          <Avatar
+            className="w-28 h-28 text-4xl torder rounded-full shadow mr-4"
+            alt={user.user.fullname}
+            src={user.user.avatar || "/fake-image.jpg"}>
+          </Avatar>
 
-        <div id="info-text">
-          <p id="fullname" className="font-bold text-lg">{user.user.fullname}</p>
-          <p>{formatAge(user.user.birthday)}</p>
+          <div id="info-text" className='flex flex-col justify-center'>
+            <p className="font-bold text-lg">{user.user.fullname}</p>
+            <p className="text-sm">{formatAge(user.user.birthday)}</p>
+          </div>
         </div>
 
-        {user.user.about && <div id="about" className="w-full"><p>{user.user.about}</p></div>}
+        {user.user.about && <div id="about" className="w-full my-4"><p>{formatMultilineText(user.user.about)}</p></div>}
 
       </div>
+        <hr className="mb-4"></hr>
 
       <Board key={updated} events={eventsList} birthday={user.user.birthday} maxAge={user.user.maxAge}/>
+      </div>
     </Layout>
   )
 }

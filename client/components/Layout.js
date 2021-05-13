@@ -40,12 +40,12 @@ export default function Layout({ children }) {
         </Link>
       </div>
       <div className="overflow-y-auto overflow-x-hidden h-full">
-        <div className="container mx-auto px-2">
+        <div className="container mx-auto px-4">
           {children && children}
         </div>
       </div>
       <div id="navbar-main"
-        className={`flex justify-around border-t md:border-b bg-white`}>
+        className={`flex justify-between border-t md:border-b bg-white`}>
         <Link
           href="/"
           passHref>
