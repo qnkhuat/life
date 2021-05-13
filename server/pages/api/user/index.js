@@ -3,12 +3,13 @@ import isAuthenticated from "../../../lib/firebase/middleware";
 import { cors, runMiddleware, createValidator } from "../../../lib/util";
 import { parseCookies, setCookie, destroyCookie } from 'nookies';
 import * as yup from "yup";
+import * as config from "../../../config";
 
 // *** Schemes
 const AddUserScheme = yup.object({
   id: yup.string().required(),
   user: yup.object({
-    username: yup.string().required(),
+    username: yup.string().required().matches(config.usernameRegex),
     fullname: yup.string().required(),
     maxAge: yup.number().required(),
     avatar: yup.string().defined().nullable(),

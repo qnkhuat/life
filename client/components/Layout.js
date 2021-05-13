@@ -14,7 +14,7 @@ export default function Layout({ children }) {
 
   return (
     <Div100vh className={`flex flex-col justify-between md:flex-col-reverse md:justify-end`}>
-      <div className="overflow-auto">
+      <div className="overflow-y-auto overflow-x-hidden">
         <div className="container mx-auto">
         {children && children}
       </div>

@@ -8,6 +8,7 @@ import Avatar from '@material-ui/core/Avatar';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/core/Alert';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { useAuth, withAuth } from '../lib/firebase/auth';
 import { formatDate  } from "../lib/util";
@@ -57,6 +58,7 @@ function Settings() {
   }
 
 
+  const [ uploadingAvatar, setUploadingAvatar ] = useState(false);
   const [ currentUsername, setCurrentUsername] = useState(null);
   const [ usernames, setUsernames ] = useState([]);
   const [ displayAvatar, setDisplayAvatar] = useState(null);
@@ -71,9 +73,9 @@ function Settings() {
 
   function handleUploadComplete(path, url) {
     // when user upload avatar
-    data.userInfo.user.avatar = path;
-    setData(data);
+    setUserInfoByField("avatar", path)
     setDisplayAvatar(url);
+    setUploadingAvatar(false);
   }
 
   useEffect(() => {
@@ -88,8 +90,12 @@ function Settings() {
         setData({updated:true, userInfo: data.userInfo});
       });
       axios.get(urljoin(process.env.API_URL, "/api/usernames")).
-        then((res) => setUsernames(res.data)).
-        catch((error) => console.error("Error fetch username lists: ", error?.response.data.error));
+        then((res) => {
+
+          usernames.push(...config.usernameBlacklist);
+          setUsernames(usernames)
+        }).
+        catch((error) => console.error("Error fetch username lists: ", error?.response?.data?.error));
     }
   }, [])
 
@@ -108,7 +114,7 @@ function Settings() {
           replace("http://", "").
           replace("https://", "")});
       }
-    } else setUsernameValidation({valid: false, msg: "Username must contain only letters, numbers, period(.), and underscore(_)"});
+    } else setUsernameValidation({valid: false, msg: "Username must contain only letters, numbers, period(.), and underscore(_)."});
   }
 
   function handleOnChangeUsername(value) {
@@ -117,7 +123,7 @@ function Settings() {
   }
 
   async function submit(){
-    
+
     if (data?.userInfo.id) { // Update
       let payload = data.userInfo.user;
       await axios.patch(urljoin(process.env.API_URL,`/api/user/${data.userInfo.id}`), payload).then(( res ) => {
@@ -127,7 +133,9 @@ function Settings() {
           setAlertOpen(true);
         }
       }).catch(( error ) => {
-        console.error("Failed to update user: ", error?.response.data.error);
+        console.error("Failed to update user: ", error?.response?.data?.error);
+        setAlert({severity: "error", message: "Please fill in all the required fields" });
+        setAlertOpen(true);
       })
     } else { // Add user
       const payload = {
@@ -143,7 +151,9 @@ function Settings() {
           })
         }
       }).catch(( error ) => {
-        console.log("Recheck your form bitch: ", error?.response.data.error);
+        setAlert({severity: "error", message: "Please fill in all the required fields" });
+        setAlertOpen(true);
+        console.log("Recheck your form bitch: ", error?.response?.data?.error);
       })
     }
   }
@@ -155,17 +165,31 @@ function Settings() {
         <div className="relative">
           <Avatar
             className="w-32 h-32 text-4xl border rounded-full shadow mb-4"
-            alt={data?.userInfo.user.avatar}
+            alt={data?.userInfo.user.fullname}
             src={displayAvatar || "/fake-image.jpg"}
           >
           </Avatar>
 
-          <FirebaseUpload id="profile-avatar" onComplete={ handleUploadComplete } prefix={data?.userInfo.user.username ? data?.userInfo.user.username : "avatar"}  className="bg-black w-full">
-            <IconButton component="span"
-              className="outline-none absolute right-2 bottom-2 bg-blue-400 bg-opacity-40 p-2"
-              aria-label="Search">
-              <PhotoCameraIcon fontSize="small"></PhotoCameraIcon>
-            </IconButton>
+          <FirebaseUpload id="profile-avatar" 
+            onStart={() => setUploadingAvatar(true)}
+            onError={(error) => {
+              setUploadingAvatar(false);
+              setAlert({severity: "error", message: "Failed to upload avatar, Please try again!" });
+              setAlertOpen(true);
+            }}
+            onComplete={ handleUploadComplete } 
+            prefix={data?.userInfo.user.username ? data?.userInfo.user.username : "avatar"}  
+            className="bg-black w-full">
+            <>
+              <IconButton component="span"
+                className="outline-none absolute right-2 bottom-2 bg-blue-400 bg-opacity-40 p-2"
+                aria-label="Search">
+                <PhotoCameraIcon fontSize="small" 
+                  color={uploadingAvatar ? "disabled" : "primary"}></PhotoCameraIcon>
+              </IconButton>
+              {uploadingAvatar && <CircularProgress className="absolute" 
+                style={{right: "0.4rem", bottom:"0.4rem"}} size={40} />}
+            </>
           </FirebaseUpload>
 
         </div>
@@ -189,6 +213,16 @@ function Settings() {
           defaultValue={data?.userInfo.user.fullname}
           required/>
 
+        <TextField id="profile-email" 
+          className="w-full mt-6"
+          label="Email" 
+          disabled
+          variant="outlined"           
+          defaultValue={data?.userInfo.user.email}
+          InputProps={{readOnly: true}}
+          required
+        />
+
         <TextField id="profile-birthday" 
           className="w-full mt-6"
           onChange={(e) => setUserInfoByField("birthday", new Date(e.target.value))}
@@ -208,15 +242,6 @@ function Settings() {
           type="number" 
         />
 
-        <TextField id="profile-email" 
-          className="w-full mt-6"
-          label="Email" 
-          disabled
-          variant="outlined"           
-          defaultValue={data?.userInfo.user.email}
-          InputProps={{readOnly: true}}
-          required
-        />
 
         <TextField id="profile-about" 
           className="w-full mt-6"
@@ -227,7 +252,11 @@ function Settings() {
           label="About yourself" 
           variant="outlined" 
         />
-        <Button id="profile-submit" className="my-6 text-black border-black" variant="outlined" onClick={submit}>
+        <Button id="profile-submit" 
+          className="my-6 text-black border-black" 
+          disabled={uploadingAvatar}
+          variant="outlined" 
+          onClick={submit}>
           Save 
         </Button>
       </form>

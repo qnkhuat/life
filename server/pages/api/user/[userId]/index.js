@@ -2,6 +2,8 @@ import { firestore, storageGetUrl } from "../../../../lib/firebase/server";
 import isAuthenticated from "../../../../lib/firebase/middleware";
 import { cors, runMiddleware, createValidator } from "../../../../lib/util";
 import * as yup from "yup";
+import * as config from "../../../../config";
+
 
 // *** Schemes
 const QueryScheme = yup.object({
@@ -9,13 +11,13 @@ const QueryScheme = yup.object({
 });
 
 const UpdateBodyUserScheme = yup.object({
-  username: yup.string(),
-  fullname: yup.string(),
-  maxAge: yup.number(),
-  avatar: yup.string().nullable(),
-  about: yup.string().nullable(),
+  username: yup.string().required().matches(config.usernameRegex),
+  fullname: yup.string().required(),
+  maxAge: yup.number().required(),
+  avatar: yup.string().nullable().defined(),
+  about: yup.string().nullable().defined(),
   private: yup.boolean().nullable(),
-  birthday: yup.date(),
+  birthday: yup.date().required(),
 });
 
 // *** Handlers

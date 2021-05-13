@@ -9,7 +9,6 @@ import React from "react";
 export default function Home (){
   const { auth, user, signOut, loading } = useAuth();
   const router = useRouter();
-  if (loading) return <Loading/>;
 
   useEffect(() => {
     if (!auth && !loading) {
@@ -17,6 +16,7 @@ export default function Home (){
     }
   }, [auth, loading]);
 
+  if (loading) return <Loading/>;
   return (
     <Layout>
       <p>{auth ? auth.name : "Stranger"}</p>
