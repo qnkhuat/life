@@ -22,11 +22,6 @@ import axios from "axios";
 
 import * as config from "../config";
 
-const Alert = forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
-
 function Settings() {
   const { auth, refreshUser, user: userFromAuth, loading } = useAuth();
 
@@ -46,7 +41,7 @@ function Settings() {
       },
     },
     userInfo: {
-      id: null,
+      id: null, 
       user: {
         fullname: auth.displayName,
         maxAge: 100,
@@ -143,6 +138,7 @@ function Settings() {
       // Since we don't receive the original value of avatar in database ,we only received a genrerated url
       // so we need to manually check it before update
       if (data.userInfo.user.avatar == data.currentUser.user.avatar)  delete payload.avatar;
+
       axios.patch(urljoin(process.env.API_URL,`/api/user/${data.userInfo.id}`), payload).then(( res ) => {
         if (res.status == 200) {
           refreshUser().then((res) => {
@@ -154,16 +150,16 @@ function Settings() {
           });
         }
       }).catch(( error ) => {
-        console.error("Failed to update user: ", error);
-        console.log(error.response.data);
+        console.error("Failed to update user: ", error.response.data);
         setAlert({severity: "error", message: "Please fill in all the required fields" });
         setAlertOpen(true);
       })
     } else { // Add user
-      const payload = { 
-        id : auth.id,
-        user: data.userInfo.user
+      const payload = {
+        id: auth.uid,
+        user: data.userInfo.user,
       }
+      
       axios.post(urljoin(process.env.API_URL, "/api/user"), payload).then(( res ) => {
         if (res.status == 200) {
           refreshUser().then((res) => {
@@ -264,7 +260,6 @@ function Settings() {
           type="number" 
         />
 
-
         <TextField id="profile-about" 
           className="w-full mt-6"
           onChange={(e) => setUserInfoByField("about", e.target.value)}
@@ -284,9 +279,9 @@ function Settings() {
       </form>
 
       <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleCloseAlert} anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
-        <Alert onClose={handleCloseAlert}  severity={alert.severity} sx={{ width: '100%' }}>
+        <MuiAlert elevation={6} variant="filled" onClose={handleCloseAlert}  severity={alert.severity} sx={{ width: '100%' }}>
           {alert.message}
-        </Alert>
+        </MuiAlert>
       </Snackbar>
     </Layout>
   )

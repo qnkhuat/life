@@ -1,16 +1,26 @@
 // A form to both add and edit Story
 import { useState } from "react";
-import { useAuth  } from "../../lib/firebase/auth";
-import { formatDate } from "../../lib/util";
+
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FirebaseUpload from "../FirebaseUpload";
+import InputLabel from '@material-ui/core/InputLabel';
 import Switch from '@material-ui/core/Switch';
-import * as constants from "../Board/constants";
 import MenuItem from '@material-ui/core/MenuItem';
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import Select from '@material-ui/core/Select';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/core/Alert';
+
+import FirebaseUpload from "../FirebaseUpload";
+import { useAuth  } from "../../lib/firebase/auth";
+import { formatDate } from "../../lib/util";
+import * as constants from "../Board/constants";
+
 import axios from "axios";
 import urljoin from "url-join";
 
@@ -29,10 +39,19 @@ export default function Upsert({ storyId, story, onComplete }){
   const [ content, setContent ] = useState(story?.content|| null);
   const [ date, setDate ] = useState(formatDate(story?.date, "YYYY-MM-DD")|| new Date());
   const [ imageUrls, setImageUrls ] = useState(story?.imageUrls || []);
-  //const [ imageAbsoluteUrl, setImageUrls ] = useState(story?.imageUrls || []);
   const [ publish, setPublish ] = useState(story?.publish || true);
   const [ type, setType ] = useState(story?.type || Object.keys(storyTypes)[0]);
+  const [ uploadingAvatar, setUploadingAvatar ] = useState(false);
 
+  const [ alertOpen, setAlertOpen] = useState(false);
+  const [ alert, setAlert ] = useState({
+    severity: "success",
+    message: "",
+  });
+
+  function handleCloseAlert() {
+    setAlertOpen(false);
+  }
 
   // ImageUrls is for DB to store since it only store image path on Google Storage
   // imageDisplayUrls is a full url of uploaded image, we return it so client can preview
@@ -42,6 +61,7 @@ export default function Upsert({ storyId, story, onComplete }){
   function handleUploadComplete(path, url) {
     setImageUrls([path]);
     setImageDisplayUrls([url]);
+    setUploadingAvatar(false);
   }
 
   function handleUpsertStory(){
@@ -61,6 +81,9 @@ export default function Upsert({ storyId, story, onComplete }){
           if (onComplete) onComplete(storyId, payload);
         }
       }).catch(( error ) => {
+        setAlert({severity: "error", message: "Please fill in all the required fields"});
+        setAlertOpen(true);
+
         console.error("Error updating story: ", error);
       })
     } else { // insert
@@ -68,9 +91,14 @@ export default function Upsert({ storyId, story, onComplete }){
         if (res.status == 200) {
           let storyId = res.data.id;
           payload['imageUrls'] = imageDisplayUrls;
+          setAlert({severity: "success", message: "Add succeed"});
+          setAlertOpen(true);
           if (onComplete) onComplete(storyId, payload);
         }
       }).catch(( error ) => {
+        setAlert({severity: "error", message: "Please edit your info"});
+        setAlertOpen(true);
+
         console.error("Error adding story: ", error);
       })
     }
@@ -78,53 +106,105 @@ export default function Upsert({ storyId, story, onComplete }){
 
   return (
 
-    <form id="form-story" noValidate autoComplete="off" className="flex flex-col mt-40 bg-white w-96">
-      <TextField id="story-title" 
-        label="Title" 
-        variant="outlined" 
-        onChange={(e) => setTitle(e.target.value)}
-        defaultValue={title}
-        required
-      />
+    <div>
+      <form id="form-story" noValidate autoComplete="off" className="flex flex-col bg-white w-full m-auto h-screen">
 
-      <TextField id="story-content" 
-        label="Content" 
-        multiline
-        defaultValue={content}
-        variant="outlined" 
-        onChange={(e) => setContent(e.target.value)}
-        required/>
-
-      <TextField id="story-date" 
-        onChange={(e) => setDate(e.target.value)}
-        label="Date" 
-        variant="outlined" 
-        type="date"
-        defaultValue={date}
-        InputLabelProps={{shrink: true}}
-        required/>
-
-      <FormControl>
-        <Select
-          labelId="story-type"
-          id="story-type"
-          label="Type"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
+        <div id="form-image" className="relative overflow-hidden border-b-2"
+          style={{height:"40vh"}}
         >
-          {Object.keys(storyTypes).map((type) => <MenuItem key={type} value={type}>{storyTypes[type]}</MenuItem>)}
-        </Select>
-      </FormControl>
+          <img style={{height:"40vh"}} className="w-full object-contain" src={imageDisplayUrls.length > 0 ? imageDisplayUrls[0] : "placeholder-image.png"}></img>
 
-      <FormControlLabel id="story-publish" control={<Switch defaultChecked onChange={(e) => setPublish(e.target.checked)}/>} label="Label" />
+          <FirebaseUpload id="profile-avatar" 
+            onComplete={handleUploadComplete}
+            prefix={user ? user.id : ""} 
+            onStart={() => setUploadingAvatar(true)}
+            onError={(error) => {
+              setUploadingAvatar(false);
+              setAlert({severity: "error", message: "Failed to upload avatar, Please try again!" });
+              setAlertOpen(true);
+            }}
+            className="bg-black w-full">
+            <>
+              <IconButton component="span"
+                className="outline-none absolute right-2 bottom-2 bg-gray-400 bg-opacity-40 p-1 text-black"
+                aria-label="Search">
+                <PhotoCameraIcon fontSize="small" ></PhotoCameraIcon>
+              </IconButton>
+              {uploadingAvatar && <CircularProgress className="absolute" 
+                style={{right: "0.4rem", bottom:"0.4rem"}} size={40} />}
+            </>
+          </FirebaseUpload>
+        </div>
 
-      <FirebaseUpload id="story-image" prefix={user.id} className="bg-black" onComplete={handleUploadComplete}/>
-      {(imageUrls.length > 0 || imageDisplayUrls.length > 0) && <img src={imageDisplayUrls[0] || imageUrls}/>}
+        <div id="form-info" className="flex flex-col px-2 overflow-y-scroll overflow-x-scroll pb-2"
+          style={{height:"60vh"}}
+        >
 
-      <Button id="story-submit" variant="outlined" color="primary" onClick={handleUpsertStory}>
-        Submit
-      </Button>
-    </form>
+          <TextField id="story-title" 
+            className="mt-4"
+            label="Title" 
+            variant="outlined" 
+            onChange={(e) => setTitle(e.target.value)}
+            defaultValue={title}
+            required
+          />
+
+          <TextField id="story-content" 
+            className="mt-4 border-r-0 border-l-0"
+            label="Description" 
+            multiline
+            rows={3}
+            defaultValue={content}
+            variant="outlined" 
+            onChange={(e) => setContent(e.target.value)}
+          />
+
+
+          <TextField id="story-date" 
+            className="mt-4"
+            onChange={(e) => setDate(e.target.value)}
+            label="Date" 
+            variant="outlined" 
+            type="date"
+            defaultValue={date}
+            InputLabelProps={{shrink: true}}
+            required/>
+
+          <FormControl className='mt-4'>
+            <InputLabel id="form-type-label">Type</InputLabel>
+            <Select
+              labelId="form-type-label"
+              value={type}
+              label="Type"
+              onChange={(e) => setType(e.target.value)}
+            >
+
+              {Object.keys(storyTypes).map((type) => <MenuItem key={type} value={type}>{storyTypes[type]}</MenuItem>)}
+            </Select>
+          </FormControl>
+
+
+          <FormControlLabel
+            control={
+              <Switch 
+                color="secondary" checked={publish} onChange={(e) => setPublish(e.target.checked)} />
+            }
+            label="Publish"
+          />
+
+          <Button id="story-submit" variant="outlined" color="primary" className="text-black border-black" onClick={handleUpsertStory}>
+            Submit
+          </Button>
+        </div>
+
+      </form>
+      <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleCloseAlert} anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
+        <MuiAlert elevation={6} variant="filled" onClose={handleCloseAlert}  severity={alert.severity} sx={{ width: '100%' }}>
+          {alert.message}
+        </MuiAlert>
+      </Snackbar>
+
+
+    </div>
   )
-
 }

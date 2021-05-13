@@ -14,8 +14,8 @@ const CreateStoryScheme = yup.object({
   description: yup.string().nullable(),
   date: yup.date().required(),
   imageUrls: yup.array(yup.string()).nullable(),
-  publish: yup.boolean().requried(),
-  type: yup.string().requried(),
+  publish: yup.boolean().required(),
+  type: yup.string().required(),
 })
 
 
