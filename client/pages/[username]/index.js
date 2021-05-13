@@ -5,6 +5,8 @@ import Board from '../../components/Board';
 import Loading from '../../components/Loading';
 import Layout from '../../components/Layout';
 
+import { formatDate, formatAge }from '../../lib/util';
+
 import Avatar from '@material-ui/core/Avatar';
 
 import axios from "axios";
@@ -56,12 +58,20 @@ function Profile({ data }) {
 
   return (
     <Layout>
-      <div id="info">
+      <div id="info" className="flex mt-10">
         <Avatar
-          className="w-32 h-32 text-4xl border rounded-full shadow mb-4"
+          className="w-32 h-32 text-4xl torder rounded-full shadow mb-4 mr-4"
           alt={user.user.fullname}
           src={user.user.avatar || "/fake-image.jpg"}>
         </Avatar>
+
+        <div id="info-text">
+          <p id="fullname" className="font-bold text-lg">{user.user.fullname}</p>
+          <p>{formatAge(user.user.birthday)}</p>
+        </div>
+
+        {user.user.about && <div id="about" className="w-full"><p>{user.user.about}</p></div>}
+
       </div>
 
       <Board key={updated} events={eventsList} birthday={user.user.birthday} maxAge={user.user.maxAge}/>

@@ -123,11 +123,11 @@ function Settings() {
   }
 
   function submit(){
-    if(!userNameValidation.valid) {
-      setAlert({severity: "error", message: "Please edit your username" });
-      setAlertOpen(true);
-      return;
-    }
+    //if(!userNameValidation.valid) {
+    //  setAlert({severity: "error", message: "Please edit your username" });
+    //  setAlertOpen(true);
+    //  return;
+    //}
 
     if (data?.userInfo.id) { // Update
       let payload = data.userInfo.user;
@@ -175,7 +175,8 @@ function Settings() {
           <Avatar
             className="w-32 h-32 text-4xl border rounded-full shadow mb-4"
             alt={data?.userInfo.user.fullname}
-            src={displayAvatar || "/fake-image.jpg"}>
+            src={displayAvatar || "/fake-image.jpg"}
+          >
           </Avatar>
 
           <FirebaseUpload id="profile-avatar" 
@@ -190,10 +191,10 @@ function Settings() {
             className="bg-black w-full">
             <>
               <IconButton component="span"
-                className="outline-none absolute right-2 bottom-2 bg-blue-400 bg-opacity-40 p-2"
+                className="outline-none absolute right-2 bottom-2 bg-gray-400 bg-opacity-40 p-2 text-black"
                 aria-label="Search">
                 <PhotoCameraIcon fontSize="small" 
-                  color={uploadingAvatar ? "disabled" : "primary"}></PhotoCameraIcon>
+                  ></PhotoCameraIcon>
               </IconButton>
               {uploadingAvatar && <CircularProgress className="absolute" 
                 style={{right: "0.4rem", bottom:"0.4rem"}} size={40} />}

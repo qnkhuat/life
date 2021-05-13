@@ -4,6 +4,24 @@ dayjs.extend(customParseFormat);
 
 export const formatDate = (date, format) => dayjs(date).format(format);
 
+export function formatAge(birthdayString){
+  var now = dayjs();
+  const birthday = dayjs(birthdayString);
+
+  const yearsOld = now.diff(birthday, "year");
+  now = now.subtract(yearsOld, "year")
+
+  const monthsOld = now.diff(birthday, "month");
+  now = now.subtract(monthsOld, "month")
+
+  const daysOld = now.diff(birthday, "day");
+
+  const yearString = yearsOld > 0 ?`${yearsOld} ${yearsOld > 1 ? " years," : " year"}` : "";
+  const monthString = monthsOld > 0 ?`${monthsOld} ${monthsOld > 1 ? " months," : " month"}` : "";
+  const dayString = daysOld > 0 ?`${daysOld} ${daysOld > 1 ? " days" : " day,"}` : "";
+  return `${yearString} ${monthString} ${dayString} old`
+}
+
 export function deepClone(obj) {
     if (obj === null || typeof (obj) !== 'object' || 'isActiveClone' in obj)
         return obj;

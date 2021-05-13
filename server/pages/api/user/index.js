@@ -50,6 +50,7 @@ const findUserByUsername = async (req, res) => {
   if (snapshot.docs.length == 1) {
     const doc = snapshot.docs[0];
     const user = doc.data();
+    if (user.avatar) user.avatar = await storageGetUrl(user.avatar);
     return res.status(200).send({id: doc.id, user: user});
   } else if (snapshot.docs.length > 1){
     return res.status(400).send({error: "Multiple users has the same email"});
