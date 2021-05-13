@@ -37,6 +37,12 @@ const getUser = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
+  const usernameDoc = await firestore.collection("user").where("username", "==", req.body.username).get();
+  if (usernameDoc.docs.length > 0){
+    console.log("username existed");
+    return res.status(400).send({ error: "Username existed"});
+  }
+
   req.body['lastModifiedDate'] = new Date().toISOString();
   firestore.collection("user").doc(req.query.userId).update(req.body).then(( doc ) => {
     return res.status(200).send(req.body);

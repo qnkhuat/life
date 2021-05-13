@@ -123,6 +123,11 @@ function Settings() {
   }
 
   function submit(){
+    //if(!userNameValidation.valid) {
+    //  setAlert({severity: "error", message: "Please edit your username" });
+    //  setAlertOpen(true);
+    //  return;
+    //}
 
     if (data?.userInfo.id) { // Update
       let payload = data.userInfo.user;
@@ -155,9 +160,9 @@ function Settings() {
           })
         }
       }).catch(( error ) => {
-        setAlert({severity: "error", message: "Please fill in all the required fields" });
+        setAlert({severity: "error", message: "Please edit your info"});
         setAlertOpen(true);
-        console.log("Failed to add user: ", error);
+        console.log("Failed to add user: ", error.response.data);
       })
     }
   }

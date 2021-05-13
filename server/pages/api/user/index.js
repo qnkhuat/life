@@ -26,6 +26,11 @@ const FindUserScheme = yup.object({
 
 // *** Handlers
 const addUser = async (req, res) => {
+  const usernameDoc = await firestore.collection("user").where("username", "==", req.body.user.username).get();
+  if (usernameDoc.docs.length > 0){
+    return res.status(400).send({ error: "Username existed"});
+  }
+
   const userDocRef = firestore.collection("user").doc(req.body.id);
   userDocRef.get().then(( doc ) => {
     if (doc.exists) return res.status(409).send({ error: "User existed" });
