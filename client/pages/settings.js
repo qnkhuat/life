@@ -33,6 +33,18 @@ function Settings() {
   const [ userNameValidation, setUsernameValidation ] = useState({valid:false, msg: ""});
   const [ data, setData] = useState({ 
     updated: false,
+    currentUser: {
+      id: null, 
+      user: {
+        fullname: auth.displayName,
+        maxAge: 100,
+        username: null,
+        birthday: null,
+        email:auth.email,
+        about:null,
+        avatar:null
+      },
+    },
     userInfo: {
       id: null,
       user: {
@@ -57,7 +69,6 @@ function Settings() {
     setAlertOpen(false);
   }
 
-
   const [ uploadingAvatar, setUploadingAvatar ] = useState(false);
   const [ currentUsername, setCurrentUsername] = useState(null);
   const [ usernames, setUsernames ] = useState([]);
@@ -70,7 +81,6 @@ function Settings() {
     setData(data);
   }
 
-
   function handleUploadComplete(path, url) {
     // when user upload avatar
     setUserInfoByField("avatar", path)
@@ -82,12 +92,12 @@ function Settings() {
     if (!data.updated){
       refreshUser().then((user) => {
         if (!user) return;
-        setData({updated:true, userInfo: user});
+        setData({updated:true, userInfo: user, currentUser: deepClone(user)});
         setCurrentUsername(user.user.username);
         validateUserName(user.user.username);
         setDisplayAvatar(user.user.avatar);
       }).catch((error) => {
-        setData({updated:true, userInfo: data.userInfo});
+        setData({updated:true, userInfo: data.userInfo, currentUser: data.userInfo});
       });
       axios.get(urljoin(process.env.API_URL, "/api/usernames")).
         then((res) => {
@@ -123,14 +133,16 @@ function Settings() {
   }
 
   function submit(){
-    //if(!userNameValidation.valid) {
-    //  setAlert({severity: "error", message: "Please edit your username" });
-    //  setAlertOpen(true);
-    //  return;
-    //}
-
+    if(!userNameValidation.valid) {
+      setAlert({severity: "error", message: "Please edit your username" });
+      setAlertOpen(true);
+      return;
+    }
     if (data?.userInfo.id) { // Update
       let payload = data.userInfo.user;
+      // Since we don't receive the original value of avatar in database ,we only received a genrerated url
+      // so we need to manually check it before update
+      if (data.userInfo.user.avatar == data.currentUser.user.avatar)  delete payload.avatar;
       axios.patch(urljoin(process.env.API_URL,`/api/user/${data.userInfo.id}`), payload).then(( res ) => {
         if (res.status == 200) {
           refreshUser().then((res) => {
@@ -143,13 +155,14 @@ function Settings() {
         }
       }).catch(( error ) => {
         console.error("Failed to update user: ", error);
+        console.log(error.response.data);
         setAlert({severity: "error", message: "Please fill in all the required fields" });
         setAlertOpen(true);
       })
     } else { // Add user
-      const payload = {
-        id: auth.uid,
-        user: data.userInfo.user,
+      const payload = { 
+        id : auth.id,
+        user: data.userInfo.user
       }
       axios.post(urljoin(process.env.API_URL, "/api/user"), payload).then(( res ) => {
         if (res.status == 200) {
@@ -270,8 +283,8 @@ function Settings() {
         </Button>
       </form>
 
-      <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleCloseAlert}>
-        <Alert onClose={handleCloseAlert} severity={alert.severity} sx={{ width: '100%' }}>
+      <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleCloseAlert} anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
+        <Alert onClose={handleCloseAlert}  severity={alert.severity} sx={{ width: '100%' }}>
           {alert.message}
         </Alert>
       </Snackbar>
