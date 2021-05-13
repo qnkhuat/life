@@ -11,7 +11,7 @@ import MuiAlert from '@material-ui/core/Alert';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { useAuth, withAuth } from '../lib/firebase/auth';
-import { formatDate  } from "../lib/util";
+import { formatDate, deepClone } from "../lib/util";
 
 import FirebaseUpload from "../components/FirebaseUpload";
 import Loading from "../components/Loading";
@@ -28,7 +28,7 @@ const Alert = forwardRef(function Alert(props, ref) {
 
 
 function Settings() {
-  const { auth, refreshUser, loading } = useAuth();
+  const { auth, refreshUser, user: userFromAuth, loading } = useAuth();
 
   const [ userNameValidation, setUsernameValidation ] = useState({valid:false, msg: ""});
   const [ data, setData] = useState({ 

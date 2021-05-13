@@ -11,6 +11,7 @@ import Div100vh from 'react-div-100vh';
 
 export default function Layout({ children }) {
   const { user } = useAuth();
+  // TODO : understand why this is being re-rendered everytime children re-render
 
   return (
     <Div100vh className={`flex flex-col justify-between md:flex-col-reverse md:justify-end`}>

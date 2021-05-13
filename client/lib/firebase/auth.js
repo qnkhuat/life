@@ -6,6 +6,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { auth as firebaseAuth } from './client';
 import axios from "axios";
 import { onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut as firebaseSignout } from 'firebase/auth';
+import { deepClone } from "../util";
 import urljoin from "url-join";
 import nookies from 'nookies';
 
@@ -45,8 +46,10 @@ function useProvideAuth() {
           maxAge: 24*60*60, // in seconds
           path: '/',
         });
+        // deep clone the result to prevent set User state accidently 
+        // when the using function try to modify it
+        return deepClone(res.data);  
       }
-      return res.data;
     }).catch((error) => {
       console.log("Failed to get user info: ", error);
       throw error;

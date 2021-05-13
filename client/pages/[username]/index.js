@@ -77,9 +77,7 @@ export async function getStaticProps({ params }) {
   var data = {};
   try {
     data = await getData(username);
-    console.log("got data", data);
   } catch (error){
-    console.log("error generate ", error);
     return {
       notFound: true,
     }
