@@ -12,74 +12,70 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import useDeviceDetect from "../lib/device";
 import { useAuth } from "../lib/firebase/auth"; 
 
-import Div100vh from 'react-div-100vh';
-
-
 export default function Layout({ children }) {
   const { user } = useAuth();
   const router = useRouter();
   // TODO : understand why this is being re-rendered everytime children re-render
-
   return (
-    <Div100vh className={`flex flex-col justify-between md:flex-col-reverse md:justify-end`}>
-      <div id="navbar-mobile" className="md:hidden flex justify-between border-b bg-white">
+    <>
+    <div id="navbar-mobile" className="md:hidden fixed top-0 left-0 flex justify-between border-b bg-white z-10 w-full">
+      <IconButton
+        className="text-gray-700 outline-none rounded p-2 w-14"
+        onClick={() => router.back()}
+        aria-label="Back">
+        <ArrowBackIcon></ArrowBackIcon>
+      </IconButton>
+      <Link
+        href={`/${user ? "settings" : "login"}`}
+        passHref>
         <IconButton
           className="text-gray-700 outline-none rounded p-2 w-14"
-          onClick={() => router.back()}
-          aria-label="Back">
-          <ArrowBackIcon></ArrowBackIcon>
+          aria-label="Settings">
+          <SettingsIcon></SettingsIcon>
         </IconButton>
+      </Link>
+    </div>
+    <div className="py-10 md:pb-0">
+      <div className="container mx-auto px-4">
+        {children && children}
+      </div>
+    </div>
+    <div id="navbar-main"
+      className={`border-t md:border-b bg-white w-full z-10 fixed bottom-0 left-0 md:top-0 md:bottom-auto`}>
+      <div className="container flex justify-between m-auto">
         <Link
-          href={`/${user ? "settings" : "login"}`}
+          href="/"
+          passHref>
+          <Button
+            className="text-gray-700 outline-none p-2 w-14 overflow-hidden"
+            component="a"
+            onClick={() => {}}
+            aria-label="Home">
+            <img className="w-6" src="/Tilde.svg" alt="logo"></img>
+          </Button>
+        </Link>
+        <Link
+          href="/search"
           passHref>
           <IconButton
             className="text-gray-700 outline-none rounded p-2 w-14"
-            aria-label="Settings">
-            <SettingsIcon></SettingsIcon>
+            onClick={() => {}}
+            aria-label="Search">
+            <SearchIcon></SearchIcon>
+          </IconButton>
+        </Link>
+        <Link
+          href={`/${user?.user?.username ? user.user.username : "settings"}`}
+          passHref>
+          <IconButton
+            className="text-gray-700 outline-none rounded p-2 w-14"
+            onClick={() => {}}
+            aria-label="Account">
+            <AccountCircleIcon></AccountCircleIcon>
           </IconButton>
         </Link>
       </div>
-      <div className="overflow-y-auto overflow-x-hidden h-full">
-        <div className="container mx-auto px-4">
-          {children && children}
-        </div>
-      </div>
-      <div id="navbar-main"
-        className={`border-t md:border-b bg-white`}>
-        <div className="container flex justify-between m-auto">
-          <Link
-            href="/"
-            passHref>
-            <Button
-              className="text-gray-700 outline-none p-2 w-14 overflow-hidden"
-              component="a"
-              onClick={() => {}}
-              aria-label="Home">
-              <img className="w-6" src="/Tilde.svg" alt="logo"></img>
-            </Button>
-          </Link>
-          <Link
-            href="/search"
-            passHref>
-            <IconButton
-              className="text-gray-700 outline-none rounded p-2 w-14"
-              onClick={() => {}}
-              aria-label="Search">
-              <SearchIcon></SearchIcon>
-            </IconButton>
-          </Link>
-          <Link
-            href={`/${user?.user?.username ? user.user.username : "settings"}`}
-            passHref>
-            <IconButton
-              className="text-gray-700 outline-none rounded p-2 w-14"
-              onClick={() => {}}
-              aria-label="Account">
-              <AccountCircleIcon></AccountCircleIcon>
-            </IconButton>
-          </Link>
-        </div>
-      </div>
-    </Div100vh>
+    </div>
+    </>
   )
 }
