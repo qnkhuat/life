@@ -45,38 +45,40 @@ export default function Layout({ children }) {
         </div>
       </div>
       <div id="navbar-main"
-        className={`flex justify-between border-t md:border-b bg-white`}>
-        <Link
-          href="/"
-          passHref>
-          <Button
-            className="text-gray-700 outline-none p-2 w-14 overflow-hidden"
-            component="a"
-            onClick={() => {}}
-            aria-label="Home">
-            <img className="w-6" src="/Tilde.svg" alt="logo"></img>
-          </Button>
-        </Link>
-        <Link
-          href="/search"
-          passHref>
-          <IconButton
-            className="text-gray-700 outline-none rounded p-2 w-14"
-            onClick={() => {}}
-            aria-label="Search">
-            <SearchIcon></SearchIcon>
-          </IconButton>
-        </Link>
-        <Link
-          href={`/${user?.user?.username ? user.user.username : "settings"}`}
-          passHref>
-          <IconButton
-            className="text-gray-700 outline-none rounded p-2 w-14"
-            onClick={() => {}}
-            aria-label="Account">
-            <AccountCircleIcon></AccountCircleIcon>
-          </IconButton>
-        </Link>
+        className={`border-t md:border-b bg-white`}>
+        <div className="container flex justify-between m-auto">
+          <Link
+            href="/"
+            passHref>
+            <Button
+              className="text-gray-700 outline-none p-2 w-14 overflow-hidden"
+              component="a"
+              onClick={() => {}}
+              aria-label="Home">
+              <img className="w-6" src="/Tilde.svg" alt="logo"></img>
+            </Button>
+          </Link>
+          <Link
+            href="/search"
+            passHref>
+            <IconButton
+              className="text-gray-700 outline-none rounded p-2 w-14"
+              onClick={() => {}}
+              aria-label="Search">
+              <SearchIcon></SearchIcon>
+            </IconButton>
+          </Link>
+          <Link
+            href={`/${user?.user?.username ? user.user.username : "settings"}`}
+            passHref>
+            <IconButton
+              className="text-gray-700 outline-none rounded p-2 w-14"
+              onClick={() => {}}
+              aria-label="Account">
+              <AccountCircleIcon></AccountCircleIcon>
+            </IconButton>
+          </Link>
+        </div>
       </div>
     </Div100vh>
   )
