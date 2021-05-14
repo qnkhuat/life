@@ -16,6 +16,7 @@ class Board extends React.Component {
     super(props);
     this.today = roundDate(dayjs());
     this.events = props.events;
+    this.onEditEvent = props.onEditEvent;
     this.events[uuidv4()] = {
       publish:true,
       date: this.today,
@@ -90,6 +91,7 @@ class Board extends React.Component {
           endDate={endDate}
           type={tileType}
           events={events}
+          onEditEvent={this.onEditEvent}
         />
       </div>
     )

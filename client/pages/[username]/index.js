@@ -50,16 +50,20 @@ function Profile({ data }) {
   const { updated, updateKey, stateData } = state;
   const { events , user } = stateData;
 
-  // Add Story button controller
-  const [openAdd, setOpenAdd] = useState(false);
-  function handleOpenAdd() {setOpenAdd(true)};
-  function handleCloseAdd() {setOpenAdd(false)};
+  // Add/Edit Story button controller
+  const [openUpsert, setOpenUpsert] = useState(false);
+  const [upsertStory, setUpsertStory ] = useState({storyId: null, story: null});
+  function handleOpenUpsert() {
+    setOpenUpsert(true)
+    setUpsertStory({storyId:null, story:null});
+  };
+  function handleCloseUpsert() {setOpenUpsert(false)};
 
-  function handleCompleteAdd(storyid, story){
+  function handleCompleteUpsert(storyid, story){
     state.stateData.events[storyid] = story;
     state.updateKey = uuidv4();
     setState(state);
-    handleCloseAdd();
+    handleCloseUpsert();
   }
 
   useEffect(() => {
@@ -79,9 +83,15 @@ function Profile({ data }) {
   });
 
   const handlers = useSwipeable({
-    onSwipedDown: (e) => {setOpenAdd(false)},
-    onSwipedkp: (e) => {setOpenAdd(false)},
+    onSwipedDown: (e) => {setOpenUpsert(false)},
+    onSwipedkp: (e) => {setOpenUpsert(false)},
   }); 
+  
+
+  function onEditEvent (id) {
+    setOpenUpsert(true)
+    setUpsertStory({storyId:id, story:events[id]});
+  }
 
 
   return (
@@ -106,30 +116,30 @@ function Profile({ data }) {
 
         <div className="add-button fixed bottom-14 right-4 z-10">
           <IconButton
-            onClick={handleOpenAdd}
+            onClick={handleOpenUpsert}
             className="bg-gray-600 text-white p-2 outline-none"
             aria-label="edit" color="primary">
             <AddIcon></AddIcon>
           </IconButton>
           <Modal
             BackdropComponent={Backdrop}
-            open={openAdd}
-            onClose={handleCloseAdd}
+            open={openUpsert}
+            onClose={handleCloseUpsert}
             aria-labelledby="child-modal-title"
             aria-describedby="child-modal-description"
           >
             <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
               <IconButton
-                onClick={handleCloseAdd}
+                onClick={handleCloseUpsert}
                 className="bg-gray-600 bg-opacity-40 text-black p-1 outline-none absolute top-2 right-2 z-10"
                 aria-label="edit" color="primary">
                 <CloseIcon fontSize="small"></CloseIcon>
               </IconButton>
-                <Upsert onComplete={handleCompleteAdd}/>
+                <Upsert storyId={upsertStory.storyId} story={upsertStory.story} onComplete={handleCompleteUpsert}/>
             </div>
           </Modal>
         </div>
-        <Board key={updateKey} events={eventsList} birthday={user.user.birthday} maxAge={user.user.maxAge}/>
+        <Board key={updateKey} events={events} birthday={user.user.birthday} maxAge={user.user.maxAge} onEditEvent={onEditEvent}/>
       </div>
     </Layout>
   )

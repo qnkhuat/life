@@ -159,7 +159,6 @@ function Settings() {
         id: auth.uid,
         user: data.userInfo.user,
       }
-      console.log(auth.token);
       
       axios.post(urljoin(process.env.API_URL, "/api/user"), payload).then(( res ) => {
         if (res.status == 200) {

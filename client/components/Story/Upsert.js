@@ -3,7 +3,6 @@ import { useState } from "react";
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import Avatar from '@material-ui/core/Avatar';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -14,6 +13,8 @@ import Select from '@material-ui/core/Select';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/core/Alert';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
 
 import { useAuth  } from "../../lib/firebase/auth";
 import { formatDate } from "../../lib/util";
@@ -43,7 +44,7 @@ export default function Upsert({ storyId, story, onComplete }){
   const [ imageUrls, setImageUrls ] = useState(story?.imageUrls || []);
   const [ publish, setPublish ] = useState(story?.publish || true);
   const [ type, setType ] = useState(story?.type || Object.keys(storyTypes)[0]);
-  const [ uploadingAvatar, setUploadingAvatar ] = useState(false);
+  const [ uploadingImage, setUploadingImage ] = useState(false);
 
   const [ alertOpen, setAlertOpen] = useState(false);
   const [ alert, setAlert ] = useState({
@@ -59,11 +60,27 @@ export default function Upsert({ storyId, story, onComplete }){
   // imageDisplayUrls is a full url of uploaded image, we return it so client can preview
   const [ imageDisplayUrls, setImageDisplayUrls ] = useState(story?.imageUrls || []);
 
-
+  const [ openDeleteConfirmation, setOpenDeleteConfirmation ] = useState(false);
   function handleUploadComplete(path, url) {
     setImageUrls([path]);
     setImageDisplayUrls([url]);
-    setUploadingAvatar(false);
+    setUploadingImage(false);
+  }
+
+  function handleDeleteStory(){
+    if (!storyId ) return;
+    axios.delete(urljoin(process.env.API_URL, `/api/user/${user.id}/story/${storyId}`)).then(( res ) => {
+      if (res.status == 200) {
+        setAlert({severity: "success", message: "Add succeed"});
+        setAlertOpen(true);
+        if (onComplete) onComplete(storyId, {});
+      }
+    }).catch(( error ) => {
+      setAlert({severity: "error", message: "Failed to delete story"});
+      setAlertOpen(true);
+
+      console.error("Error adding story: ", error);
+    })
   }
 
   function handleUpsertStory(){
@@ -71,9 +88,11 @@ export default function Upsert({ storyId, story, onComplete }){
       title,
       content,
       date,
-      imageUrls,
       publish,
       type
+    }
+    if (imageDisplayUrls != imageUrls){
+      payload.imageUrls = imageUrls;
     }
 
     if (storyId) { // update
@@ -109,13 +128,12 @@ export default function Upsert({ storyId, story, onComplete }){
   return (
 
     <div>
-      <form id="form-story" noValidate autoComplete="off" className="flex flex-col bg-white w-screen m-auto overflow-hidden"
+      <form id="form-story" noValidate autoComplete="off" className="flex flex-col bg-white w-screen m-auto overflow-hidden justify-center"
         style={{height:height100vh ? height100vh : "100vh"}}
       >
 
         <div id="form-image" className="relative overflow-hidden border-b-2"
-          style={{height:height100vh ? height100vh*(2/5) : "40vh"}}
-        >
+          style={{height:height100vh ? height100vh*(2/5) : "40vh"}}>
           <img 
             style={{height:height100vh ? height100vh*(2/5) : "40vh"}}
             className="w-full object-contain" src={imageDisplayUrls.length > 0 ? imageDisplayUrls[0] : "placeholder-image.png"}></img>
@@ -123,9 +141,9 @@ export default function Upsert({ storyId, story, onComplete }){
           <FirebaseUpload id="profile-avatar" 
             onComplete={handleUploadComplete}
             prefix={user ? user.id : ""} 
-            onStart={() => setUploadingAvatar(true)}
+            onStart={() => setUploadingImage(true)}
             onError={(error) => {
-              setUploadingAvatar(false);
+              setUploadingImage(false);
               setAlert({severity: "error", message: "Failed to upload avatar, Please try again!" });
               setAlertOpen(true);
             }}
@@ -136,14 +154,14 @@ export default function Upsert({ storyId, story, onComplete }){
                 aria-label="Search">
                 <PhotoCameraIcon fontSize="small" ></PhotoCameraIcon>
               </IconButton>
-              {uploadingAvatar && <CircularProgress className="absolute" 
-                style={{right: "0.4rem", bottom:"0.4rem"}} size={40} />}
+              {uploadingImage && <CircularProgress className="absolute" 
+                style={{right: "0.4rem", bottom:"0.4rem"}} size={32} />}
             </>
           </FirebaseUpload>
         </div>
 
         <div id="form-info" className="flex flex-col px-2 overflow-y-scroll overflow-x-scroll pb-4"
-          style={{height:height100vh ? height100vh*(3/5) : "60vh"}}
+          style={{"max-height":height100vh ? height100vh*(3/5) : "60vh"}}
         >
 
           <CustomTextField id="story-title" 
@@ -199,8 +217,39 @@ export default function Upsert({ storyId, story, onComplete }){
           />
 
           <Button id="story-submit" variant="outlined" color="primary" className="text-black border-black" onClick={handleUpsertStory}>
-            Submit
+            {storyId ? "Update" : "Add"}
           </Button>
+
+          {storyId && 
+          <>
+            <Button id="story-delete" variant="filled" color="secondary" className="text-white bg-red-500 mt-4" onClick={() => setOpenDeleteConfirmation(true)}>
+              Delete
+            </Button>
+            <Modal
+              BackdropComponent={Backdrop}
+              open={openDeleteConfirmation}
+              onClose={() => setOpenDeleteConfirmation(false)}
+              aria-labelledby="child-modal-title"
+              aria-describedby="child-modal-description"
+            >
+              <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                <div className="bg-white p-4 rounded">
+                  <p>Are you sure you want to delete story : {story.title}?</p>
+                  <div className="flex justify-center">
+                  <Button id="story-confirm-yes" variant="filled" color="primary" className="text-white bg-red-500 mt-4 mr-4" 
+                    onClick={() => {
+                      setOpenDeleteConfirmation(false);
+                      handleDeleteStory();
+                    }}>Yes</Button>
+                  <Button id="story-confirm-no" autoFocus variant="filled" color="secondary" className="text-white bg-blue-500 mt-4" 
+                    onClick={() => setOpenDeleteConfirmation(false)}>No</Button>
+                </div>
+                </div>
+              </div>
+            </Modal>
+          </>
+          }
+
         </div>
 
       </form>

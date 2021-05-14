@@ -34,7 +34,6 @@ export default function FirebaseUpload({children, className, label, accept, onSt
       },() => { // upload complete
         getDownloadURL(task.snapshot.ref).then((downloadUrl) => {
           if (onComplete) {
-            console.log(dest, downloadUrl);
             onComplete(dest, downloadUrl);
           }
         });

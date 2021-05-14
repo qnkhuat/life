@@ -1,13 +1,15 @@
 import { isMobile } from 'react-device-detect';
+import { v4 as uuidv4 } from 'uuid';
 import React from 'react';
+
 import { withStyles } from "@material-ui/core/styles";
 import Tooltip from '@material-ui/core/Tooltip';
 import OutsideDetector from "./OutsideDetector";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from '@material-ui/icons/Close';
-import { v4 as uuidv4 } from 'uuid';
-import { formatMultilineText } from "../../lib/util";
+import EditIcon from '@material-ui/icons/Edit';
 
+import { formatMultilineText } from "../../lib/util";
 import * as constants from "./constants";
 
 const CustomTooltip = withStyles({
@@ -58,6 +60,7 @@ class Tile extends React.Component {
     this.startDate = props.startDate;
     this.endDate = props.endDate;
     this.type = props.type || "default";
+    this.onEditEvent = props.onEditEvent;
     if (!this.type in constants.EVENTMAPPING) this.type = "default";
     this.isMobile = isMobile;
     this.state = {
@@ -68,12 +71,27 @@ class Tile extends React.Component {
     }
   }
 
-  eventToDiv(e){
+
+  eventToDiv(id, e){
+    function onEditButtonClicked () {
+      if(this.onEditEvent) {
+        this.setState({open:false});
+        this.onEditEvent(id);
+      }
+    }
+
     const closeButton = <IconButton 
       onClick={this.handleOnClickAway.bind(this)} aria-label="close" color="primary" 
-      className="absolute top-0 right-0 bg-black bg-opacity-50 text-white w-6 h-6 mt-1 mr-1"
+      className="outline-none absolute top-0 right-0 bg-black bg-opacity-50 text-white w-6 h-6 mt-1 mr-1"
     >
       <CloseIcon fontSize="small"></CloseIcon>
+    </IconButton>
+    const editButton = <IconButton 
+      onClick={onEditButtonClicked.bind(this)} 
+      aria-label="close" color="primary" 
+      className="outline-none absolute top-8 right-0 bg-black bg-opacity-50 text-white w-6 h-6 mt-1 mr-1"
+    >
+      <EditIcon fontSize="small"></EditIcon>
     </IconButton>
 
       // media
@@ -95,13 +113,13 @@ class Tile extends React.Component {
         <p className="text-sm text-gray-500">{e.date.format(DATE_RANGE_FORMAT)} - {Math.floor(e.ageSince)} Years old</p>
       </div>
 
-      console.log(e);
     return (
       <div 
         className="tile-content relative w-full">
         {isMedia && media}
         {isText && text}
         {closeButton}
+        {editButton}
       </div>
     )
   }
@@ -119,7 +137,7 @@ class Tile extends React.Component {
       this.setState({
         open: !isOpen,
         clickOpen: !isOpen,
-        tooltipModifiers: isOpen ? [preventOverflow] :  [preventOverflow, this.isMobile && centerTooltipModifier],
+        tooltipModifiers: isOpen ? [preventOverflow] :  [preventOverflow, ...[this.isMobile ?  [centerTooltipModifier] : []]],
       });
     }
   }
@@ -164,7 +182,7 @@ class Tile extends React.Component {
       >{constants.EVENTMAPPING[this.type]['icon']}</div>;
 
       var tooltipContent = Object.keys(this.events).map((storyId) => 
-        <div key={storyId}>{this.eventToDiv(this.events[storyId])}</div>
+        <div key={storyId}>{this.eventToDiv(storyId, this.events[storyId])}</div>
       )
 
       const tooltipClassName = "tooltip-wrapper shadow-xl border-2 border border-gray-300 rounded bg-black max-h-tooltip w-tooltip sm:w-sm-tooltip";
