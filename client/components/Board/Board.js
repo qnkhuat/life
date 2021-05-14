@@ -15,23 +15,23 @@ class Board extends React.Component {
   constructor(props){
     super(props);
     this.today = roundDate(dayjs());
-    this.events = props.events.slice();
-    this.events.push({
+    this.events = props.events;
+    this.events[uuidv4()] = {
       publish:true,
       date: this.today,
       type: "today",
       title: "Today",
       imageUrls: [],
       videoUrls: [],
-    })
+    };
 
     this.birthday = formatDate(props.birthday);
-    this.events.forEach(e => {
+    Object.keys(this.events).forEach((storyId) => {
+      const e = this.events[storyId]
       e.date = formatDate(e.date);
       e.ageSince = (e.date - this.birthday) / ( 1000 * 60 * 60 * 24 * 365 );
-    });
+    })
 
-    // TODO this events should be an object
     this.autoResize = props.autoResize || false;
     this.state = {
       numRows: props.maxAge,
@@ -66,7 +66,11 @@ class Board extends React.Component {
   }
 
   eventsLookup(startDate, endDate){
-    var events = this.events.filter((e) => startDate <= e.date && e.date < endDate && e.publish);
+    var events = {};
+    Object.keys(this.events).forEach((storyId) => {
+      const e = this.events[storyId];
+      if (startDate <= e.date && e.date < endDate && e.publish) events[storyId] = e;
+    });
     return events;
   }
 
@@ -76,8 +80,8 @@ class Board extends React.Component {
       events = this.eventsLookup(startDate, endDate),
       tileTitle = events.length > 0 ? events[0].title : null;
         
-    var tileType = events.length > 0 ? events[0].type : null;
-    if (tileType == null) tileType = startDate < this.today ? "default" : "disable"; 
+    var tileType = Object.keys(events).length > 0 ? Object.entries(events)[0][1].type : null;
+    if (!tileType) tileType = startDate < this.today ? "default" : "disable"; 
 
     return (
       <div key={`item-${r}-${c}`}>

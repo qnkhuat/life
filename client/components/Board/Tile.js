@@ -73,21 +73,21 @@ class Tile extends React.Component {
       onClick={this.handleOnClickAway.bind(this)} aria-label="close" color="primary" 
       className="absolute top-0 right-0 bg-black bg-opacity-50 text-white w-6 h-6 mt-1 mr-1"
     >
-      <CloseIcon fontSize="small"/>
+      <CloseIcon fontSize="small"></CloseIcon>
     </IconButton>
 
-    // media
-    const isMedia = e.imageUrls.length > 0;
+      // media
+      const isMedia = e.imageUrls.length > 0;
     const isText = e.title.length > 0;
     const media = <div className={`tooltip-media ${isMedia ? "max-h-tooltip-media" : "max-h-tooltip"}`}>
       {isMedia && e.imageUrls.length > 0 && <img 
         alt={e.date.format(DATE_RANGE_FORMAT)}
         className={`object-contain m-auto ${isText ? "max-h-tooltip-media" : "max-h-tooltip"}`}
-        src={e.imageUrls[0]}/>}
+        src={e.imageUrls[0]}></img>}
     </div>
 
-    // text
-    const text = <div 
+      // text
+      const text = <div 
         className={`tooltip-text bg-white px-5 py-5 text-black text-left ${isMedia ? "max-h-tooltip-text" : "max-h-tooltip"} overflow-x-hidden overflow-y-auto`}>
         <p className="text-lg font-bold overflow-ellipsis">{e.title}</p>
         {isText && e.content && <p className="text-base mb-2">{formatMultilineText(e.content)}</p>}
@@ -95,14 +95,15 @@ class Tile extends React.Component {
         <p className="text-sm text-gray-500">{e.date.format(DATE_RANGE_FORMAT)} - {Math.floor(e.ageSince)} Years old</p>
       </div>
 
-      return (
-        <div 
-          className="tile-content relative w-full">
-          {isMedia && media}
-          {isText && text}
-          {closeButton}
-        </div>
-      )
+      console.log(e);
+    return (
+      <div 
+        className="tile-content relative w-full">
+        {isMedia && media}
+        {isText && text}
+        {closeButton}
+      </div>
+    )
   }
 
   handleOnClick(){
@@ -154,7 +155,7 @@ class Tile extends React.Component {
       w-tile sm:w-sm-tile h-tile sm:h-sm-tile m-tile sm:m-sm-tile
       box-border`;
 
-    if (this.events.length > 0) { // interactive tile
+    if (Object.keys(this.events).length > 0) { // interactive tile
       const tileDiv = <div 
         onClick={this.handleOnClick.bind(this)}
         onMouseEnter={this.handleOnMouseEnter.bind(this)}
@@ -162,7 +163,9 @@ class Tile extends React.Component {
         className={toolDivClassName}
       >{constants.EVENTMAPPING[this.type]['icon']}</div>;
 
-      var tooltipContent = this.events.map((e, i) => <div key={i}>{this.eventToDiv(e)}</div>);
+      var tooltipContent = Object.keys(this.events).map((storyId) => 
+        <div key={storyId}>{this.eventToDiv(this.events[storyId])}</div>
+      )
 
       const tooltipClassName = "tooltip-wrapper shadow-xl border-2 border border-gray-300 rounded bg-black max-h-tooltip w-tooltip sm:w-sm-tooltip";
 
