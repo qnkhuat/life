@@ -4,7 +4,6 @@ import { useState } from "react";
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
-import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -18,6 +17,7 @@ import MuiAlert from '@material-ui/core/Alert';
 
 import { useAuth  } from "../../lib/firebase/auth";
 import { formatDate } from "../../lib/util";
+import CustomTextField from "../../components/TextField";
 import FirebaseUpload from "../FirebaseUpload";
 import * as constants from "../Board/constants";
 
@@ -142,12 +142,12 @@ export default function Upsert({ storyId, story, onComplete }){
           </FirebaseUpload>
         </div>
 
-        <div id="form-info" className="flex flex-col px-2 overflow-y-scroll overflow-x-scroll pb-2"
+        <div id="form-info" className="flex flex-col px-2 overflow-y-scroll overflow-x-scroll pb-4"
           style={{height:height100vh ? height100vh*(3/5) : "60vh"}}
         >
 
-          <TextField id="story-title" 
-            className="mt-4"
+          <CustomTextField id="story-title" 
+            className="mt-4 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
             label="Title" 
             variant="outlined" 
             onChange={(e) => setTitle(e.target.value)}
@@ -155,7 +155,7 @@ export default function Upsert({ storyId, story, onComplete }){
             required
           />
 
-          <TextField id="story-content" 
+          <CustomTextField id="story-content" 
             className="mt-4 border-r-0 border-l-0"
             label="Description" 
             multiline
@@ -166,7 +166,7 @@ export default function Upsert({ storyId, story, onComplete }){
           />
 
 
-          <TextField id="story-date" 
+          <CustomTextField id="story-date" 
             className="mt-4"
             onChange={(e) => setDate(e.target.value)}
             label="Date" 

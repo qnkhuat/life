@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -16,6 +15,7 @@ import { formatDate, deepClone } from "../lib/util";
 import FirebaseUpload from "../components/FirebaseUpload";
 import Loading from "../components/Loading";
 import Layout from "../components/Layout";
+import CustomTextField from "../components/TextField";
 
 import urljoin from "url-join";
 import axios from "axios";
@@ -213,7 +213,7 @@ function Settings() {
 
         </div>
 
-        <TextField id="profile-username" 
+        <CustomTextField id="profile-username" 
           className="w-full mt-6"
           error={!userNameValidation['valid']}
           defaultValue={data?.userInfo.user.username}
@@ -224,7 +224,7 @@ function Settings() {
           helperText={userNameValidation['msg']}
         />
 
-        <TextField id="profile-fullname" 
+        <CustomTextField id="profile-fullname" 
           className="w-full mt-6"
           onChange={(e) => setUserInfoByField("fullname", e.target.value)}
           label="Full name" 
@@ -232,7 +232,7 @@ function Settings() {
           defaultValue={data?.userInfo.user.fullname}
           required/>
 
-        <TextField id="profile-email" 
+        <CustomTextField id="profile-email" 
           className="w-full mt-6"
           label="Email" 
           disabled
@@ -242,7 +242,7 @@ function Settings() {
           required
         />
 
-        <TextField id="profile-birthday" 
+        <CustomTextField id="profile-birthday" 
           className="w-full mt-6"
           onChange={(e) => setUserInfoByField("birthday", new Date(e.target.value))}
           defaultValue={data?.userInfo ? formatDate(data?.userInfo.user.birthday, "YYYY-MM-DD") : ""}
@@ -252,7 +252,7 @@ function Settings() {
           InputLabelProps={{shrink: true}}
           required/>
 
-        <TextField id="profile-maxage" 
+        <CustomTextField id="profile-maxage" 
           className="w-full mt-6"
           onChange={(e) => setUserInfoByField("maxAge", e.target.value)}
           defaultValue={data?.userInfo.user.maxAge}
@@ -261,7 +261,7 @@ function Settings() {
           type="number" 
         />
 
-        <TextField id="profile-about" 
+        <CustomTextField id="profile-about" 
           className="w-full mt-6"
           onChange={(e) => setUserInfoByField("about", e.target.value)}
           defaultValue={data?.userInfo.user.about}

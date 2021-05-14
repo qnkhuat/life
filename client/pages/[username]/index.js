@@ -126,7 +126,6 @@ function Profile({ data }) {
                 <CloseIcon fontSize="small"></CloseIcon>
               </IconButton>
                 <Upsert onComplete={handleCompleteAdd}/>
-
             </div>
           </Modal>
         </div>
