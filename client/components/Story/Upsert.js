@@ -16,13 +16,14 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/core/Alert';
 
-import FirebaseUpload from "../FirebaseUpload";
 import { useAuth  } from "../../lib/firebase/auth";
 import { formatDate } from "../../lib/util";
+import FirebaseUpload from "../FirebaseUpload";
 import * as constants from "../Board/constants";
 
 import axios from "axios";
 import urljoin from "url-join";
+import Div100vh, { use100vh } from "react-div-100vh";
 
 
 export default function Upsert({ storyId, story, onComplete }){
@@ -34,6 +35,7 @@ export default function Upsert({ storyId, story, onComplete }){
       storyTypes[type] = `${type} - ${constants.EVENTMAPPING[type]['icon']}`;
     })
 
+  const height100vh = use100vh();
   const { user } = useAuth();
   const [ title, setTitle ] = useState(story?.title || null);
   const [ content, setContent ] = useState(story?.content|| null);
@@ -107,12 +109,16 @@ export default function Upsert({ storyId, story, onComplete }){
   return (
 
     <div>
-      <form id="form-story" noValidate autoComplete="off" className="flex flex-col bg-white w-full m-auto h-screen">
+      <form id="form-story" noValidate autoComplete="off" className="flex flex-col bg-white w-screen m-auto overflow-hidden"
+        style={{height:height100vh ? height100vh : "100vh"}}
+      >
 
         <div id="form-image" className="relative overflow-hidden border-b-2"
-          style={{height:"40vh"}}
+          style={{height:height100vh ? height100vh*(2/5) : "40vh"}}
         >
-          <img style={{height:"40vh"}} className="w-full object-contain" src={imageDisplayUrls.length > 0 ? imageDisplayUrls[0] : "placeholder-image.png"}></img>
+          <img 
+            style={{height:height100vh ? height100vh*(2/5) : "40vh"}}
+            className="w-full object-contain" src={imageDisplayUrls.length > 0 ? imageDisplayUrls[0] : "placeholder-image.png"}></img>
 
           <FirebaseUpload id="profile-avatar" 
             onComplete={handleUploadComplete}
@@ -137,7 +143,7 @@ export default function Upsert({ storyId, story, onComplete }){
         </div>
 
         <div id="form-info" className="flex flex-col px-2 overflow-y-scroll overflow-x-scroll pb-2"
-          style={{height:"60vh"}}
+          style={{height:height100vh ? height100vh*(3/5) : "60vh"}}
         >
 
           <TextField id="story-title" 
@@ -198,6 +204,7 @@ export default function Upsert({ storyId, story, onComplete }){
         </div>
 
       </form>
+
       <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleCloseAlert} anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
         <MuiAlert elevation={6} variant="filled" onClose={handleCloseAlert}  severity={alert.severity} sx={{ width: '100%' }}>
           {alert.message}

@@ -159,6 +159,7 @@ function Settings() {
         id: auth.uid,
         user: data.userInfo.user,
       }
+      console.log(auth.token);
       
       axios.post(urljoin(process.env.API_URL, "/api/user"), payload).then(( res ) => {
         if (res.status == 200) {
@@ -171,7 +172,7 @@ function Settings() {
       }).catch(( error ) => {
         setAlert({severity: "error", message: "Please edit your info"});
         setAlertOpen(true);
-        console.log("Failed to add user: ", error.response.data);
+        console.log("Failed to add user: ", error?.response);
       })
     }
   }

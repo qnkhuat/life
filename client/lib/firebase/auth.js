@@ -52,11 +52,12 @@ function useProvideAuth() {
       }
     }).catch((error) => {
       console.log("Failed to get user info: ", error);
+      console.log(error);
       throw error;
     });
   }
 
-  const clear = () => {
+  const clear = async () => {
     axios.defaults.headers.common = {'Authorization': `Bearer ${null}`}
     setAuth(null);
     setLoading(true);

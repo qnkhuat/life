@@ -1,7 +1,7 @@
 // Contain firebase storage to use at client side
 // https://firebase.google.com/docs/reference/js/v9/auth.googleauthprovider
 import { initializeApp, getApps } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, useAuthEmulator } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
@@ -21,5 +21,6 @@ if (typeof window !== 'undefined' && getApps().length == 0) {
   auth = getAuth();
   firestore = getFirestore();
   storage = getStorage();
+  //useAuthEmulator(auth, "http://localhost:9099");
 }
 export { auth, storage, firestore };

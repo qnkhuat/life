@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import { v4 as uuidv4 } from 'uuid';
+import Div100vh from "react-div-100vh";
 
 import Board from '../../components/Board';
 import Loading from '../../components/Loading';
@@ -117,14 +118,15 @@ function Profile({ data }) {
             aria-labelledby="child-modal-title"
             aria-describedby="child-modal-description"
           >
-            <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-full" >
+            <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
               <IconButton
                 onClick={handleCloseAdd}
                 className="bg-gray-600 bg-opacity-40 text-black p-1 outline-none absolute top-2 right-2 z-10"
                 aria-label="edit" color="primary">
                 <CloseIcon fontSize="small"></CloseIcon>
               </IconButton>
-              <Upsert onComplete={handleCompleteAdd}/>
+                <Upsert onComplete={handleCompleteAdd}/>
+
             </div>
           </Modal>
         </div>
