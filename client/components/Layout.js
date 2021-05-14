@@ -37,7 +37,7 @@ export default function Layout({ children }) {
         </Link>
       </div>
       <div className="py-10 md:pb-0">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 overflow-x-hidden">
           {children && children}
         </div>
       </div>
