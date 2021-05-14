@@ -57,7 +57,13 @@ function Profile({ data }) {
     setOpenUpsert(true)
     setUpsertStory({storyId:null, story:null});
   };
-  function handleCloseUpsert() {setOpenUpsert(false)};
+  function handleCloseUpsert() {
+    setTimeout(() => {
+      document.body.style.overflow = 'auto'; 
+    }, 10);
+    setOpenUpsert(false)
+
+  };
 
   function handleCompleteUpsert(storyid, story){
     state.stateData.events[storyid] = story;

@@ -127,6 +127,7 @@ class Tile extends React.Component {
   handleOnClick(){
     const isOpen = this.state.open;
     if (this.state.hoverOpen){ // hover then click
+      document.body.style.overflow = 'hidden';
       this.setState({
         open:true,
         clickOpen:true,
@@ -134,10 +135,13 @@ class Tile extends React.Component {
         tooltipModifiers: this.isMobile ? [centerTooltipModifier] : []
       })
     } else {
+      if( !isOpen ) document.body.style.overflow = 'hidden'; 
+      else document.body.style.overflow = 'auto'; 
+      
       this.setState({
         open: !isOpen,
         clickOpen: !isOpen,
-        tooltipModifiers: isOpen ? [preventOverflow] :  [preventOverflow, ...[this.isMobile ?  [centerTooltipModifier] : []]],
+        tooltipModifiers: (isOpen && this.isMobile) ? [preventOverflow] :  [preventOverflow, centerTooltipModifier],
       });
     }
   }
@@ -151,7 +155,11 @@ class Tile extends React.Component {
       clearTimeout(this.openTimeoutId)
       this.openTimeoutId = undefined;
     }
-    if (this.state.open && !this.state.clickOpen && !this.isMobile) this.setState({open:false, hoverOpen:false, lastLeave: new Date()});
+    if (this.state.open && !this.state.clickOpen && !this.isMobile) {
+      this.setState({open:false, hoverOpen:false, lastLeave: new Date()});
+      document.body.style.overflow = 'auto';
+
+    }
   }
 
   handleOnClickAway(){
@@ -161,6 +169,7 @@ class Tile extends React.Component {
       clickOpen:false,
       tooltipModifiers: [preventOverflow]
     });
+    document.body.style.overflow = 'auto';
   }
 
   render() {

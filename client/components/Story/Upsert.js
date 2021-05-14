@@ -161,7 +161,7 @@ export default function Upsert({ storyId, story, onComplete }){
         </div>
 
         <div id="form-info" className="flex flex-col px-2 overflow-y-scroll overflow-x-scroll pb-4"
-          style={{"max-height":height100vh ? height100vh*(3/5) : "60vh"}}
+          style={{"maxHeight":height100vh ? height100vh*(3/5) : "60vh"}}
         >
 
           <CustomTextField id="story-title" 
@@ -202,7 +202,6 @@ export default function Upsert({ storyId, story, onComplete }){
               label="Type"
               onChange={(e) => setType(e.target.value)}
             >
-
               {Object.keys(storyTypes).map((type) => <MenuItem key={type} value={type}>{storyTypes[type]}</MenuItem>)}
             </Select>
           </FormControl>
@@ -216,13 +215,13 @@ export default function Upsert({ storyId, story, onComplete }){
             label="Publish"
           />
 
-          <Button id="story-submit" variant="outlined" color="primary" className="text-black border-black" onClick={handleUpsertStory}>
+          <Button id="story-submit" variant="outlined" className="outline-none text-black border-black" onClick={handleUpsertStory}>
             {storyId ? "Update" : "Add"}
           </Button>
 
           {storyId && 
           <>
-            <Button id="story-delete" variant="filled" color="secondary" className="text-white bg-red-500 mt-4" onClick={() => setOpenDeleteConfirmation(true)}>
+            <Button id="story-delete" variant="outlined" className="outline-none text-red-500 border-red-500 bg-white mt-4" onClick={() => setOpenDeleteConfirmation(true)}>
               Delete
             </Button>
             <Modal
@@ -232,18 +231,18 @@ export default function Upsert({ storyId, story, onComplete }){
               aria-labelledby="child-modal-title"
               aria-describedby="child-modal-description"
             >
-              <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
+              <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-4/5 text-left">
                 <div className="bg-white p-4 rounded">
                   <p>Are you sure you want to delete story : {story.title}?</p>
                   <div className="flex justify-center">
-                  <Button id="story-confirm-yes" variant="filled" color="primary" className="text-white bg-red-500 mt-4 mr-4" 
-                    onClick={() => {
-                      setOpenDeleteConfirmation(false);
-                      handleDeleteStory();
-                    }}>Yes</Button>
-                  <Button id="story-confirm-no" autoFocus variant="filled" color="secondary" className="text-white bg-blue-500 mt-4" 
-                    onClick={() => setOpenDeleteConfirmation(false)}>No</Button>
-                </div>
+                    <Button id="story-confirm-yes" variant="outlined" className="outline-none text-red-500 ehite border-red-500 mt-4 mr-4" 
+                      onClick={() => {
+                        setOpenDeleteConfirmation(false);
+                        handleDeleteStory();
+                      }}>Yes</Button>
+                    <Button id="story-confirm-no" autoFocus variant="outlined"  className="outline-none text-black border-black mt-4" 
+                      onClick={() => setOpenDeleteConfirmation(false)}>No</Button>
+                  </div>
                 </div>
               </div>
             </Modal>
