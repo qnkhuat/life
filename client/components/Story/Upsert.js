@@ -128,14 +128,13 @@ export default function Upsert({ storyId, story, onComplete }){
   return (
 
     <div>
-      <form id="form-story" noValidate autoComplete="off" className="flex flex-col bg-white w-screen m-auto overflow-hidden justify-center"
+      <form id="form-story" noValidate autoComplete="off" className="bg-white w-screen m-auto overflow-x-hidden overlfow-y-scroll "
         style={{height:height100vh ? height100vh : "100vh"}}
       >
 
-        <div id="form-image" className="relative overflow-hidden border-b-2"
-          style={{height:height100vh ? height100vh*(2/5) : "40vh"}}>
+        <div id="form-image" className="relative overflow-hidden border-b-1 border-gray-600">
           <img 
-            style={{height:height100vh ? height100vh*(2/5) : "40vh"}}
+            style={{maxHeight:"40vh"}}
             className="w-full object-contain" src={imageDisplayUrls.length > 0 ? imageDisplayUrls[0] : "placeholder-image.png"}></img>
 
           <FirebaseUpload id="profile-avatar" 
@@ -160,8 +159,7 @@ export default function Upsert({ storyId, story, onComplete }){
           </FirebaseUpload>
         </div>
 
-        <div id="form-info" className="flex flex-col px-2 overflow-y-scroll overflow-x-scroll pb-4"
-          style={{"maxHeight":height100vh ? height100vh*(3/5) : "60vh"}}
+        <div id="form-info" className="flex flex-col px-2 pb-4"
         >
 
           <CustomTextField id="story-title" 
@@ -177,7 +175,7 @@ export default function Upsert({ storyId, story, onComplete }){
             className="mt-4 border-r-0 border-l-0"
             label="Description" 
             multiline
-            rows={3}
+            rows={ content?.split("\n").length  >= 3 ? content.split("\n").length + 1 : 3}
             defaultValue={content}
             variant="outlined" 
             onChange={(e) => setContent(e.target.value)}
@@ -233,7 +231,7 @@ export default function Upsert({ storyId, story, onComplete }){
             >
               <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-4/5 text-left">
                 <div className="bg-white p-4 rounded">
-                  <p>Are you sure you want to delete story : {story.title}?</p>
+                  <p>Are you sure you want to delete story : {story?.title}?</p>
                   <div className="flex justify-center">
                     <Button id="story-confirm-yes" variant="outlined" className="outline-none text-red-500 ehite border-red-500 mt-4 mr-4" 
                       onClick={() => {
