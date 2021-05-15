@@ -128,11 +128,10 @@ export default function Upsert({ storyId, story, onComplete }){
   return (
 
     <div>
-      <form id="form-story" noValidate autoComplete="off" className="bg-white w-screen m-auto overflow-x-hidden overlfow-y-scroll "
-        style={{height:height100vh ? height100vh : "100vh"}}
+      <form id="form-story" noValidate autoComplete="off" className="bg-white w-screen m-auto overflow-x-hidden overlfow-y-scroll h-full"
       >
 
-        <div id="form-image" className="relative overflow-hidden border-b-1 border-gray-600">
+        <div id="form-image" className="relative overflow-hidden border-b-1 border-gray-600 bg-black">
           <img 
             style={{maxHeight:"40vh"}}
             className="w-full object-contain" src={imageDisplayUrls.length > 0 ? imageDisplayUrls[0] : "placeholder-image.png"}></img>
@@ -149,7 +148,7 @@ export default function Upsert({ storyId, story, onComplete }){
             className="bg-black w-full">
             <>
               <IconButton component="span"
-                className="outline-none absolute right-2 bottom-2 bg-gray-400 bg-opacity-40 p-1 text-black"
+                className="outline-none absolute right-2 bottom-2 bg-black bg-opacity-50 p-1 text-white"
                 aria-label="Search">
                 <PhotoCameraIcon fontSize="small" ></PhotoCameraIcon>
               </IconButton>

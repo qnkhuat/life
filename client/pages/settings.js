@@ -178,8 +178,8 @@ function Settings() {
 
   return (
     <Layout>
-      <p className="text-center text-xl font-bold my-8">Account settings</p>
-      <form key={data.updated} className="" noValidate autoComplete="off" className="flex flex-col items-center m-auto w-4/5">
+      <p className="text-center text-xl font-bold my-4">Account settings</p>
+      <form key={data.updated} className="" noValidate autoComplete="off" className="flex flex-col items-center m-auto">
         <div className="relative">
           <Avatar
             className="w-32 h-32 text-4xl border rounded-full shadow mb-4"
@@ -200,7 +200,7 @@ function Settings() {
             className="bg-black w-full">
             <>
               <IconButton component="span"
-                className="outline-none absolute right-2 bottom-2 bg-gray-400 bg-opacity-40 p-2 text-black"
+                className="outline-none absolute right-2 bottom-2 bg-black bg-opacity-40 p-2 text-white"
                 aria-label="Search">
                 <PhotoCameraIcon fontSize="small" 
                   ></PhotoCameraIcon>
@@ -231,6 +231,17 @@ function Settings() {
           defaultValue={data?.userInfo.user.fullname}
           required/>
 
+        
+        <CustomTextField id="profile-birthday" 
+          className="w-full mt-6"
+          onChange={(e) => setUserInfoByField("birthday", new Date(e.target.value))}
+          defaultValue={data?.userInfo ? formatDate(data?.userInfo.user.birthday, "YYYY-MM-DD") : ""}
+          label="Birthday" 
+          variant="outlined" 
+          type="date"
+          InputLabelProps={{shrink: true}}
+          required/>
+
         <CustomTextField id="profile-email" 
           className="w-full mt-6"
           label="Email" 
@@ -241,15 +252,6 @@ function Settings() {
           required
         />
 
-        <CustomTextField id="profile-birthday" 
-          className="w-full mt-6"
-          onChange={(e) => setUserInfoByField("birthday", new Date(e.target.value))}
-          defaultValue={data?.userInfo ? formatDate(data?.userInfo.user.birthday, "YYYY-MM-DD") : ""}
-          label="Birthday" 
-          variant="outlined" 
-          type="date"
-          InputLabelProps={{shrink: true}}
-          required/>
 
         <CustomTextField id="profile-maxage" 
           className="w-full mt-6"

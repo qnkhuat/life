@@ -1,5 +1,4 @@
-import React, {useRef} from 'react';
-import Tile from "./Tile";
+import React, { useRef, useState, useEffect } from 'react';
 import * as constants from "./constants";
 import { v4 as uuidv4 } from "uuid";
 
@@ -8,6 +7,7 @@ import dayjs from "dayjs";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 import { formatMultilineText } from "../../lib/util";
+import Loading from "../../components/Loading";
 
 import Button from "@material-ui/core/Button";
 import IconButton from '@material-ui/core/IconButton';
@@ -17,6 +17,7 @@ import Modal from '@material-ui/core/Modal';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
+import { useSwipeable } from "react-swipeable";
 
 dayjs.extend(customParseFormat);
 
@@ -24,105 +25,116 @@ const roundDate = (date) => date.hour(0).minute(0).second(0).millisecond(0);
 const formatDate = (date) => roundDate(dayjs(date));
 const DATE_RANGE_FORMAT = "DD/MM/YYYY";
 
-
-class EventDisplayer extends React.Component {
-  constructor( props ){
-    super(props);
-    this.events = props.events;
-    this.onEditEvent = props.onEditEvent;
-    this.state = {
-      openModal: false,
-      currentEvent: {},
-      currentEventId: null
-    };
+function EventDisplayer ({ events, eventId, onEditEvent, setEventId}) {
+  console.log("Received", events);
+  var event = null;
+  for (let e of events){ // find event
+    if (e.id == eventId){
+      event = e.event;
+      break;
+    }
   }
-  handleCloseModal(){
-    this.setState({openModal:false});
+  if (!eventId|| !event) return (<></>);
+
+  function handleCloseDisplayer() {
+    // the trigger of this to display is the valu eof eventId that set by setEventId
+    // This hooks is shared by both EventDisplayer and Layout
+    // This complication is to reduce the number of re-renders on the board
+    setEventId(null);
     setTimeout(() => {
-      document.body.style.overflow="auto";
+      document.body.style.overflow = "auto";
     }, 100);
-
   }
+  setTimeout(() => {
+    document.body.style.overflow = "hidden";
+  }, 100);
 
-  next(eventId){
-    console.log("next ", eventId);
-  }
-  prev(eventId){
-    console.log("next ", eventId);
-  }
 
-  show(eventId) {
-    for (let e of this.events){ // events is sorted ascending by date
-      if (e.id == eventId){
-        this.setState({
-          openModal:true,
-          currentEventId: e.id,
-          currentEvent: e.event,
-        })
-        return;
+  
+  function handleSwipeMoveEvent(prev=false) {
+    let nextEventId = null;
+    let foundCurrentOne = false;
+    for (var i = 0; i < events.length; i++){
+      if (prev) var index = (events.length - 1) - i;
+      else index = i;
+      if ( !foundCurrentOne ){
+        if (events[index].id == eventId) foundCurrentOne = true; // next loop will be the next event t show
+      } else {
+        nextEventId = events[index].id;
+        break;
       }
     }
-    console.error(`Event with id ${eventId} not found.`);
+    setEventId(nextEventId);
+    if (nextEventId = null)  {
+      setTimeout(() => {
+        document.body.style.overflow = "auto";
+      }, 100);
+    }
   }
 
-  render () {
-    if (Object.keys(this.state.currentEvent).length == 0) return <></>;
-    const eventInfo = this.state.currentEvent;
-    const eventId = this.state.currentEventId;
 
-    const isText = eventInfo.title.length > 0;
-    const isMedia = eventInfo.imageUrls.length > 0;
-    const media = <div className={`bg-black`}>
-      {isMedia && eventInfo.imageUrls.length > 0 && <img 
-        alt={eventInfo.date.format(DATE_RANGE_FORMAT)}
-        style={{height:"40vh"}}
-        className={`object-contain m-auto`}
-        src={eventInfo.imageUrls[0]}/>}
-      <hr></hr>
+  const swipeHandlers= useSwipeable({ 
+    //onSwipedDown: handleCloseDisplayer,
+    //onSwipedUp: handleCloseDisplayer,
+    onSwipedRight: () => handleSwipeMoveEvent(true),
+    onSwipedLeft: () => handleSwipeMoveEvent(false),
+  })
+
+
+  const isText = event.title.length > 0;
+  const isMedia = event.imageUrls.length > 0;
+  const media = <div className={`bg-black h-1/2`}>
+    {isMedia && event.imageUrls.length > 0 && 
+    <img 
+      alt={event.date.format(DATE_RANGE_FORMAT)}
+      style={{height:"100%"}}
+      className={`object-contain m-auto`}
+      src={event.imageUrls[0]}/>}
+    <hr></hr>
+  </div>
+    
+
+    // text
+    const text = <div 
+      className={`bg-white px-5 py-5 text-black text-left ${isMedia ? "h-1/2" : ""}`}>
+      <p className="text-lg font-bold overflow-ellipsis">{event.title}</p>
+      {isText && event.content && <p className="text-base mb-2">{formatMultilineText(event.content)}</p>}
+      <hr/>
+      <p className="text-sm text-gray-500 ">{event.date.format(DATE_RANGE_FORMAT)} - {Math.floor(event.ageSince)} Years old</p>
     </div>
 
-      // text
-      const text = <div 
-        className={`tooltip-text bg-white px-5 py-5 text-black text-left `}>
-        <p className="text-lg font-bold overflow-ellipsis">{eventInfo.title}</p>
-        {isText && eventInfo.content && <p className="text-base mb-2">{formatMultilineText(eventInfo.content)}</p>}
-        <hr/>
-        <p className="text-sm text-gray-500">{eventInfo.date.format(DATE_RANGE_FORMAT)} - {Math.floor(eventInfo.ageSince)} Years old</p>
-      </div>
-
-
     return (
-      <div className={`${this.state.openModal ? "" : "hidden"} fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-full z-20 bg-black bg-opacity-40`}>
-        <Div100vh className="bg-black bg-opacity-5 flex overflow-scroll outline-none">
+      <div  {...swipeHandlers}
+        className={` fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-full z-20 h-full bg-black`}>
+        <div id="modal-wrapper" 
+          className="bg-white flex overflow-scroll outline-none h-full justify-start">
           <div id="modal-icon">
             <IconButton
-              onClick={this.handleCloseModal.bind(this)}
-              className="bg-black bg-opacity-50 text-white outline-none absolute top-1 right-2 w-6 h-6"
+              onClick={handleCloseDisplayer}
+              className="bg-black bg-opacity-40 text-white outline-none absolute top-2 right-2 w-6 h-6"
               aria-label="edit" color="primary">
               <CloseIcon fontSize="small"></CloseIcon>
             </IconButton>
             <IconButton 
-              onClick={() => this.onEditEvent(eventId)} 
+              onClick={() => onEditEvent(eventId)} 
               aria-label="edit" color="primary" 
-              className="outline-none absolute top-8 right-2 bg-black bg-opacity-50 text-white w-6 h-6">
+              className="outline-none absolute top-2 left-2 bg-black bg-opacity-40 text-white w-6 h-6">
               <EditIcon fontSize="small"></EditIcon>
             </IconButton>
           </div>
 
           <div id="modal-content" 
-            className="w-full bg-white m-auto"
+            className="w-full bg-black m-auto h-full flex flex-col justify-center"
           >
             {isMedia && media}
             {isText && text}
           </div>
-        </Div100vh>
+        </div>
       </div>
     )
-  }
-
 }
 
-function Layout ({ events, birthday, numCols, numRows, modalRef, displayMode="month" }) {
+const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols, numRows, modalRef, displayMode="month", setEventId }) {
   const today = roundDate(dayjs());
 
   function eventsLookup(startDate, endDate){
@@ -130,7 +142,7 @@ function Layout ({ events, birthday, numCols, numRows, modalRef, displayMode="mo
     var start = false; 
     for (let e of events) { // events is default sorted ascending
       if (e.event.date >= startDate) start = true;
-      if (e.event.date > endDate) break;
+      if (e.event.date >= endDate) break;
       if (start) results.push(e);
     }
     return results;
@@ -144,7 +156,12 @@ function Layout ({ events, birthday, numCols, numRows, modalRef, displayMode="mo
     var tileType = matchedEvents.length > 0 ? matchedEvents[0].event.type : null;
     if (!tileType) tileType = startDate < today ? "default" : "disable"; 
 
-    const onClickHandler = ["default", "disable"].includes(tileType) && modalRef.current ? () => {} : () => modalRef.current.show(matchedEvents[0].id);
+    //const onClickHandler = (matchedEvents.length > 0 && !["default", "disable"].includes(tileType)) 
+    //  ?  () => modalRef.current.show(matchedEvents[0].id) : () => {};
+    const onClickHandler = (matchedEvents.length > 0 && !["default", "disable"].includes(tileType)) 
+      ?  () => {
+        setEventId(matchedEvents[0].id);
+      } : () => {};
 
     return (<div 
       key={`${r},${c}`}
@@ -165,7 +182,7 @@ function Layout ({ events, birthday, numCols, numRows, modalRef, displayMode="mo
       {numRows > 0 && Array.from(Array(numRows + 1).keys()).map((r) =>
       <div key={`row-wrapper-${r}`} className="flex justify-center">
         <div key={`row-${r}`} className="justify-start items-center relative flex flex-row">
-          <div key={`row-index-${r}`} className="w-4 m-tile sm:m-sm-tile text-xs sm:text-xl text-right absolute -left-board sm:-left-sm-board">{r%5==0 ? r : ""}</div>
+          <div key={`row-index-${r}`} className="w-4 m-tile sm:m-sm-tile text-xs sm:text-xl text-right absolute -left-board sm:-left-sm-board">{r % 5 == 0 ? r : ""}</div>
           {numCols > 0 && Array.from(Array(numCols).keys()).map((c) => 
             getTile(r, c)
           )}
@@ -173,48 +190,54 @@ function Layout ({ events, birthday, numCols, numRows, modalRef, displayMode="mo
       </div>
       )}
     </div>
-
   )
-}
+})
+
 function Board({events, birthday, maxAge, onEditEvent}) {
-
-  const displayerRef = useRef(null);
   const today = roundDate(dayjs());
-  birthday = formatDate(birthday);
+  const [ storyId, setEventId ] = useState(null);
+  const [ updated, setUpdated ] = useState(false);
+  const [eventsList, setEventsList ] = useState([]);
+  const [birthdayState, setBirthday] = useState(formatDate(birthday));
   // sort the events 
-  events[uuidv4()] = {
-    publish:true,
-    date: today,
-    type: "today",
-    title: "Today",
-    imageUrls: [],
-    videoUrls: [],
-  };
 
-  const numRows = 25,
+  birthday = formatDate(birthday);
+  const numRows = maxAge,
     numCols = 12;
 
-  birthday = formatDate(birthday);
-  Object.keys(events).forEach((storyId) => {
-    const e = events[storyId]
-    e.date = formatDate(e.date);
-    e.ageSince = (e.date - birthday) / ( 1000 * 60 * 60 * 24 * 365 );
-  })
+  useEffect(() => {
+    if (!updated){
+      events[uuidv4()] = {
+        publish:true,
+        date: today,
+        type: "today",
+        title: "Today",
+        imageUrls: [],
+        videoUrls: [],
+      };
 
-
-  var eventsList = [];
-  Object.keys(events).forEach((id) => {
-    eventsList.push({id:id, event: events[id]})
-  })
-  eventsList.sort((a, b) => a.event.date - b.event.date );// ascending
+      Object.keys(events).forEach((storyId) => {
+        const e = events[storyId]
+        e.date = formatDate(e.date);
+        e.ageSince = (e.date - birthday) / ( 1000 * 60 * 60 * 24 * 365 );
+      });
+      let tempEventsList = []
+      Object.keys(events).forEach((id) => {
+        tempEventsList.push({id:id, event: events[id]})
+      })
+      tempEventsList.sort((a, b) => a.event.date - b.event.date );// ascending
+      setEventsList(tempEventsList);
+      setUpdated(true);
+    }
+  }, [])
+  if (!updated) return <Loading />;
 
   return(
     <>
-      <EventDisplayer events={eventsList} ref={displayerRef} onEditEvent={onEditEvent}/>
-      <Layout events={eventsList} numCols={numCols} numRows={numRows} birthday={birthday} modalRef={displayerRef}/>
+      <EventDisplayer eventId={storyId} events={eventsList} onEditEvent={onEditEvent}  setEventId={setEventId}/>
+      <Layout events={eventsList} numCols={numCols} numRows={numRows} birthday={birthday} setEventId={setEventId}/>
     </>
   )
-
 }
 
 export default Board;

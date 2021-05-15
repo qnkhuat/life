@@ -120,10 +120,10 @@ function Profile({ data }) {
 
         <hr className="my-4"></hr>
 
-        <div className="add-button fixed bottom-14 right-4 z-10">
+        <div id="add-button" className="fixed bottom-14 right-4 z-10">
           <IconButton
             onClick={handleOpenUpsert}
-            className="bg-gray-600 text-white p-2 outline-none"
+            className="bg-red-400 text-white p-2 outline-none"
             aria-label="edit" color="primary">
             <AddIcon></AddIcon>
           </IconButton>
@@ -134,10 +134,11 @@ function Profile({ data }) {
             aria-labelledby="child-modal-title"
             aria-describedby="child-modal-description"
           >
-            <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
+            <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 h-full overflow-y-scroll">
               <IconButton
+                id="close-button-add"
                 onClick={handleCloseUpsert}
-                className="bg-gray-600 bg-opacity-40 text-black p-1 outline-none absolute top-2 right-2 z-10"
+                className="bg-black bg-opacity-50 text-white p-1 outline-none absolute top-2 right-2 z-10"
                 aria-label="edit" color="primary">
                 <CloseIcon fontSize="small"></CloseIcon>
               </IconButton>
