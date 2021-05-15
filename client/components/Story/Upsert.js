@@ -128,12 +128,10 @@ export default function Upsert({ storyId, story, onComplete }){
   return (
 
     <div>
-      <form id="form-story" noValidate autoComplete="off" className="bg-white w-screen m-auto overflow-x-hidden overlfow-y-scroll h-full"
-      >
-
+      <form id="form-story" noValidate autoComplete="off" className="bg-white w-screen m-auto overflow-x-hidden overlfow-y-scroll h-full">
         <div id="form-image" className="relative overflow-hidden border-b-1 border-gray-600 bg-black">
           <img 
-            style={{maxHeight:"40vh"}}
+            style={{height:"40vh"}}
             className="w-full object-contain" src={imageDisplayUrls.length > 0 ? imageDisplayUrls[0] : "placeholder-image.png"}></img>
 
           <FirebaseUpload id="profile-avatar" 
@@ -153,7 +151,7 @@ export default function Upsert({ storyId, story, onComplete }){
                 <PhotoCameraIcon fontSize="small" ></PhotoCameraIcon>
               </IconButton>
               {uploadingImage && <CircularProgress className="absolute" 
-                style={{right: "0.4rem", bottom:"0.4rem"}} size={32} />}
+                style={{right: "0.35rem", bottom:"0.4rem"}} size={32} />}
             </>
           </FirebaseUpload>
         </div>
@@ -255,7 +253,6 @@ export default function Upsert({ storyId, story, onComplete }){
           {alert.message}
         </MuiAlert>
       </Snackbar>
-
 
     </div>
   )

@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 dayjs.extend(customParseFormat);
 
+export const roundDate = (date) => date.hour(0).minute(0).second(0).millisecond(0);
 export const formatDate = (date, format) => dayjs(date).format(format);
 
 export const formatMultilineText = (text) => {

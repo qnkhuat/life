@@ -9,7 +9,7 @@ import Loading from '../../components/Loading';
 import Layout from '../../components/Layout';
 import Upsert from '../../components/Story/Upsert';
 
-import { formatDate, formatAge, formatMultilineText }from '../../lib/util';
+import { formatDate, formatAge, formatMultilineText, roundDate } from '../../lib/util';
 
 import IconButton from '@material-ui/core/IconButton';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -20,12 +20,24 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import axios from "axios";
 import urljoin from "url-join";
+import dayjs from "dayjs";
 
 const getData = async (username) => {
   const user_res = await axios.get(urljoin(process.env.API_URL, `/api/user?username=${username}`));
   const user = user_res.data;
   const events_res = await axios.get(urljoin(process.env.API_URL, `/api/user/${user.id}/stories`));
-  const events = events_res.data;
+  var events = events_res.data;
+  const today = roundDate(dayjs());
+  const birthday = roundDate(dayjs(user.user.birthday));
+  events[uuidv4()] = {
+        publish:true,
+        date: today.toJSON(),
+        type: "today",
+        title: "Today",
+        imageUrls: [],
+        videoUrls: [],
+      };
+
   const result  = {
     events:events,
     user: user,
@@ -53,16 +65,14 @@ function Profile({ data }) {
   // Add/Edit Story button controller
   const [openUpsert, setOpenUpsert] = useState(false);
   const [upsertStory, setUpsertStory ] = useState({storyId: null, story: null});
+
   function handleOpenUpsert() {
     setOpenUpsert(true)
     setUpsertStory({storyId:null, story:null});
   };
-  function handleCloseUpsert() {
-    setTimeout(() => {
-      document.body.style.overflow = 'auto'; 
-    }, 10);
-    setOpenUpsert(false)
 
+  function handleCloseUpsert() {
+    setOpenUpsert(false)
   };
 
   function handleCompleteUpsert(storyid, story){
@@ -82,17 +92,6 @@ function Profile({ data }) {
       });
     } 
   }, []);
-
-  var eventsList = [];
-  Object.keys(events).forEach((key) => {
-    eventsList.push(events[key]);
-  });
-
-  const handlers = useSwipeable({
-    onSwipedDown: (e) => {setOpenUpsert(false)},
-    onSwipedkp: (e) => {setOpenUpsert(false)},
-  }); 
-  
 
   function onEditEvent (id) {
     setOpenUpsert(true)
@@ -134,7 +133,7 @@ function Profile({ data }) {
             aria-labelledby="child-modal-title"
             aria-describedby="child-modal-description"
           >
-            <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 h-full overflow-y-scroll">
+            <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 h-full overflow-y-scroll bg-white">
               <IconButton
                 id="close-button-add"
                 onClick={handleCloseUpsert}

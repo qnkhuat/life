@@ -9,6 +9,9 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      minHeight: {
+        '1/2': '50%'
+      },
       inset: {
         "-board": "-6vw", // = half of tile width
         "-sm-board": "-30px", // = half of tile width

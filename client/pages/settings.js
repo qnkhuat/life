@@ -153,15 +153,29 @@ function Settings() {
         console.error("Failed to update user: ", error.response.data);
         setAlert({severity: "error", message: "Please fill in all the required fields" });
         setAlertOpen(true);
-      })
+      });
+
     } else { // Add user
       const payload = {
         id: auth.uid,
         user: data.userInfo.user,
       }
-      
+
       axios.post(urljoin(process.env.API_URL, "/api/user"), payload).then(( res ) => {
         if (res.status == 200) {
+          // Add the first story as their birthday
+          const firstStory = {
+            date: payload.user.birthday,
+            title: `${payload.user.fullname} were born`,
+            type: 'birthday',
+            content: null,
+            imageUrls: [],
+            publish: true
+          }
+          axios.post(urljoin(process.env.API_URL, `/api/user/${payload.id}/story`), firstStory).catch(( error ) => {
+            console.error("Error adding story: ", error);
+          });
+
           refreshUser().then((res) => {
             router.push("/[username]", `/${res.user.username}`);
           }).catch((error) => {

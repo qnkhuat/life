@@ -16,42 +16,32 @@ import Avatar from '@material-ui/core/Avatar';
 import Modal from '@material-ui/core/Modal';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
+import MobileStepper from '@material-ui/core/MobileStepper';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import EditIcon from '@material-ui/icons/Edit';
 import { useSwipeable } from "react-swipeable";
 
 dayjs.extend(customParseFormat);
 
 const roundDate = (date) => date.hour(0).minute(0).second(0).millisecond(0);
+
 const formatDate = (date) => roundDate(dayjs(date));
 const DATE_RANGE_FORMAT = "DD/MM/YYYY";
 
 function EventDisplayer ({ events, eventId, onEditEvent, setEventId}) {
-  console.log("Received", events);
+
   var event = null;
-  for (let e of events){ // find event
-    if (e.id == eventId){
-      event = e.event;
+  const [ currentEventIndex, setCurrentEventIndex ] = useState(null);
+  for (var i = 0; i < events.length; i ++) {
+    if (events[i].id == eventId){
+      event = events[i].event;
+      if (currentEventIndex == null) setCurrentEventIndex(i);
       break;
     }
   }
-  if (!eventId|| !event) return (<></>);
 
-  function handleCloseDisplayer() {
-    // the trigger of this to display is the valu eof eventId that set by setEventId
-    // This hooks is shared by both EventDisplayer and Layout
-    // This complication is to reduce the number of re-renders on the board
-    setEventId(null);
-    setTimeout(() => {
-      document.body.style.overflow = "auto";
-    }, 100);
-  }
-  setTimeout(() => {
-    document.body.style.overflow = "hidden";
-  }, 100);
-
-
-  
-  function handleSwipeMoveEvent(prev=false) {
+  function handleJumpEvent(prev=false) {
     let nextEventId = null;
     let foundCurrentOne = false;
     for (var i = 0; i < events.length; i++){
@@ -61,24 +51,35 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId}) {
         if (events[index].id == eventId) foundCurrentOne = true; // next loop will be the next event t show
       } else {
         nextEventId = events[index].id;
+        setCurrentEventIndex(index);
         break;
       }
-    }
-    setEventId(nextEventId);
-    if (nextEventId = null)  {
-      setTimeout(() => {
-        document.body.style.overflow = "auto";
-      }, 100);
+    };
+    setEventId(nextEventId); // if the nextEventId is null the displayer will be closed
+    if (nextEventId == null)  {
+      setCurrentEventIndex(null);
     }
   }
+
+  function handleCloseDisplayer() {
+    // the trigger of this component to display is the value of eventId . 
+    // It's set by setEventId, A hook shared by both EventDisplayer and Layout
+    // This complication is to reduce the number of re-renders on the board
+    setEventId(null);
+    setCurrentEventIndex(null);
+  }
+
 
 
   const swipeHandlers= useSwipeable({ 
     //onSwipedDown: handleCloseDisplayer,
     //onSwipedUp: handleCloseDisplayer,
-    onSwipedRight: () => handleSwipeMoveEvent(true),
-    onSwipedLeft: () => handleSwipeMoveEvent(false),
+    onSwipedRight: () => handleJumpEvent(true),
+    onSwipedLeft: () => handleJumpEvent(false),
   })
+
+
+  if (!eventId || !event) return (<></>);
 
 
   const isText = event.title.length > 0;
@@ -92,15 +93,15 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId}) {
       src={event.imageUrls[0]}/>}
     <hr></hr>
   </div>
-    
+
 
     // text
     const text = <div 
-      className={`bg-white px-5 py-5 text-black text-left ${isMedia ? "h-1/2" : ""}`}>
+      className={`bg-white px-10 py-5 text-black text-left ${isMedia ? "min-h-1/2" : ""}`}>
       <p className="text-lg font-bold overflow-ellipsis">{event.title}</p>
       {isText && event.content && <p className="text-base mb-2">{formatMultilineText(event.content)}</p>}
       <hr/>
-      <p className="text-sm text-gray-500 ">{event.date.format(DATE_RANGE_FORMAT)} - {Math.floor(event.ageSince)} Years old</p>
+      <p className={`text-sm text-gray-500 ${isMedia ? "pb-6" : ""}`}>{event.date.format(DATE_RANGE_FORMAT)} - {Math.floor(event.ageSince)} Years old</p>
     </div>
 
     return (
@@ -111,14 +112,14 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId}) {
           <div id="modal-icon">
             <IconButton
               onClick={handleCloseDisplayer}
-              className="bg-black bg-opacity-40 text-white outline-none absolute top-2 right-2 w-6 h-6"
+              className="bg-black bg-opacity-40 text-white outline-none absolute top-2 right-1 w-6 h-6 z-40"
               aria-label="edit" color="primary">
               <CloseIcon fontSize="small"></CloseIcon>
             </IconButton>
             <IconButton 
               onClick={() => onEditEvent(eventId)} 
               aria-label="edit" color="primary" 
-              className="outline-none absolute top-2 left-2 bg-black bg-opacity-40 text-white w-6 h-6">
+              className="outline-none absolute top-2 left-1 bg-black bg-opacity-40 text-white w-6 h-6 z-40">
               <EditIcon fontSize="small"></EditIcon>
             </IconButton>
           </div>
@@ -128,6 +129,44 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId}) {
           >
             {isMedia && media}
             {isText && text}
+
+            <MobileStepper
+              className="fixed bottom-0 left-0 w-full bg-black justify-center"
+              variant="dots"
+              steps={events.length}
+              position="static"
+              activeStep={currentEventIndex || 0 }
+              sx={{ 
+                maxWidth: "100%", 
+                flexGrow: 1 ,
+                '& .MuiMobileStepper-dot': {
+                  backgroundColor: "white",
+                  opacity: "40%",
+                },
+                '& .MuiMobileStepper-dotActive': {
+                  opacity: "100%",
+                }
+              }}
+              nextButton={
+                <IconButton
+                  onClick={() => handleJumpEvent(false)}
+                  className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  right-1 w-6 h-6 z-40"
+                  aria-label="edit" color="primary">
+                  <KeyboardArrowRight />
+                </IconButton>
+
+              }
+              backButton={
+              <IconButton
+                  onClick={() => handleJumpEvent(true)}
+                  className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  left-1 w-6 h-6 z-40"
+                  aria-label="edit" color="primary">
+                  <KeyboardArrowLeft />
+                </IconButton>
+
+                
+              }
+            />
           </div>
         </div>
       </div>
@@ -193,7 +232,7 @@ const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols,
   )
 })
 
-function Board({events, birthday, maxAge, onEditEvent}) {
+function Board({ events, birthday, maxAge, onEditEvent }) {
   const today = roundDate(dayjs());
   const [ storyId, setEventId ] = useState(null);
   const [ updated, setUpdated ] = useState(false);
@@ -207,15 +246,6 @@ function Board({events, birthday, maxAge, onEditEvent}) {
 
   useEffect(() => {
     if (!updated){
-      events[uuidv4()] = {
-        publish:true,
-        date: today,
-        type: "today",
-        title: "Today",
-        imageUrls: [],
-        videoUrls: [],
-      };
-
       Object.keys(events).forEach((storyId) => {
         const e = events[storyId]
         e.date = formatDate(e.date);
@@ -229,7 +259,7 @@ function Board({events, birthday, maxAge, onEditEvent}) {
       setEventsList(tempEventsList);
       setUpdated(true);
     }
-  }, [])
+  });
   if (!updated) return <Loading />;
 
   return(
