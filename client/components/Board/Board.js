@@ -69,6 +69,29 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
     setCurrentEventIndex(null);
   }
 
+  function handleKeyUp(e) {
+    switch (e.keyCode){
+      case 27: // esc
+      case 40: // down
+        console.log("down");
+        handleCloseDisplayer();
+        break;
+      case 37: // left
+        console.log("left");
+        handleJumpEvent(true);
+        break;
+      case 39: // right
+        console.log("right");
+        handleJumpEvent();
+        break;
+    }
+  }
+  useEffect(() => {
+    document.addEventListener('keyup', handleKeyUp)
+    return () => {
+      document.removeEventListener('keyup', handleKeyUp)
+    }
+  }, [eventId]);
 
 
   const swipeHandlers= useSwipeable({ 
