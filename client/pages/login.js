@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import { useRouter, useState } from 'next/router';
 import React, { useEffect } from "react";
 import { useAuth } from '../lib/firebase/auth';
 import Button from '@material-ui/core/Button';
@@ -8,8 +8,8 @@ export default function Login() {
   const router = useRouter();
   useEffect(() => {
     if(auth && !loading){
-      if (!user) router.push(`/settings?next=${router.query.next}`); 
-      router.push(router.query.next || '/'); 
+      if (!user) router.push(`/settings?next=${router.query.next || "/"}`); 
+      else router.push(router.query.next || '/'); 
     }
   }, [auth, user, loading]);
 

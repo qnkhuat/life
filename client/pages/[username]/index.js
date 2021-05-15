@@ -1,9 +1,7 @@
 import Link from "next/link";
 import { useRouter } from 'next/router';
 import { useEffect, useState } from "react";
-import { useSwipeable } from "react-swipeable";
 import { v4 as uuidv4 } from 'uuid';
-import Div100vh from "react-div-100vh";
 
 import Board from '../../components/Board';
 import Loading from '../../components/Loading';
@@ -11,7 +9,7 @@ import Layout from '../../components/Layout';
 import Upsert from '../../components/Story/Upsert';
 
 import { useAuth } from "../../lib/firebase/auth";
-import { formatDate, formatAge, formatMultilineText, roundDate } from '../../lib/util';
+import { formatAge, formatMultilineText, roundDate } from '../../lib/util';
 
 import IconButton from '@material-ui/core/IconButton';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -60,8 +58,7 @@ function Profile({ data }) {
   const router = useRouter();
   const { auth, user: currentUser, loading } = useAuth();
 
-  if (router.isFallback || loading) return <Loading />;
-  const editable = auth && router.query.username == currentUser.user.username;
+  if (router.isFallback) return <Loading />
 
   const [ state, setState ] = useState({updated: false, updateKey:0, stateData: data });
   const { updated, updateKey, stateData } = state;
@@ -70,6 +67,20 @@ function Profile({ data }) {
   // Add/Edit Story button controller
   const [openUpsert, setOpenUpsert] = useState(false);
   const [upsertStory, setUpsertStory ] = useState({storyId: null, story: null});
+
+
+  useEffect(() => {
+    if (router.query.username && !updated) {
+      getData(router.query.username).then((data) => {
+        setState({updated: true, stateData:data, updateKey: uuidv4()})
+      }).catch((error) => {
+        console.error("Failed to fetch new data", error);
+        setState({updated: true, stateData:stateData, updateKey: uuidv4()})
+      });
+    } 
+  }, []);
+  if (router.isFallback || loading) return <Loading />;
+  const editable = auth && router.query.username == currentUser?.user.username;
 
   function handleOpenUpsert() {
     setOpenUpsert(true)
@@ -86,17 +97,6 @@ function Profile({ data }) {
     setState(state);
     handleCloseUpsert();
   }
-
-  useEffect(() => {
-    if (router.query.username && !updated) {
-      getData(router.query.username).then((data) => {
-        setState({updated: true, stateData:data, updateKey: uuidv4()})
-      }).catch((error) => {
-        console.error("Failed to fetch new data", error);
-        setState({updated: true, stateData:stateData, updateKey: uuidv4()})
-      });
-    } 
-  }, []);
 
   function onEditEvent (id) {
     setOpenUpsert(true)

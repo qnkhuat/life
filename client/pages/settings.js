@@ -23,7 +23,13 @@ import axios from "axios";
 import * as config from "../config";
 
 function Settings() {
-  const { auth, refreshUser, user: userFromAuth, loading } = useAuth();
+  const { auth, refreshUser, user: userFromAuth, loading, signOut } = useAuth();
+  const router = useRouter();
+  if(!auth) {
+    router.push("/login?next=/settings");
+    return <></>;
+  }
+
 
   const [ userNameValidation, setUsernameValidation ] = useState({valid:false, msg: ""});
   const [ data, setData] = useState({ 
@@ -69,7 +75,11 @@ function Settings() {
   const [ usernames, setUsernames ] = useState([]);
   const [ displayAvatar, setDisplayAvatar] = useState(null);
 
-  const router = useRouter();
+
+  function handleSignOut() {
+    signOut();
+    router.push("/login");
+  }
 
   function setUserInfoByField(field, value){
     data.userInfo.user[field] = value;
@@ -85,14 +95,14 @@ function Settings() {
 
   useEffect(() => {
     if (!data.updated){
-      refreshUser().then((user) => {
+      refreshUser(auth).then((user) => {
         if (!user) return;
         setData({updated:true, userInfo: user, currentUser: deepClone(user)});
         setCurrentUsername(user.user.username);
         validateUserName(user.user.username);
         setDisplayAvatar(user.user.avatar);
       }).catch((error) => {
-        setData({updated:true, userInfo: data.userInfo, currentUser: data.userInfo});
+        console.log("User not found", error);
       });
       axios.get(urljoin(process.env.API_URL, "/api/usernames")).
         then((res) => {
@@ -141,7 +151,7 @@ function Settings() {
 
       axios.patch(urljoin(process.env.API_URL,`/api/user/${data.userInfo.id}`), payload).then(( res ) => {
         if (res.status == 200) {
-          refreshUser().then((res) => {
+          refreshUser(auth).then((res) => {
             setAlert({severity: "success", message: "Saved sucessfully" });
             setAlertOpen(true);
           }).catch((error) => {
@@ -176,7 +186,7 @@ function Settings() {
             console.error("Error adding story: ", error);
           });
 
-          refreshUser().then((res) => {
+          refreshUser(auth).then((res) => {
             router.push("/[username]", `/${res.user.username}`);
           }).catch((error) => {
             router.push(`/404`);
@@ -217,7 +227,7 @@ function Settings() {
                 className="outline-none absolute right-2 bottom-2 bg-black bg-opacity-40 p-2 text-white"
                 aria-label="Search">
                 <PhotoCameraIcon fontSize="small" 
-                  ></PhotoCameraIcon>
+                ></PhotoCameraIcon>
               </IconButton>
               {uploadingAvatar && <CircularProgress className="absolute" 
                 style={{right: "0.4rem", bottom:"0.4rem"}} size={40} />}
@@ -245,7 +255,7 @@ function Settings() {
           defaultValue={data?.userInfo.user.fullname}
           required/>
 
-        
+
         <CustomTextField id="profile-birthday" 
           className="w-full mt-6"
           onChange={(e) => setUserInfoByField("birthday", new Date(e.target.value))}
@@ -286,12 +296,20 @@ function Settings() {
           variant="outlined" 
         />
         <Button id="profile-submit" 
-          className="my-6 text-black border-black" 
+          className="mt-6 text-black border-black" 
           disabled={uploadingAvatar}
           variant="outlined" 
           onClick={submit}>
           Save 
         </Button>
+        <Button id="profile-logout" 
+          className="my-6 text-red-400 border-red-400" 
+          disabled={uploadingAvatar}
+          variant="outlined" 
+          onClick={handleSignOut}>
+          Sign Out
+        </Button>
+
       </form>
 
       <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleCloseAlert} anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>

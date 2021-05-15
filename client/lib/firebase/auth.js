@@ -18,7 +18,7 @@ function useProvideAuth() {
   const [loading, setLoading] = useState(true);
 
   const handleAuthChange = async (authState) => { 
-    // this is also called on each refresh
+    // this handler is also being called on each refresh
     if (!authState) {
       setLoading(false);
       return;
@@ -26,20 +26,23 @@ function useProvideAuth() {
     authState.token = await authState.getIdToken();
     setAuth(authState);
     axios.defaults.headers.common = {'Authorization': `Bearer ${authState.token}`}
-    var cookies = parseCookies();
-    if (! user){
-      if(! cookies.hasOwnProperty("user")) await refreshUser(authState);
+    if (!user){
+      var cookies = parseCookies();
+      if(! cookies.hasOwnProperty("user")) {
+        await refreshUser(authState);
+      }
       else {
-        const userInfo = "user" in cookies ? JSON.parse(cookies.user) : null;
+        const userInfo = JSON.parse(cookies.user);
         setUser(userInfo);
+        setLoading(false);
       }
     }
-    setLoading(false);
   };
 
-  const refreshUser = async () => {
+  const refreshUser = (auth) => {
     if(!auth) return;
-    return await axios.get(urljoin(process.env.API_URL, `/api/user/${auth.uid}`)).then((res) => {
+    setLoading(true);
+    return axios.get(urljoin(process.env.API_URL, `/api/user/${auth.uid}`)).then((res) => {
       if (res.data) {
         setUser(res.data);
         setCookie(null, "user", JSON.stringify(res.data), {
@@ -51,23 +54,23 @@ function useProvideAuth() {
         return deepClone(res.data);  
       }
     }).catch((error) => {
-      console.log("Failed to get user info: ", error);
-      console.log(error);
-      throw error;
+      return null;
+    }).finally(() => {
+      setLoading(false);
     });
   }
 
   const clear = async () => {
     axios.defaults.headers.common = {'Authorization': `Bearer ${null}`}
     setAuth(null);
-    setLoading(true);
     destroyCookie(null, "user");
     setUser(null);
+    setLoading(true);
   };
-
+  
   const signinWithGoogle = async () => {
     setLoading(true);
-    return signInWithPopup(firebaseAuth, new GoogleAuthProvider());;
+    return signInWithPopup(firebaseAuth, new GoogleAuthProvider());
   };
 
 
@@ -102,7 +105,7 @@ export const withAuth = (WrappedComponent, authorizedOnly=false, redirectTo="/lo
     useEffect(async () => {
       if (!loading){
         // This is a very primitive way to authenticate user. It's only check if the username in query equal user's username
-        if (!auth || (authorizedOnly&& (!user || router.query.username != user.username))) {
+        if (!auth || ( authorizedOnly&& (!user || router.query.username != user.username))) {
           router.push(redirectTo);
         }
         else setVerified(true);

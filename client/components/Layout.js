@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -16,7 +17,10 @@ import Div100vh from "react-div-100vh";
 export default function Layout({ children }) {
   const { user } = useAuth();
   const router = useRouter();
-  // TODO : understand why this is being re-rendered everytime children re-render
+  const [redirectRoute, setRedirectRoute] = useState("/settings");
+  useEffect(() => {
+    setRedirectRoute(user?.user?.username ? user.user.username : "settings");
+  }, [user]);
   return (
     <>
       <div id="navbar-mobile" className="md:hidden fixed top-0 left-0 flex justify-between border-b bg-white z-10 w-full">
@@ -66,7 +70,7 @@ export default function Layout({ children }) {
             </IconButton>
           </Link>
           <Link
-            href={`/${user?.user?.username ? user.user.username : "settings"}`}
+            href={`/${redirectRoute}`}
             passHref>
             <IconButton
               className="text-gray-700 outline-none rounded p-2 w-14"
