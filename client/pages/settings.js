@@ -23,7 +23,7 @@ import axios from "axios";
 import * as config from "../config";
 
 function Settings() {
-  const { auth, refreshUser, user: userFromAuth, loading, signOut } = useAuth();
+  const { auth, refreshUser, loading, signOut } = useAuth();
   const router = useRouter();
   if(!auth) {
     router.push("/login?next=/settings");
@@ -96,13 +96,14 @@ function Settings() {
   useEffect(() => {
     if (!data.updated){
       refreshUser(auth).then((user) => {
-        if (!user) return;
+        if (!user) throw new Error("User not found");
         setData({updated:true, userInfo: user, currentUser: deepClone(user)});
         setCurrentUsername(user.user.username);
         validateUserName(user.user.username);
         setDisplayAvatar(user.user.avatar);
       }).catch((error) => {
         console.log("User not found", error);
+        setData({updated:true, userInfo: data.userInfo, currentUser: data.currentUser});
       });
       axios.get(urljoin(process.env.API_URL, "/api/usernames")).
         then((res) => {
@@ -302,6 +303,7 @@ function Settings() {
           onClick={submit}>
           Save 
         </Button>
+        {data.userInfo.id && 
         <Button id="profile-logout" 
           className="my-6 text-red-400 border-red-400" 
           disabled={uploadingAvatar}
@@ -309,6 +311,7 @@ function Settings() {
           onClick={handleSignOut}>
           Sign Out
         </Button>
+        }
 
       </form>
 
