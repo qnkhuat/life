@@ -29,7 +29,7 @@ const roundDate = (date) => date.hour(0).minute(0).second(0).millisecond(0);
 const formatDate = (date) => roundDate(dayjs(date));
 const DATE_RANGE_FORMAT = "DD/MM/YYYY";
 
-function EventDisplayer ({ events, eventId, onEditEvent, setEventId}) {
+function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) {
 
   var event = null;
   const [ currentEventIndex, setCurrentEventIndex ] = useState(null);
@@ -116,12 +116,14 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId}) {
               aria-label="edit" color="primary">
               <CloseIcon fontSize="small"></CloseIcon>
             </IconButton>
+            {editable && 
             <IconButton 
               onClick={() => onEditEvent(eventId)} 
               aria-label="edit" color="primary" 
               className="outline-none absolute top-2 left-1 bg-black bg-opacity-40 text-white w-6 h-6 z-40">
               <EditIcon fontSize="small"></EditIcon>
             </IconButton>
+            }
           </div>
 
           <div id="modal-content" 
@@ -157,14 +159,12 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId}) {
 
               }
               backButton={
-              <IconButton
+                <IconButton
                   onClick={() => handleJumpEvent(true)}
                   className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  left-1 w-6 h-6 z-40"
                   aria-label="edit" color="primary">
                   <KeyboardArrowLeft />
                 </IconButton>
-
-                
               }
             />
           </div>
@@ -195,8 +195,6 @@ const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols,
     var tileType = matchedEvents.length > 0 ? matchedEvents[0].event.type : null;
     if (!tileType) tileType = startDate < today ? "default" : "disable"; 
 
-    //const onClickHandler = (matchedEvents.length > 0 && !["default", "disable"].includes(tileType)) 
-    //  ?  () => modalRef.current.show(matchedEvents[0].id) : () => {};
     const onClickHandler = (matchedEvents.length > 0 && !["default", "disable"].includes(tileType)) 
       ?  () => {
         setEventId(matchedEvents[0].id);
@@ -232,7 +230,7 @@ const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols,
   )
 })
 
-function Board({ events, birthday, maxAge, onEditEvent }) {
+function Board({ events, birthday, maxAge, editable, onEditEvent }) {
   const today = roundDate(dayjs());
   const [ storyId, setEventId ] = useState(null);
   const [ updated, setUpdated ] = useState(false);
@@ -264,7 +262,7 @@ function Board({ events, birthday, maxAge, onEditEvent }) {
 
   return(
     <>
-      <EventDisplayer eventId={storyId} events={eventsList} onEditEvent={onEditEvent}  setEventId={setEventId}/>
+      <EventDisplayer eventId={storyId} events={eventsList} editable={editable} onEditEvent={onEditEvent}  setEventId={setEventId}/>
       <Layout events={eventsList} numCols={numCols} numRows={numRows} birthday={birthday} setEventId={setEventId}/>
     </>
   )

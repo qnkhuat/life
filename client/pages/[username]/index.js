@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useRouter } from 'next/router';
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
@@ -9,6 +10,7 @@ import Loading from '../../components/Loading';
 import Layout from '../../components/Layout';
 import Upsert from '../../components/Story/Upsert';
 
+import { useAuth } from "../../lib/firebase/auth";
 import { formatDate, formatAge, formatMultilineText, roundDate } from '../../lib/util';
 
 import IconButton from '@material-ui/core/IconButton';
@@ -17,6 +19,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Modal from '@material-ui/core/Modal';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import axios from "axios";
 import urljoin from "url-join";
@@ -30,13 +33,13 @@ const getData = async (username) => {
   const today = roundDate(dayjs());
   const birthday = roundDate(dayjs(user.user.birthday));
   events[uuidv4()] = {
-        publish:true,
-        date: today.toJSON(),
-        type: "today",
-        title: "Today",
-        imageUrls: [],
-        videoUrls: [],
-      };
+    publish:true,
+    date: today.toJSON(),
+    type: "today",
+    title: "Today",
+    imageUrls: [],
+    videoUrls: [],
+  };
 
   const result  = {
     events:events,
@@ -55,8 +58,10 @@ const getData = async (username) => {
 // This is the best of both world: static make the site load fast. The second fetch make the site up-to-date
 function Profile({ data }) {
   const router = useRouter();
+  const { auth, user: currentUser, loading } = useAuth();
 
-  if (router.isFallback) return <Loading />;
+  if (router.isFallback || loading) return <Loading />;
+  const editable = auth && router.query.username == currentUser.user.username;
 
   const [ state, setState ] = useState({updated: false, updateKey:0, stateData: data });
   const { updated, updateKey, stateData } = state;
@@ -102,7 +107,7 @@ function Profile({ data }) {
   return (
     <Layout>
       <div className="my-2">
-        <div id="info" className="flex flex-col">
+        <div id="info" className="flex flex-col relative">
           <div className="flex">
             <Avatar
               className="w-28 h-28 text-4xl torder rounded-full shadow mr-4"
@@ -115,9 +120,22 @@ function Profile({ data }) {
             </div>
           </div>
           {user.user.about && <div id="about" className="w-full mt-4"><p>{formatMultilineText(user.user.about)}</p></div>}
+          {editable && 
+            <Link
+              href={`/${user ? "settings" : "login"}`}
+              passHref>
+              <IconButton
+                className="hidden md:block text-gray-700 outline-none rounded p-2 w-14 absolute top-0 right-0"
+                aria-label="Settings">
+                <SettingsIcon></SettingsIcon>
+              </IconButton>
+            </Link>
+          }
         </div>
 
         <hr className="my-4"></hr>
+
+        {editable && 
 
         <div id="add-button" className="fixed bottom-14 right-4 z-10">
           <IconButton
@@ -141,11 +159,12 @@ function Profile({ data }) {
                 aria-label="edit" color="primary">
                 <CloseIcon fontSize="small"></CloseIcon>
               </IconButton>
-                <Upsert storyId={upsertStory.storyId} story={upsertStory.story} onComplete={handleCompleteUpsert}/>
+              <Upsert storyId={upsertStory.storyId} story={upsertStory.story} onComplete={handleCompleteUpsert}/>
             </div>
           </Modal>
         </div>
-        <Board key={updateKey} events={events} birthday={user.user.birthday} maxAge={user.user.maxAge} onEditEvent={onEditEvent}/>
+        }
+        <Board key={updateKey} events={events} birthday={user.user.birthday} maxAge={user.user.maxAge} onEditEvent={onEditEvent} editable={editable}/>
       </div>
     </Layout>
   )
