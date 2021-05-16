@@ -165,7 +165,7 @@ function Profile({ data }) {
           </Modal>
         </div>
         }
-        <Board key={updateKey} events={events} birthday={user.user.birthday} maxAge={user.user.maxAge} onEditEvent={onEditEvent} editable={editable}/>
+        <Board key={updateKey} events={events} birthday={user.user.birthday} maxAge={parseInt(user.user.maxAge)} onEditEvent={onEditEvent} editable={editable}/>
       </div>
     </Layout>
   )
