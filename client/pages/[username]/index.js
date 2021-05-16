@@ -116,6 +116,7 @@ function Profile({ data }) {
             </Avatar>
             <div id="info-text" className='flex flex-col justify-center'>
               <p className="font-bold text-lg">{user.user.fullname}</p>
+              <p className="text-xs">@{user.user.username}</p>
               <p className="text-sm">{formatAge(user.user.birthday)}</p>
             </div>
           </div>

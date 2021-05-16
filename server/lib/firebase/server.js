@@ -37,11 +37,17 @@ async function storageGetUrl(path){
   };
 
   // Get a v2 signed URL for the file
-  const [url] = await storage
-    .bucket()
-    .file(path)
-    .getSignedUrl(options);
-  return url;
+  try {
+    const [url] = await storage
+      .bucket()
+      .file(path)
+      .getSignedUrl(options);
+    return url;
+
+  } catch (error) {
+    console.error("Failed to get image url", error);
+    return null;
+  }
 }
 
 export { firestore, auth, storage, storageGetUrl };

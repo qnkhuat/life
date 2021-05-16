@@ -1,7 +1,7 @@
 import { firestore } from "../../lib/firebase/server";
 import { cors, runMiddleware } from "../../lib/util";
 
-const getAllStories = async (req, res) => {
+const getAllUsernames= async (req, res) => {
   try {
     const snapshot = await firestore.collection("user").get();
     var usernames = [];
@@ -19,7 +19,7 @@ export default async (req, res) => {
   await runMiddleware(req, res, cors);
   switch (req.method){
     case "GET":
-      await getAllStories(req, res);
+      await getAllUsernames(req, res);
       break;
     default:
       res.status(405).json({ message: 'Method Not Allowed' });

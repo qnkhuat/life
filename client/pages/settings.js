@@ -30,7 +30,6 @@ function Settings() {
     return <></>;
   }
 
-
   const [ userNameValidation, setUsernameValidation ] = useState({valid:false, msg: ""});
   const [ data, setData] = useState({ 
     updated: false,
@@ -82,6 +81,7 @@ function Settings() {
   }
 
   function setUserInfoByField(field, value){
+    if (typeof value == "string") value = value.trim();
     data.userInfo.user[field] = value;
     setData(data);
   }
@@ -303,7 +303,6 @@ function Settings() {
           onClick={submit}>
           Save 
         </Button>
-        {data.userInfo.id && 
         <Button id="profile-logout" 
           className="my-6 text-red-400 border-red-400" 
           disabled={uploadingAvatar}
@@ -311,7 +310,6 @@ function Settings() {
           onClick={handleSignOut}>
           Sign Out
         </Button>
-        }
 
       </form>
 
