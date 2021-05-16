@@ -9,13 +9,14 @@ import SearchIcon from '@material-ui/icons/Search';
 import HomeIcon from '@material-ui/icons/Home';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SettingsIcon from '@material-ui/icons/Settings';
+import LoginIcon from '@material-ui/icons/Login';
 
 import useDeviceDetect from "../lib/device";
 import { useAuth } from "../lib/firebase/auth"; 
 import Div100vh from "react-div-100vh";
 
 export default function Layout({ children, copyright=true }) {
-  const { user } = useAuth();
+  const { auth, user } = useAuth();
   const router = useRouter();
   const [redirectRoute, setRedirectRoute] = useState("/settings");
   useEffect(() => {
@@ -36,7 +37,12 @@ export default function Layout({ children, copyright=true }) {
           <IconButton
             className="text-gray-700 outline-none rounded p-2 w-14"
             aria-label="Settings">
+            {auth && 
             <SettingsIcon></SettingsIcon>
+            }
+            {!auth && 
+              <LoginIcon></LoginIcon>
+            }
           </IconButton>
         </Link>
       </div>
