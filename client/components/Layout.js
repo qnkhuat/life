@@ -48,7 +48,7 @@ export default function Layout({ children, copyright=true }) {
         {copyright &&
         <div id="footer" 
           className="pb-4" >
-          <p id="copy-right" className="mt-4 text-center text-gray-500 text-xs">© {new Date().getFullYear()} InANutShell by qnkhuat</p>
+          <p id="copy-right" className="mt-4 text-center text-gray-500 text-xs">© {new Date().getFullYear()} The life book</p>
         </div>
         }
 

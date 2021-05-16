@@ -92,7 +92,7 @@ export default function Home ({ users }){
     return (
       <Layout>
         <CustomTextField id="search-username" 
-          className="w-full mt-6"
+          className="w-full "
           label="Search" 
           variant="standard" 
           onChange={handleSearch}
