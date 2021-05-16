@@ -14,7 +14,7 @@ module.exports = {
       },
       inset: {
         "-board": "-6vw", // = half of tile width
-        "-sm-board": "-30px", // = half of tile width
+        "-sm-board": "-34px", // = half of tile width
       },
       maxHeight: {
         'tooltip': "70vh",

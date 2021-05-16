@@ -94,7 +94,7 @@ export default function Home ({ users }){
         <CustomTextField id="search-username" 
           className="w-full mt-6"
           label="Search" 
-          variant="outlined" 
+          variant="standard" 
           onChange={handleSearch}
           InputProps={{
             endAdornment: <InputAdornment position="end"><SearchIcon></SearchIcon></InputAdornment>,

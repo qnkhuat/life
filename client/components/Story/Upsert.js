@@ -17,7 +17,7 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 
 import { useAuth  } from "../../lib/firebase/auth";
-import { formatDate } from "../../lib/util";
+import { formatDate, capitalize } from "../../lib/util";
 import CustomTextField from "../../components/TextField";
 import FirebaseUpload from "../FirebaseUpload";
 import * as constants from "../Board/constants";
@@ -31,9 +31,9 @@ export default function Upsert({ storyId, story, onComplete }){
   // exists(storyId) ? update : insert
   const storyTypes = {};
   Object.keys(constants.EVENTMAPPING).
-    filter((key) => constants.EVENTMAPPING[key]['icon']).
+    filter((key) => constants.EVENTMAPPING[key]['icon'] && key != 'today').
     map((type, index) => {
-      storyTypes[type] = `${type} - ${constants.EVENTMAPPING[type]['icon']}`;
+      storyTypes[type] = `${capitalize(type)} - ${constants.EVENTMAPPING[type]['icon']}`;
     })
 
   const height100vh = use100vh();
@@ -43,7 +43,7 @@ export default function Upsert({ storyId, story, onComplete }){
   const [ date, setDate ] = useState(formatDate(story?.date, "YYYY-MM-DD")|| new Date());
   const [ imageUrls, setImageUrls ] = useState(story?.imageUrls || []);
   const [ publish, setPublish ] = useState(story?.publish || true);
-  const [ type, setType ] = useState(story?.type || Object.keys(storyTypes)[0]);
+  const [ type, setType ] = useState(story?.type || Object.keys(storyTypes)[5]);
   const [ uploadingImage, setUploadingImage ] = useState(false);
 
   const [ alertOpen, setAlertOpen] = useState(false);

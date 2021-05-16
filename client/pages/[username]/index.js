@@ -105,7 +105,7 @@ function Profile({ data }) {
 
 
   return (
-    <Layout>
+    <Layout copyright={false}>
       <div className="my-2">
         <div id="info" className="flex flex-col relative">
           <div className="flex">
