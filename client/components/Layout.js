@@ -60,16 +60,6 @@ export default function Layout({ children }) {
             </Button>
           </Link>
           <Link
-            href="/search"
-            passHref>
-            <IconButton
-              className="text-gray-700 outline-none rounded p-2 w-14"
-              onClick={() => {}}
-              aria-label="Search">
-              <SearchIcon></SearchIcon>
-            </IconButton>
-          </Link>
-          <Link
             href={`/${redirectRoute}`}
             passHref>
             <IconButton
