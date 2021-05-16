@@ -25,11 +25,11 @@ export default function Home ({ users }){
   const [ userIdsList, setUserIdsList ] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!auth && !loading) {
-      router.push('/login?next=/');
-    }
-  }, [auth, loading]);
+  //useEffect(() => {
+  //  if (!auth && !loading) {
+  //    router.push('/login?next=/');
+  //  }
+  //}, [auth, loading]);
 
   const [newSearch, setNewSearch] = useState(false);
   
