@@ -41,13 +41,18 @@ export default function Layout({ children }) {
         </Link>
       </div>
       <div className="py-10 md:pb-0">
-        <div className="container mx-auto px-4 overflow-x-hidden">
+        <div className="container mx-auto px-4 overflow-x-hidden md:w-desktop">
           {children && children}
         </div>
       </div>
+      <div id="footer" 
+        className=""
+      >
+        <p id="copy-right" className="mt-4 text-center text-gray-500 text-sm">© {new Date().getFullYear()} InANutShell by qnkhuat</p>
+      </div>
       <div id="navbar-main"
         className={`border-t md:border-b bg-white w-full z-10 fixed bottom-0 left-0 md:top-0 md:bottom-auto`}>
-        <div className="container flex justify-between m-auto">
+        <div className="container flex justify-between m-auto md:w-desktop">
           <Link
             href="/"
             passHref>

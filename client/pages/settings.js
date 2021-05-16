@@ -130,7 +130,7 @@ function Settings() {
           replace("http://", "").
           replace("https://", "")});
       }
-    } else setUsernameValidation({valid: false, msg: "Username must contain only letters, numbers, period(.), and underscore(_)."});
+    } else setUsernameValidation({valid: false, msg: "Username must contain only lower case letters, numbers, period(.), and underscore(_)."});
   }
 
   function handleOnChangeUsername(value) {
@@ -238,10 +238,11 @@ function Settings() {
         </div>
 
         <CustomTextField id="profile-username" 
+          autoCapitalize="none"
           className="w-full mt-6"
           error={!userNameValidation['valid']}
           defaultValue={data?.userInfo.user.username}
-          onChange={(e) => handleOnChangeUsername(e.target.value)}
+          onChange={(e) => handleOnChangeUsername(e.target.value.toLowerCase())}
           label="Username" 
           variant="outlined" 
           required

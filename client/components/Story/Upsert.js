@@ -156,7 +156,7 @@ export default function Upsert({ storyId, story, onComplete }){
           </FirebaseUpload>
         </div>
 
-        <div id="form-info" className="flex flex-col px-2 pb-4"
+        <div id="form-info" className="flex flex-col px-2 pb-4 md:w-desktop m-auto"
         >
 
           <CustomTextField id="story-title" 

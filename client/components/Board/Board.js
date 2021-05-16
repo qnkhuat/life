@@ -131,7 +131,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
       <div  {...swipeHandlers}
         className={` fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-full z-20 h-full bg-black`}>
         <div id="modal-wrapper" 
-          className="bg-white flex overflow-scroll outline-none h-full justify-start">
+          className="bg-black flex overflow-scroll outline-none h-full justify-start">
           <div id="modal-icon">
             <IconButton
               onClick={handleCloseDisplayer}
@@ -150,7 +150,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
           </div>
 
           <div id="modal-content" 
-            className="w-full bg-black m-auto h-full flex flex-col justify-center"
+            className="w-full bg-black m-auto h-full flex flex-col justify-center md:w-desktop"
           >
             {isMedia && media}
             {isText && text}

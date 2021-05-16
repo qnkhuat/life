@@ -26,6 +26,7 @@ module.exports = {
         'sm-tile': '4px'
       },
       width: {
+        'desktop': "660px",
         'tile': "6vw",
         'sm-tile':"40px",
         'tooltip': "90vw",
