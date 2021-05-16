@@ -280,7 +280,7 @@ function Settings() {
 
 
         <CustomTextField id="profile-maxage" 
-          className="w-full mt-6"
+          className="w-full mt-6 hidden"
           onChange={(e) => setUserInfoByField("maxAge", e.target.value)}
           defaultValue={data?.userInfo.user.maxAge}
           label="Life expectency" 

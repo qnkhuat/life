@@ -17,7 +17,6 @@ class MyDocument extends Document {
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000"></link>
           <meta name="msapplication-TileColor" content="#da532c"></meta>
           <meta name="theme-color" content="#ffffff"></meta>
-          <title>The life book</title>
         </Head>
         <body>
             <Main></Main>
