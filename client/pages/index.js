@@ -91,7 +91,7 @@ export default function Home ({ users }){
 
     return (
       <Layout>
-        <CustomTextField id="search-username" 
+        <CustomTextField id="search-username mt-2" 
           className="w-full "
           label="Search" 
           variant="standard" 
