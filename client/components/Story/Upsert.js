@@ -172,7 +172,7 @@ export default function Upsert({ storyId, story, onComplete }){
             className="mt-4 border-r-0 border-l-0"
             label="Description" 
             multiline
-            rows={ content?.split("\n").length  >= 3 ? content.split("\n").length + 1 : 3}
+            rows={3}
             defaultValue={content}
             variant="outlined" 
             onChange={(e) => setContent(e.target.value)}
