@@ -48,33 +48,17 @@ const getData = async (username) => {
 
 
 function isDataChanged(currentData, newData) {
-  console.log(currentData, newData);
-  if (currentData.user.user.lastModifiedDate != newData.user.user.lastModifiedDate) {
-    console.log("user chagned");
-    return true;
-  }
+  if (currentData.user.user.lastModifiedDate != newData.user.user.lastModifiedDate) return true;
 
   // Filter the today events bc it's always changed
   const currentEventIds = Object.keys(currentData.events).filter(eventId => currentData.events[eventId].type != "today");
   const newEventsIds = Object.keys(newData.events).filter(eventId => newData.events[eventId].type != "today");
-  console.log(newEventsIds, currentEventIds);
 
-  if (currentEventIds.length != newEventsIds.length){
-    console.log('num events changed');
-    return true;
-  } 
+  if (currentEventIds.length != newEventsIds.length) return true;
 
   for (const eventId of newEventsIds){
-    console.log(eventId);
-    if (!currentData.events[eventId]){
-      console.log(currentData.events, eventId);
-      console.log("detect new event");
-      return true; // newEventid
-    }
-    if (currentData.events[eventId].lastModifiedDate != newData.events[eventId].lastModifiedDate){ 
-      console.log("events modified");
-      return true; // Modified event
-    }
+    if (!currentData.events[eventId]) return true; // newEventid
+    if (currentData.events[eventId].lastModifiedDate != newData.events[eventId].lastModifiedDate) return true; // Modified event
   }
   return false;
 }
@@ -106,7 +90,7 @@ function Profile({ data }) {
     if (router.query.username && updateKey==0) {
       getData(router.query.username).then((data) => {
         if(isDataChanged(stateData, data)) {
-          console.log("update data");
+          console.log("Update data");
           setState({stateData:data, updateKey: uuidv4()});
         }
       }).catch((error) => {
