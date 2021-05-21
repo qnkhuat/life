@@ -86,6 +86,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
         break;
     }
   }
+
   useEffect(() => {
     document.addEventListener('keyup', handleKeyUp)
     return () => {
@@ -102,7 +103,14 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
   })
 
 
-  if (!eventId || !event) return (<></>);
+  if (!eventId || !event) {
+    document.body.style.overflow = null;
+    return (<></>);
+  }
+
+  setTimeout(() => {
+    document.body.style.overflow = "hidden";
+  }, 100);
 
 
   const isText = event.title.length > 0;
@@ -129,7 +137,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
 
     return (
       <div  {...swipeHandlers}
-        className={` fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-full z-20 h-full bg-black`}>
+        className={`fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-full z-20 h-full bg-black`}>
         <div id="modal-wrapper" 
           className="bg-white flex overflow-scroll outline-none h-full justify-start">
           <div id="modal-icon">
