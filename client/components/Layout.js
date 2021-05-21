@@ -24,7 +24,7 @@ export default function Layout({ children, copyright=true }) {
   }, [user]);
   return (
     <>
-      <div id="navbar-mobile" className="md:hidden fixed top-0 left-0 flex justify-between border-b bg-white z-10 w-full">
+      <div id="navbar-mobile" className="md:hidden fixed top-0 left-0 flex justify-between border-b bg-white z-40 w-full">
         <IconButton
           className="text-gray-700 outline-none rounded p-2 w-14"
           onClick={() => router.back()}
@@ -60,7 +60,7 @@ export default function Layout({ children, copyright=true }) {
 
       </div>
             <div id="navbar-main"
-        className={`border-t md:border-b bg-white w-full z-10 fixed bottom-0 left-0 md:top-0 md:bottom-auto`}>
+        className={`border-t md:border-b bg-white w-full z-40 fixed bottom-0 left-0 md:top-0 md:bottom-auto`}>
         <div className="container flex justify-between m-auto md:w-desktop">
           <Link
             href="/"

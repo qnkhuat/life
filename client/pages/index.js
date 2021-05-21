@@ -47,10 +47,7 @@ export default function Home ({ users }){
     }, 500);
 
     setTimeout(() => {
-      if (newSearch) {
-        console.log("cannceld search");
-        return;
-      }
+      if (newSearch) return;
       const value = e.target.value;
       const allUserIds = Object.keys(users);
       if (!value || value == "") setUserIdsList(Object.keys(users).sort((a, b) => 0.5 - Math.random()));
@@ -81,6 +78,7 @@ export default function Home ({ users }){
       if (matchedUserIdsList.length != 0) setUserIdsList(matchedUserIdsList);
     }, 600);
   }
+
   useEffect(() => { 
     // since this is static page so Nextjs doesn't allow to random at render time
     // random order before render to avoid this warning
@@ -100,16 +98,18 @@ export default function Home ({ users }){
             endAdornment: <InputAdornment position="end"><SearchIcon></SearchIcon></InputAdornment>,
           }}
         />
-
         {
           userIdsList.map((userId) => (
             <div key={userId} className="flex flex-col relative w-full border-b-2 py-4">
               <div className="flex w-fulll">
-                <Avatar
-                  className="w-24 h-24 text-4xl torder rounded-full shadow mr-4"
-                  alt={users[userId].fullname}
-                  src={users[userId].avatar || "/fake-image.jpg"}>
-                </Avatar>
+
+                <Link href={`/${users[userId].username}`} passHref>
+                  <Avatar
+                    className="w-24 h-24 text-4xl torder rounded-full shadow mr-4"
+                    alt={users[userId].fullname}
+                    src={users[userId].avatar || "/fake-image.jpg"}>
+                  </Avatar>
+                </Link>
                 <div id="info-text" className='flex flex-col justify-center w-auto'>
                   <Link href={`/${users[userId].username}`} passHref>
                     <a className="font-bold text-lg font-underline">{users[userId].fullname}</a>

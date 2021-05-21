@@ -222,8 +222,7 @@ export default function Upsert({ storyId, story, onComplete }){
             <Modal
               BackdropComponent={Backdrop}
               open={openDeleteConfirmation}
-              onClose={() => setOpenDeleteConfirmation(false)}
-            >
+              onClose={() => setOpenDeleteConfirmation(false)}>
               <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-4/5 text-left">
                 <div className="bg-white p-4 rounded">
                   <p>Are you sure you want to delete story : {story?.title}?</p>

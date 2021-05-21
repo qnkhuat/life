@@ -103,9 +103,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
   })
 
 
-  if (!eventId || !event) {
-    return (<></>);
-  }
+  if (!eventId || !event) return (<></>);
 
   const isText = event.title.length > 0;
   const isMedia = event.imageUrls.length > 0;
@@ -132,8 +130,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
     return (
       <Modal
         BackdropComponent={Backdrop}
-        open={!(!eventId || !event)}
-      >
+        open={event!=null} >
         <div  {...swipeHandlers}
           className={`fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-full z-20 h-full bg-black`}>
           <div id="modal-wrapper" 

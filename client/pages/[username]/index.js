@@ -46,6 +46,36 @@ const getData = async (username) => {
   return result;
 }
 
+
+function isDataChanged(currentData, newData) {
+  if (currentData.user.user.lastModifiedDate != newData.user.user.lastModifiedDate) {
+    console.log("user chagned");
+    return true;
+  }
+
+  // Filter the today events bc it's always changed
+  const currentEventIds = Object.keys(currentData.events).filter((eventId) => {currentData.events[eventId].type != "today"});
+  const newEventsIds = Object.keys(newData.events).filter((eventId) => {newData.events[eventId].type != "today"});
+
+  if (currentEventIds.length != newEventsIds.length){
+    console.log('num events changed');
+    return true;
+  } 
+
+  for (const eventId in newEventsIds){
+    if (!currentData.events[eventId]){
+      console.log(currentData.events, eventId);
+      console.log("detect new event");
+      return true; // newEventid
+    }
+    if (currentData.events[eventId].lastModifiedDate != newData.events[eventId].lastModifiedDate){ 
+      console.log("events modified");
+      return true; // Modified event
+    }
+  }
+  return false;
+}
+
 // Note on how this page renders
 // It uses ISR (Incremental static rendering)
 // means every time the request comes, it'll return the cached
@@ -60,8 +90,8 @@ function Profile({ data }) {
 
   if (router.isFallback) return <Loading />
 
-  const [ state, setState ] = useState({updated: false, updateKey:0, stateData: data });
-  const { updated, updateKey, stateData } = state;
+  const [ state, setState ] = useState({ updateKey:0, stateData: data });
+  const { updateKey, stateData } = state;
   const { events , user } = stateData;
 
   // Add/Edit Story button controller
@@ -70,12 +100,14 @@ function Profile({ data }) {
 
 
   useEffect(() => {
-    if (router.query.username && !updated) {
+    if (router.query.username && updateKey==0) {
       getData(router.query.username).then((data) => {
-        setState({updated: true, stateData:data, updateKey: uuidv4()})
+        if(isDataChanged(stateData, data)) {
+          console.log("update data");
+          setState({stateData:data, updateKey: uuidv4()});
+        }
       }).catch((error) => {
         console.error("Failed to fetch new data", error);
-        setState({updated: true, stateData:stateData, updateKey: uuidv4()})
       });
     } 
   }, []);
