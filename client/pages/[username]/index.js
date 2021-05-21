@@ -48,21 +48,24 @@ const getData = async (username) => {
 
 
 function isDataChanged(currentData, newData) {
+  console.log(currentData, newData);
   if (currentData.user.user.lastModifiedDate != newData.user.user.lastModifiedDate) {
     console.log("user chagned");
     return true;
   }
 
   // Filter the today events bc it's always changed
-  const currentEventIds = Object.keys(currentData.events).filter((eventId) => {currentData.events[eventId].type != "today"});
-  const newEventsIds = Object.keys(newData.events).filter((eventId) => {newData.events[eventId].type != "today"});
+  const currentEventIds = Object.keys(currentData.events).filter(eventId => currentData.events[eventId].type != "today");
+  const newEventsIds = Object.keys(newData.events).filter(eventId => newData.events[eventId].type != "today");
+  console.log(newEventsIds, currentEventIds);
 
   if (currentEventIds.length != newEventsIds.length){
     console.log('num events changed');
     return true;
   } 
 
-  for (const eventId in newEventsIds){
+  for (const eventId of newEventsIds){
+    console.log(eventId);
     if (!currentData.events[eventId]){
       console.log(currentData.events, eventId);
       console.log("detect new event");
@@ -170,7 +173,7 @@ function Profile({ data }) {
 
         {editable && 
 
-        <div id="add-button" className="fixed bottom-14 right-4 z-10">
+        <div id="add-button" className="fixed bottom-14 right-4 z-40">
           <IconButton
             onClick={handleOpenUpsert}
             className="bg-red-400 text-white p-2 outline-none"
