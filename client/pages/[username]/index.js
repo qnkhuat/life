@@ -149,8 +149,6 @@ function Profile({ data }) {
             BackdropComponent={Backdrop}
             open={openUpsert}
             onClose={handleCloseUpsert}
-            aria-labelledby="child-modal-title"
-            aria-describedby="child-modal-description"
           >
             <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 h-full overflow-y-scroll bg-white">
               <IconButton

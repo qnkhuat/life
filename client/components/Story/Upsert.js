@@ -223,8 +223,6 @@ export default function Upsert({ storyId, story, onComplete }){
               BackdropComponent={Backdrop}
               open={openDeleteConfirmation}
               onClose={() => setOpenDeleteConfirmation(false)}
-              aria-labelledby="child-modal-title"
-              aria-describedby="child-modal-description"
             >
               <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-4/5 text-left">
                 <div className="bg-white p-4 rounded">

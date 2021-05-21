@@ -104,14 +104,8 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
 
 
   if (!eventId || !event) {
-    document.body.style.overflow = null;
     return (<></>);
   }
-
-  setTimeout(() => {
-    document.body.style.overflow = "hidden";
-  }, 100);
-
 
   const isText = event.title.length > 0;
   const isMedia = event.imageUrls.length > 0;
@@ -136,71 +130,76 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
     </div>
 
     return (
-      <div  {...swipeHandlers}
-        className={`fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-full z-20 h-full bg-black`}>
-        <div id="modal-wrapper" 
-          className="bg-white flex overflow-scroll outline-none h-full justify-start">
-          <div id="modal-icon">
-            <IconButton
-              onClick={handleCloseDisplayer}
-              className="bg-black bg-opacity-40 text-white outline-none absolute top-2 right-1 w-6 h-6 z-40"
-              aria-label="edit" color="primary">
-              <CloseIcon fontSize="small"></CloseIcon>
-            </IconButton>
-            {editable && 
-            <IconButton 
-              onClick={() => onEditEvent(eventId)} 
-              aria-label="edit" color="primary" 
-              className="outline-none absolute top-2 left-1 bg-black bg-opacity-40 text-white w-6 h-6 z-40">
-              <EditIcon fontSize="small"></EditIcon>
-            </IconButton>
-            }
-          </div>
+      <Modal
+        BackdropComponent={Backdrop}
+        open={!(!eventId || !event)}
+      >
+        <div  {...swipeHandlers}
+          className={`fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-full z-20 h-full bg-black`}>
+          <div id="modal-wrapper" 
+            className="bg-white flex overflow-scroll outline-none h-full justify-start">
+            <div id="modal-icon">
+              <IconButton
+                onClick={handleCloseDisplayer}
+                className="bg-black bg-opacity-40 text-white outline-none absolute top-2 right-1 w-6 h-6 z-40"
+                aria-label="edit" color="primary">
+                <CloseIcon fontSize="small"></CloseIcon>
+              </IconButton>
+              {editable && 
+              <IconButton 
+                onClick={() => onEditEvent(eventId)} 
+                aria-label="edit" color="primary" 
+                className="outline-none absolute top-2 left-1 bg-black bg-opacity-40 text-white w-6 h-6 z-40">
+                <EditIcon fontSize="small"></EditIcon>
+              </IconButton>
+              }
+            </div>
 
-          <div id="modal-content" 
-            className="w-full bg-black m-auto h-full flex flex-col justify-center md:w-desktop"
-          >
-            {isMedia && media}
-            {isText && text}
+            <div id="modal-content" 
+              className="w-full bg-black m-auto h-full flex flex-col justify-center md:w-desktop"
+            >
+              {isMedia && media}
+              {isText && text}
 
-            <MobileStepper
-              className="fixed bottom-0 left-0 w-full bg-black justify-center"
-              variant="dots"
-              steps={events.length}
-              position="static"
-              activeStep={currentEventIndex || 0 }
-              sx={{ 
-                maxWidth: "100%", 
-                flexGrow: 1 ,
-                '& .MuiMobileStepper-dot': {
-                  backgroundColor: "white",
-                  opacity: "40%",
-                },
-                '& .MuiMobileStepper-dotActive': {
-                  opacity: "100%",
+              <MobileStepper
+                className="fixed bottom-0 left-0 w-full bg-black justify-center"
+                variant="dots"
+                steps={events.length}
+                position="static"
+                activeStep={currentEventIndex || 0 }
+                sx={{ 
+                  maxWidth: "100%", 
+                  flexGrow: 1 ,
+                  '& .MuiMobileStepper-dot': {
+                    backgroundColor: "white",
+                    opacity: "40%",
+                  },
+                  '& .MuiMobileStepper-dotActive': {
+                    opacity: "100%",
+                  }
+                }}
+                nextButton={
+                  <IconButton
+                    onClick={() => handleJumpEvent(false)}
+                    className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  right-1 w-6 h-6 z-40"
+                    aria-label="edit" color="primary">
+                    <KeyboardArrowRight />
+                  </IconButton>
+
                 }
-              }}
-              nextButton={
-                <IconButton
-                  onClick={() => handleJumpEvent(false)}
-                  className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  right-1 w-6 h-6 z-40"
-                  aria-label="edit" color="primary">
-                  <KeyboardArrowRight />
-                </IconButton>
-
-              }
-              backButton={
-                <IconButton
-                  onClick={() => handleJumpEvent(true)}
-                  className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  left-1 w-6 h-6 z-40"
-                  aria-label="edit" color="primary">
-                  <KeyboardArrowLeft />
-                </IconButton>
-              }
-            />
+                backButton={
+                  <IconButton
+                    onClick={() => handleJumpEvent(true)}
+                    className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  left-1 w-6 h-6 z-40"
+                    aria-label="edit" color="primary">
+                    <KeyboardArrowLeft />
+                  </IconButton>
+                }
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </Modal>
     )
 }
 
