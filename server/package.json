@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "FIRESTORE_EMULATOR_HOST=localhost:8080 next dev -p 3001",
+    "dev-server": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
     "serve": "firebase emulators:start --export-on-exit=./.firestore-export --import=./.firestore-import"
