@@ -100,7 +100,6 @@ function Profile({ data }) {
 
   useEffect(() => {
     if (router.query.username && updateKey == 0 && isAuthorized == true) {
-      console.log('going to there now');
       getData(router.query.username).then((data) => {
         if(isDataChanged(stateData, data)) {
           console.log("Update data");
