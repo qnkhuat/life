@@ -313,7 +313,7 @@ function Settings() {
           }
           label="Private Account"
         />
-        <p className="text-left text-xs text-gray-500 w-full pl-4">Your account will not be displayed in search engine and only you can view your page.</p>
+        <p className="text-left text-xs text-gray-500 w-full pl-4">Your account will not be displayed in our search engine and only you can view your page. (It will take several minutes for the change to be applied)</p>
 
         <Button id="profile-submit" 
           className="mt-6 text-black border-black" 
