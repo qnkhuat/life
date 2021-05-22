@@ -30,8 +30,7 @@ function useProvideAuth() {
       var cookies = parseCookies();
       if(! cookies.hasOwnProperty("user")) {
         await refreshUser(authState);
-      }
-      else {
+      } else {
         const userInfo = JSON.parse(cookies.user);
         setUser(userInfo);
         setLoading(false);

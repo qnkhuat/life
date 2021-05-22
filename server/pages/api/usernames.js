@@ -3,7 +3,8 @@ import { cors, runMiddleware } from "../../lib/util";
 
 const getAllUsernames= async (req, res) => {
   try {
-    const snapshot = await firestore.collection("user").get();
+    const isPrivate = req.query.private || false;
+    const snapshot = await firestore.collection("user").where("private", "==", isPrivate).get();
     var usernames = [];
 
     snapshot.forEach((doc) => {

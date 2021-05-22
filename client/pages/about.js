@@ -7,7 +7,7 @@ export default function About() {
       <div className="w-full h-full container my-8">
         <article className="prose">
         <h2 className="border-b">What <span className="underline">The Life Book</span> is?</h2>
-        <p>We'd like our users to think of <span className="underline">The Life Book</span> as a personal storybook that keeps all of their memorable stories. The stories about:</p>
+        <p>We'd like our users to think of <span className="underline">The Life Book</span> as a personal storybook that keeps all of their memorable stories:</p>
         <ul>
           <li>The stunning places they have been to</li>
           <li>Achievements they're proud of</li>

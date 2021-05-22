@@ -7,6 +7,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Switch from '@material-ui/core/Switch';
+import Checkbox from '@material-ui/core/Checkbox';
 import MenuItem from '@material-ui/core/MenuItem';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import Select from '@material-ui/core/Select';
@@ -202,7 +203,7 @@ export default function Upsert({ storyId, story, onComplete }){
 
           <FormControlLabel
             control={
-              <Switch 
+              <Checkbox
                 color="secondary" checked={publish} onChange={(e) => setPublish(e.target.checked)} />
             }
             label="Publish"

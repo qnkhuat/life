@@ -4,6 +4,9 @@ import { useRouter } from 'next/router';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import Checkbox from '@material-ui/core/Checkbox';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/core/Alert';
@@ -42,7 +45,8 @@ function Settings() {
         birthday: null,
         email:auth.email,
         about:null,
-        avatar:null
+        avatar:null,
+        private: false,
       },
     },
     userInfo: {
@@ -54,7 +58,8 @@ function Settings() {
         birthday: null,
         email:auth.email,
         about:null,
-        avatar:null
+        avatar:null,
+        private: false,
       }
     }
   });
@@ -82,8 +87,9 @@ function Settings() {
 
   function setUserInfoByField(field, value){
     if (typeof value == "string") value = value.trim();
-    data.userInfo.user[field] = value;
-    setData(data);
+    var tempData = deepClone(data)
+    tempData.userInfo.user[field] = value;
+    setData(tempData);
   }
 
   function handleUploadComplete(path, url) {
@@ -297,6 +303,20 @@ function Settings() {
           label="About yourself" 
           variant="outlined" 
         />
+
+        <FormControlLabel
+          className='w-full'
+          control={
+            <Checkbox
+              color="secondary" 
+              checked={data?.userInfo.user.private} 
+              onChange={(e) => setUserInfoByField("private", e.target.checked)}
+            />
+          }
+          label="Private Account"
+        />
+        <p className="text-left text-xs text-gray-500 w-full pl-4">Your account will not be displayed in search engine and only you can view your page.</p>
+
         <Button id="profile-submit" 
           className="mt-6 text-black border-black" 
           disabled={uploadingAvatar}

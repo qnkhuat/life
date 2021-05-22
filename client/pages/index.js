@@ -47,7 +47,7 @@ export default function Home ({ users }){
     }, 500);
 
     setTimeout(() => {
-      if (newSearch) return;
+      if (newSearch || Object.keys(users).length < 1) return;
       const value = e.target.value;
       const allUserIds = Object.keys(users);
       if (!value || value == "") setUserIdsList(Object.keys(users).sort((a, b) => 0.5 - Math.random()));
