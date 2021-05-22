@@ -79,7 +79,7 @@ function Profile({ data }) {
   const router = useRouter();
   const { auth, user: currentUser, loading } = useAuth();
 
-  if (router.isFallback || loading) return <Loading />;
+  if (router.isFallback) return <Loading />;
 
   const [ state, setState ] = useState({ updateKey: 0, stateData: data });
   const { updateKey, stateData } = state;
@@ -91,7 +91,6 @@ function Profile({ data }) {
   const [openUpsert, setOpenUpsert] = useState(false);
   const [upsertStory, setUpsertStory ] = useState({storyId: null, story: null});
 
-
   useEffect(() => {
     if(user && !loading && isAuthorized == null){
       if (user.user.private){
@@ -99,25 +98,22 @@ function Profile({ data }) {
         else setIsAuthorized(true);
       } else setIsAuthorized(true);
     }
-  }, [user, auth]);
+  }, [user, auth, loading]);
 
 
   useEffect(() => {
     if (router.query.username && updateKey == 0 && isAuthorized == true) {
       getData(router.query.username).then((data) => {
         if(isDataChanged(stateData, data)) {
-          console.log("Update data");
           setState({stateData:data, updateKey: uuidv4()});
-        } else {
-          console.log("not update data");
         }
       }).catch((error) => {
         console.error("Failed to fetch new data", error);
       });
     } 
-  }, []);
+  }, [isAuthorized]);
 
-  if(isAuthorized == null) return <Loading />;
+  if(isAuthorized == null || loading) return <Loading />;
 
   const editable = auth && router.query.username == currentUser?.user.username;
 
