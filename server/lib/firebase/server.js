@@ -29,6 +29,7 @@ const auth = admin.auth();
 const storage = admin.storage();
 
 async function storageGetUrl(path){
+  if(!path) return null;
   // These options will allow temporary read access to the file
   const options = {
     version: 'v2', // defaults to 'v2' if missing.

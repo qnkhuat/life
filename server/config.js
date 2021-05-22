@@ -1,1 +1,1 @@
-export const usernameRegex = /^((?!.*?(fuck|nigga|admin)).)(?=.{6,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+$/;
+export const usernameRegex = /^((?!.*?(fuck|nigga|admin)).)(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-z0-9._]+$/;

@@ -111,7 +111,7 @@ function Settings() {
         console.log("User not found", error);
         setData({updated:true, userInfo: data.userInfo, currentUser: data.currentUser});
       });
-      axios.get(urljoin(process.env.API_URL, "/api/usernames")).
+      axios.get(urljoin(process.env.API_URL, "/api/usernames?private=true")).
         then((res) => {
           const listUsernames = res.data;
           listUsernames.push(...config.usernameBlacklist);
@@ -125,7 +125,7 @@ function Settings() {
 
   function validateUserName(value){
     if (!value || !(value.length >= 6 && value.length <= 20) ){
-      setUsernameValidation({valid: false, msg: "Min 8 characters, max 20 characters"});
+      setUsernameValidation({valid: false, msg: "Min 6 characters, max 20 characters"});
     }
     else if (config.usernameRegex.test(value)) {
       if (usernames.includes(value) && value != currentUsername){

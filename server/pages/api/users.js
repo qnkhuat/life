@@ -4,11 +4,13 @@ import { cors, runMiddleware } from "../../lib/util";
 const getUsers = async (req, res) => {
   try {
     const isPrivate = req.query.private  || false;
-    const snapshot = await firestore.collection("user").where("private", "==", isPrivate).get();
+    const snapshot = await firestore.collection("user").get();
     var users = {};
     for (let i in snapshot.docs){
+
       const doc = snapshot.docs[i];
       const user = doc.data();
+      if (user.private && !isPrivate) continue;
       user.avatar= await storageGetUrl(user.avatar);
       users[doc.id] = user;
     }
