@@ -253,7 +253,7 @@ function Settings() {
           className="w-full mt-6"
           error={!userNameValidation['valid']}
           defaultValue={data?.userInfo.user.username}
-          onChange={(e) => handleOnChangeUsername(e.target.value.toLowerCase())}
+          onChange={(e) => handleOnChangeUsername(e.target.value.toLowerCaseCase())}
           label="Username" 
           variant="outlined" 
           required
@@ -314,7 +314,7 @@ function Settings() {
           <p className="text-lg font-bold mt-4">Social accounts</p>
           <CustomTextField id="profile-website" 
             className="w-full mt-2"
-            onChange={(e) => setUserInfoByField("website", e.target.value.toLower())}
+            onChange={(e) => setUserInfoByField("website", e.target.value.toLowerCase())}
             defaultValue={data?.userInfo.user.website}
             label="Website (full url)" 
             variant="outlined" 
@@ -322,7 +322,7 @@ function Settings() {
 
           <CustomTextField id="profile-twitter" 
             className="w-full mt-6"
-            onChange={(e) => setUserInfoByField("twitter", e.target.value.toLower())}
+            onChange={(e) => setUserInfoByField("twitter", e.target.value.toLowerCase())}
             defaultValue={data?.userInfo.user.twitter}
             label="Twitter (username)" 
             variant="outlined" 
@@ -330,7 +330,7 @@ function Settings() {
 
           <CustomTextField id="profile-github" 
             className="w-full mt-6"
-            onChange={(e) => setUserInfoByField("github", e.target.value.toLower())}
+            onChange={(e) => setUserInfoByField("github", e.target.value.toLowerCase())}
             defaultValue={data?.userInfo.user.github}
             label="Github (username)" 
             variant="outlined" 
@@ -338,7 +338,7 @@ function Settings() {
 
           <CustomTextField id="profile-email" 
             className="w-full mt-6"
-            onChange={(e) => setUserInfoByField("displayEmail", e.target.value.toLower())}
+            onChange={(e) => setUserInfoByField("displayEmail", e.target.value.toLowerCase())}
             defaultValue={data?.userInfo.user.displayEmail}
             label="Display Email" 
             variant="outlined" 
