@@ -18,6 +18,10 @@ import Modal from '@material-ui/core/Modal';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import SettingsIcon from '@material-ui/icons/Settings';
+import LanguageIcon from '@material-ui/icons/Language';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import GitHubIcon from '@material-ui/icons/GitHub';
+import EmailIcon from '@material-ui/icons/Email';
 
 import axios from "axios";
 import urljoin from "url-join";
@@ -75,18 +79,17 @@ function Profile({ data }) {
   const router = useRouter();
   const { auth, user: currentUser, loading } = useAuth();
 
-  if (router.isFallback || loading) return <Loading />;
+  if (router.isFallback) return <Loading />;
 
   const [ state, setState ] = useState({ updateKey: 0, stateData: data });
   const { updateKey, stateData } = state;
   const { events , user } = stateData;
   const [ isAuthorized, setIsAuthorized ] = useState(null);
 
-  
+
   // Add/Edit Story button controller
   const [openUpsert, setOpenUpsert] = useState(false);
   const [upsertStory, setUpsertStory ] = useState({storyId: null, story: null});
-
 
   useEffect(() => {
     if(user && !loading && isAuthorized == null){
@@ -95,23 +98,22 @@ function Profile({ data }) {
         else setIsAuthorized(true);
       } else setIsAuthorized(true);
     }
-  }, [user, auth]);
+  }, [user, auth, loading]);
 
 
   useEffect(() => {
     if (router.query.username && updateKey == 0 && isAuthorized == true) {
       getData(router.query.username).then((data) => {
         if(isDataChanged(stateData, data)) {
-          console.log("Update data");
           setState({stateData:data, updateKey: uuidv4()});
         }
       }).catch((error) => {
         console.error("Failed to fetch new data", error);
       });
     } 
-  }, []);
+  }, [isAuthorized]);
 
-  if(isAuthorized == null) return <Loading />;
+  if(isAuthorized == null || loading) return <Loading />;
 
   const editable = auth && router.query.username == currentUser?.user.username;
 
@@ -151,9 +153,16 @@ function Profile({ data }) {
               <p className="font-bold text-lg">{user.user.fullname}</p>
               <p className="text-xs">@{user.user.username}</p>
               <p className="text-sm">{formatAge(user.user.birthday)}</p>
+              <div id="social-accounts" className="flex">
+                {user.user.website && <a rel="noopener noreferrer" href={user.user.website} target="_blank"><LanguageIcon className="mr-3" /></a>}
+                {user.user.twitter && <a rel="noopener noreferrer" href={`https://twitter.com/${user.user.twitter}`} target="_blank"><TwitterIcon className="mr-3 text-blue-600" /></a>}
+                {user.user.github && <a rel="noopener noreferrer" href={`https://github.com/${user.user.github}`} target="_blank"><GitHubIcon className="mr-3"  /></a>}
+                {user.user.displayEmail && <a rel="noopener noreferrer" href={`mailto: ${user.user.displayEmail}`}><EmailIcon className="mr-3" /></a>}
+              </div>
             </div>
           </div>
           {user.user.about && <div id="about" className="w-full mt-4"><p>{formatMultilineText(user.user.about)}</p></div>}
+
           {editable && 
             <Link
               href={`/${user ? "settings" : "login"}`}
@@ -196,7 +205,7 @@ function Profile({ data }) {
         </div>
         }
         {isAuthorized  && 
-        <Board key={updateKey} events={events} birthday={user.user.birthday} maxAge={parseInt(user.user.maxAge)} onEditEvent={onEditEvent} editable={editable}/>
+          <Board key={updateKey} events={events} birthday={user.user.birthday} maxAge={parseInt(user.user.maxAge)} onEditEvent={onEditEvent} editable={editable}/>
         }
         {!isAuthorized  && 
           <p className="text-center font-bold">Private account</p>
