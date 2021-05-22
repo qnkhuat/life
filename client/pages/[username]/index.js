@@ -108,6 +108,8 @@ function Profile({ data }) {
         if(isDataChanged(stateData, data)) {
           console.log("Update data");
           setState({stateData:data, updateKey: uuidv4()});
+        } else {
+          console.log("not update data");
         }
       }).catch((error) => {
         console.error("Failed to fetch new data", error);
@@ -156,10 +158,10 @@ function Profile({ data }) {
               <p className="text-xs">@{user.user.username}</p>
               <p className="text-sm">{formatAge(user.user.birthday)}</p>
               <div id="social-accounts" className="flex">
-                {user.user.website && <a rel="noopener noreferrer" href={user.user.website} target="_blank"><LanguageIcon className="mr-3" fontSize="small" /></a>}
-                {user.user.twitter && <a rel="noopener noreferrer" href={`https://twitter.com/${user.user.twitter}`} target="_blank"><TwitterIcon className="mr-3 text-blue-600" fontSize="small" /></a>}
-                {user.user.github && <a rel="noopener noreferrer" href={`https://github.com/${user.user.github}`} target="_blank"><GitHubIcon className="mr-3" fontSize="small" /></a>}
-                {user.user.displayEmail && <a rel="noopener noreferrer" href={`mailto: ${user.user.displayEmail}`}><EmailIcon className="mr-3" fontSize="small" /></a>}
+                {user.user.website && <a rel="noopener noreferrer" href={user.user.website} target="_blank"><LanguageIcon className="mr-3" /></a>}
+                {user.user.twitter && <a rel="noopener noreferrer" href={`https://twitter.com/${user.user.twitter}`} target="_blank"><TwitterIcon className="mr-3 text-blue-600" /></a>}
+                {user.user.github && <a rel="noopener noreferrer" href={`https://github.com/${user.user.github}`} target="_blank"><GitHubIcon className="mr-3"  /></a>}
+                {user.user.displayEmail && <a rel="noopener noreferrer" href={`mailto: ${user.user.displayEmail}`}><EmailIcon className="mr-3" /></a>}
               </div>
             </div>
           </div>
