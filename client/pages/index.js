@@ -130,7 +130,7 @@ export default function Home ({ users }){
 export async function getStaticProps({ params }) {
   var users = {};
   try {
-    const users_res = await axios.get(urljoin(process.env.API_URL, `/api/users`));
+    const users_res = await axios.get(urljoin(process.env.API_URL, `/api/users?private=true`));
     users = users_res.data;
   } catch (error) {
     console.error("Fail to fetch users",error);
