@@ -175,7 +175,7 @@ function Profile({ data }) {
                 onClick={handleCloseUpsert}
                 className="bg-black bg-opacity-50 text-white p-1 outline-none absolute top-2 right-2 z-10"
                 aria-label="edit" color="primary">
-                <CloseIcon fontSize="small"></CloseIcon>
+                <CloseIcon></CloseIcon>
               </IconButton>
               <Upsert storyId={upsertStory.storyId} story={upsertStory.story} onComplete={handleCompleteUpsert}/>
             </div>

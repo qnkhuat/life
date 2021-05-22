@@ -136,16 +136,16 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
             <div id="modal-icon">
               <IconButton
                 onClick={handleCloseDisplayer}
-                className="bg-black bg-opacity-40 text-white outline-none absolute top-2 right-1 w-6 h-6 z-40"
+                className="bg-black bg-opacity-40 text-white outline-none absolute top-2 right-1 w-8 h-8 z-40"
                 aria-label="edit" color="primary">
-                <CloseIcon fontSize="small"></CloseIcon>
+                <CloseIcon></CloseIcon>
               </IconButton>
               {editable && event.type != 'today' && 
               <IconButton 
                 onClick={() => onEditEvent(eventId)} 
                 aria-label="edit" color="primary" 
-                className="outline-none absolute top-2 left-1 bg-black bg-opacity-40 text-white w-6 h-6 z-40">
-                <EditIcon fontSize="small"></EditIcon>
+                className="outline-none absolute top-2 left-1 bg-black bg-opacity-40 text-white w-8 h-8 z-40">
+                <EditIcon></EditIcon>
               </IconButton>
               }
             </div>
@@ -176,7 +176,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
                 nextButton={
                   <IconButton
                     onClick={() => handleJumpEvent(false)}
-                    className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  right-1 w-6 h-6 z-40"
+                    className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  right-1 w-8 h-8 z-40"
                     aria-label="edit" color="primary">
                     <KeyboardArrowRight />
                   </IconButton>
@@ -185,7 +185,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
                 backButton={
                   <IconButton
                     onClick={() => handleJumpEvent(true)}
-                    className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  left-1 w-6 h-6 z-40"
+                    className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  left-1 w-8 h-8 z-40"
                     aria-label="edit" color="primary">
                     <KeyboardArrowLeft />
                   </IconButton>

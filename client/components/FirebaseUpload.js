@@ -137,9 +137,9 @@ export default function FirebaseUpload({children, className, label, accept, onSt
 
           <IconButton
             onClick={() => {setModifying(false)}}
-            className="bg-black bg-opacity-40 text-white outline-none absolute top-2 right-2 w-6 h-6 z-40"
-            aria-label="edit" color="primary">
-            <CloseIcon fontSize="small"></CloseIcon>
+            className="bg-black bg-opacity-40 text-white outline-none absolute top-2 right-2 w-8 h-8 z-40"
+            aria-label="close" color="primary">
+            <CloseIcon></CloseIcon>
           </IconButton>
         </div>
       </Modal>

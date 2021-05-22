@@ -148,7 +148,7 @@ export default function Upsert({ storyId, story, onComplete }){
               <IconButton component="span"
                 className="outline-none absolute right-2 bottom-2 bg-black bg-opacity-50 p-1 text-white"
                 aria-label="Search">
-                <PhotoCameraIcon fontSize="small" ></PhotoCameraIcon>
+                <PhotoCameraIcon></PhotoCameraIcon>
               </IconButton>
               {uploadingImage && <CircularProgress className="absolute" 
                 style={{right: "0.35rem", bottom:"0.4rem"}} size={32} />}

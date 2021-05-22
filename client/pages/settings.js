@@ -228,8 +228,7 @@ function Settings() {
               <IconButton component="span"
                 className="outline-none absolute right-2 bottom-2 bg-black bg-opacity-40 p-2 text-white"
                 aria-label="Search">
-                <PhotoCameraIcon fontSize="small" 
-                ></PhotoCameraIcon>
+                <PhotoCameraIcon fontSize="small"></PhotoCameraIcon>
               </IconButton>
               {uploadingAvatar && <CircularProgress className="absolute" 
                 style={{right: "0.4rem", bottom:"0.4rem"}} size={40} />}

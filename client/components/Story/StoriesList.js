@@ -48,8 +48,8 @@ function Story({ story, storyId }){
         <IconButton 
           onClick={() => setOpenDelete(true)} 
           aria-label="edit" color="primary" 
-          className="absolute top-10 right-0 bg-black bg-opacity-50 text-white w-6 h-6 mt-1 mr-1">
-          <DeleteIcon fontSize="small"></DeleteIcon>
+          className="absolute top-10 right-0 bg-black bg-opacity-50 text-white w-8 h-8 mt-1 mr-1">
+          <DeleteIcon></DeleteIcon>
         </IconButton>
 
         <Modal
@@ -74,8 +74,8 @@ function Story({ story, storyId }){
         <IconButton 
           onClick={() => setOpenEdit(true)} 
           aria-label="edit" color="primary" 
-          className="absolute top-0 right-0 bg-black bg-opacity-50 text-white w-6 h-6 mt-1 mr-1">
-          <EditIcon fontSize="small"></EditIcon>
+          className="absolute top-0 right-0 bg-black bg-opacity-50 text-white w-8 h-8 mt-1 mr-1">
+          <EditIcon></EditIcon>
         </IconButton>
 
         <Modal
