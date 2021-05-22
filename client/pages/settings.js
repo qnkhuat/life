@@ -214,6 +214,7 @@ function Settings() {
           </Avatar>
 
           <FirebaseUpload id="profile-avatar" 
+            avatar={true}
             onStart={() => setUploadingAvatar(true)}
             onError={(error) => {
               setUploadingAvatar(false);

@@ -1,22 +1,31 @@
-import { storage } from "../lib/firebase/client";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { v4 as uuidv4 } from 'uuid';
+import { useState, useEffect } from "react";
+
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import Backdrop from '@material-ui/core/Backdrop';
+import CloseIcon from '@material-ui/icons/Close';
+import Modal from '@material-ui/core/Modal';
+
+import Croppie from "croppie";
+import "croppie/croppie.css";
 import Compressor from 'compressorjs';
+import { v4 as uuidv4 } from 'uuid';
 
-export default function FirebaseUpload({children, className, label, accept, onStart,onError, onComplete, prefix, maxWidth=1080, compressQuality=0.8}) {
+import { storage } from "../lib/firebase/client";
+import { deepClone } from "../lib/util";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
+export default function FirebaseUpload({children, className, label, accept, onStart,onError, onComplete, prefix, maxWidth=1080, compressQuality=0.8, avatar=false}) {
   const intputId = uuidv4();
+  const [ modifying, setModifying ] = useState(false);
+  const [ croppieInstance, setCroppieInstance ] = useState(null);
 
-  function upload(e){
-    if (e.target.files.length < 1) return;
-    const file = e.target.files[0];
+  function compressThenUpload(file) {
     new Compressor(file, {
       quality: compressQuality, 
       maxWidth: maxWidth,
       success(compressedFile) {
-        const filename = compressedFile.name;
-        const filenameSplit = filename.split(".");
-        const dest = `img/${prefix ? `${prefix}/` : ""}${uuidv4()}.${filenameSplit[filenameSplit.length - 1]}`;
+        const dest = `img/${prefix ? `${prefix}/` : ""}${uuidv4()}.jpeg`;
         const storageRef = ref(storage, dest);
         const task = uploadBytesResumable(storageRef, compressedFile);
         if (onStart) onStart();
@@ -49,6 +58,54 @@ export default function FirebaseUpload({children, className, label, accept, onSt
     });
   }
 
+  function openModifyWindow(e){
+    if(e.target.files && e.target.files[0]){
+      setModifying(true);
+      const file = e.target.files[0];
+      e.target.value = ""; // reset in case the user select the same files twice so onchange can still detect
+      var reader = new FileReader();
+      const imageCropper = document.getElementById("image-cropper");
+
+      if (!imageCropper) {
+        console.error("#image-cropper not found");
+        return;
+      }
+
+      var croppieInstanceTemp;
+      if(!croppieInstance){
+        croppieInstanceTemp = new Croppie(imageCropper, {
+          enableExif: true,
+          enableOrientation:true,
+          enableResize: avatar ? false :true,
+          viewport: {
+            height: 250,
+            width: avatar ? 250 : 280,
+            type: avatar ? "circle" :'square'
+          },
+        });
+        setCroppieInstance(croppieInstanceTemp);
+      } else {
+        croppieInstanceTemp = croppieInstance;
+      }
+
+      reader.onload = function (e) {
+        croppieInstanceTemp.bind({
+          url: e.target.result,
+          zoom:0
+        });
+      }
+      reader.readAsDataURL(file);
+    } else {
+      console.error("Unable to open Modify window: file not found");
+    }
+  }
+
+  function upload(e){
+    setModifying(false);
+    croppieInstance.result({type: 'blob', size: "original", format: "jpeg"}).then(compressThenUpload).
+      catch((error) => {console.error("Error uploading: ", error)});
+  }
+
   return (
     <>
       <input
@@ -56,8 +113,37 @@ export default function FirebaseUpload({children, className, label, accept, onSt
         className="hidden"
         accept={accept || "image/*"}
         type="file"
-        onChange={upload}
+        onChange={openModifyWindow}
       />
+      <Modal
+        BackdropComponent={Backdrop}
+        open={modifying}
+        keepMounted={true}
+      >
+        <div id="image-cropper-wrapper" 
+          className="fixed bg-white top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 z-20 bg-border p-2 md:rounded w-full md:w-desktop h-full flex flex-col justify-center">
+          <div id="image-cropper"
+            className="w-full h-2/5"
+          ></div>
+
+          <div id="image-cropper-options" className="flex mt-12">
+            <Button id="cropper-confirmed" 
+              className="text-black border-black mx-auto" 
+              variant="outlined" 
+              onClick={upload}>
+              Save
+            </Button>
+          </div>
+
+          <IconButton
+            onClick={() => {setModifying(false)}}
+            className="bg-black bg-opacity-40 text-white outline-none absolute top-2 right-2 w-6 h-6 z-40"
+            aria-label="edit" color="primary">
+            <CloseIcon fontSize="small"></CloseIcon>
+          </IconButton>
+        </div>
+      </Modal>
+
       <label htmlFor={intputId}>
         {children || 
         <Button variant="contained" color="primary" component="span" 

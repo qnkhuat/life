@@ -132,9 +132,9 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
         BackdropComponent={Backdrop}
         open={event!=null} >
         <div  {...swipeHandlers}
-          className={`fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-full z-20 h-full bg-black`}>
+          className={`h-full`}>
           <div id="modal-wrapper" 
-            className="bg-white md:bg-black flex overflow-scroll outline-none h-full justify-start">
+            className="bg-white md:bg-black md:bg-opacity-40 flex overflow-scroll outline-none h-full justify-start">
             <div id="modal-icon">
               <IconButton
                 onClick={handleCloseDisplayer}
@@ -153,7 +153,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
             </div>
 
             <div id="modal-content" 
-              className="w-full bg-black m-auto h-full flex flex-col justify-center md:w-desktop"
+              className="w-full bg-black m-auto h-full flex flex-col justify-center md:w-desktop z-20"
             >
               {isMedia && media}
               {isText && text}
