@@ -78,8 +78,8 @@ export default function FirebaseUpload({children, className, label, accept, onSt
           enableOrientation:true,
           enableResize: avatar ? false :true,
           viewport: {
-            height: 250,
-            width: avatar ? 250 : 280,
+            height: 150,
+            width: avatar ? 150 : 180,
             type: avatar ? "circle" :'square'
           },
         });
@@ -91,7 +91,7 @@ export default function FirebaseUpload({children, className, label, accept, onSt
       reader.onload = function (e) {
         croppieInstanceTemp.bind({
           url: e.target.result,
-          zoom:0
+          zoom:0.2
         });
       }
       reader.readAsDataURL(file);
@@ -123,7 +123,7 @@ export default function FirebaseUpload({children, className, label, accept, onSt
         <div id="image-cropper-wrapper" 
           className="fixed bg-white top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 z-20 bg-border p-2 md:rounded w-full md:w-desktop h-full flex flex-col justify-center">
           <div id="image-cropper"
-            className="w-full h-72 md:h-2/5"
+            className="w-full md:h-2/5"
           ></div>
 
           <div id="image-cropper-options" className="flex mt-12">
