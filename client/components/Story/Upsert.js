@@ -151,14 +151,12 @@ export default function Upsert({ storyId, story, onComplete }){
                 <PhotoCameraIcon></PhotoCameraIcon>
               </IconButton>
               {uploadingImage && <CircularProgress className="absolute" 
-                style={{right: "0.35rem", bottom:"0.4rem"}} size={32} />}
+                style={{right: "0.35rem", bottom:"0.4rem"}} size={36} />}
             </>
           </FirebaseUpload>
         </div>
 
-        <div id="form-info" className="flex flex-col px-2 pb-4 md:w-desktop m-auto"
-        >
-
+        <div id="form-info" className="flex flex-col px-2 pb-4 md:w-desktop m-auto">
           <CustomTextField id="story-title" 
             className="mt-4 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
             label="Title" 
@@ -172,7 +170,7 @@ export default function Upsert({ storyId, story, onComplete }){
             className="mt-4 border-r-0 border-l-0"
             label="Description" 
             multiline
-            rows={3}
+            minRows={3}
             defaultValue={content}
             variant="outlined" 
             onChange={(e) => setContent(e.target.value)}

@@ -293,7 +293,7 @@ function Settings() {
           onChange={(e) => setUserInfoByField("about", e.target.value)}
           defaultValue={data?.userInfo.user.about}
           multiline
-          rows={3}
+          minRows={3}
           label="About yourself" 
           variant="outlined" 
         />

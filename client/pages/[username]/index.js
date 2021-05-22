@@ -156,7 +156,6 @@ function Profile({ data }) {
         <hr className="my-4"></hr>
 
         {editable && 
-
         <div id="add-button" className="fixed bottom-14 right-4 z-40">
           <IconButton
             onClick={handleOpenUpsert}

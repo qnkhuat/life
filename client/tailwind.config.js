@@ -10,7 +10,9 @@ module.exports = {
   theme: {
     extend: {
       minHeight: {
-        '1/2': '50%'
+        '1/2': '50%',
+        '2/5-screen': '40vh',
+        '3/5-screen': '60vh',
       },
       inset: {
         "-board": "-6vw", // = half of tile width
@@ -35,6 +37,9 @@ module.exports = {
       height: {
         'tile': "5vw",
         'sm-tile': "32px",
+        '2/5-screen': '40vh',
+        '3/5-screen': '60vh',
+
       },
       colors: {
         lime:{

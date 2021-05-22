@@ -55,7 +55,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
         break;
       }
     };
-    setEventId(nextEventId); // if the nextEventId is null the displayer will be closed
+    if(nextEventId != null) setEventId(nextEventId); // if the nextEventId is null the displayer will be closed
     if (nextEventId == null)  {
       setCurrentEventIndex(null);
     }
@@ -104,12 +104,11 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
 
   const isText = event.title.length > 0;
   const isMedia = event.imageUrls.length > 0;
-  const media = <div className={`bg-black h-1/2`}>
+  const media = <div id="modal-media" className={`bg-black`}>
     {isMedia && event.imageUrls.length > 0 && 
     <img 
       alt={event.date.format(DATE_RANGE_FORMAT)}
-      style={{height:"100%"}}
-      className={`object-contain m-auto`}
+      className={`object-contain m-auto h-2/5-screen`}
       src={event.imageUrls[0]}/>}
     <hr></hr>
   </div>
@@ -117,11 +116,12 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
 
     // text
     const text = <div 
-      className={`bg-white px-10 py-5 text-black text-left ${isMedia ? "min-h-1/2" : ""} overflow-y-scroll`}>
+      id="modal-text"
+      className={`bg-white px-10 py-5 text-black text-left ${isMedia ? "min-h-3/5-screen" : ""}`}>
       <p className="text-lg font-bold overflow-ellipsis">{event.title}</p>
-      {isText && event.content && <p className="text-base mb-2">{formatMultilineText(event.content)}</p>}
-      <hr/>
-      <p className={`text-sm text-gray-500 ${isMedia ? "pb-6" : ""}`}>{event.date.format(DATE_RANGE_FORMAT)} - {Math.floor(event.ageSince)} Years old</p>
+      <p className={`text-sm text-gray-500 ${isMedia ? "pb-2" : ""}`}>{event.date.format(DATE_RANGE_FORMAT)} - {Math.floor(event.ageSince)} Years old</p>
+      {isText && <hr/>}
+      {isText && event.content && <p className="text-base pb-6">{formatMultilineText(event.content)}</p>}
     </div>
 
     return (
@@ -129,10 +129,11 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
         BackdropComponent={Backdrop}
         onClose={handleCloseDisplayer}
         open={event!=null} >
-        <div  {...swipeHandlers}
-          className={`h-full`}>
+        <div>
           <div id="modal-wrapper" 
-            className="bg-white md:bg-black md:bg-opacity-40 flex outline-none h-full justify-start">
+            {...swipeHandlers}
+            className="flex bg-black md:w-desktop fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-full overflow-scroll h-full"
+          >
             <div id="modal-icon">
               <IconButton
                 onClick={handleCloseDisplayer}
@@ -151,47 +152,48 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
             </div>
 
             <div id="modal-content" 
-              className="w-full bg-black m-auto h-full flex flex-col justify-center md:w-desktop z-20"
+              className="w-full md:w-desktop bg-white md:bg-black bg:bg-opacity-40 m-auto overflow-scroll flex flex-col justify-center"
             >
               {isMedia && media}
               {isText && text}
-
-              <MobileStepper
-                className="fixed bottom-0 left-0 w-full bg-black justify-center"
-                variant="dots"
-                steps={events.length}
-                position="static"
-                activeStep={currentEventIndex || 0 }
-                sx={{ 
-                  maxWidth: "100%", 
-                  flexGrow: 1 ,
-                  '& .MuiMobileStepper-dot': {
-                    backgroundColor: "white",
-                    opacity: "40%",
-                  },
-                  '& .MuiMobileStepper-dotActive': {
-                    opacity: "100%",
-                  }
-                }}
-                nextButton={
-                  <IconButton
-                    onClick={() => handleJumpEvent(false)}
-                    className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  right-1 w-8 h-8 z-40"
-                    aria-label="edit" color="primary">
-                    <KeyboardArrowRight />
-                  </IconButton>
-
-                }
-                backButton={
-                  <IconButton
-                    onClick={() => handleJumpEvent(true)}
-                    className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  left-1 w-8 h-8 z-40"
-                    aria-label="edit" color="primary">
-                    <KeyboardArrowLeft />
-                  </IconButton>
-                }
-              />
             </div>
+
+          </div>
+          <div id="modal-navigation">
+            <MobileStepper
+              className="absolute bottom-0 left-0 w-full bg-black justify-center"
+              variant="dots"
+              steps={events.length}
+              position="static"
+              activeStep={currentEventIndex || 0 }
+              sx={{ 
+                maxWidth: "100%", 
+                flexGrow: 1 ,
+                '& .MuiMobileStepper-dot': {
+                  backgroundColor: "white",
+                  opacity: "40%",
+                },
+                '& .MuiMobileStepper-dotActive': {
+                  opacity: "100%",
+                }
+              }}
+              nextButton={
+                <IconButton
+                  onClick={() => handleJumpEvent(false)}
+                  className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  right-1 w-8 h-8 z-40"
+                  aria-label="edit" color="primary">
+                  <KeyboardArrowRight />
+                </IconButton>
+
+              }
+              backButton={
+                <IconButton
+                  onClick={() => handleJumpEvent(true)}
+                  className="bg-black bg-opacity-40 text-white outline-none fixed top-1/2 transform -translate-y-1/2  left-1 w-8 h-8 z-40"
+                  aria-label="edit" color="primary">
+                  <KeyboardArrowLeft />
+                </IconButton>
+              }/>
           </div>
         </div>
       </Modal>
@@ -233,8 +235,7 @@ const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols,
       hover:bg-${constants.EVENTMAPPING[tileType].color}-500 bg-${constants.EVENTMAPPING[tileType].color}-300 
       hover:z-10 z-0 relative
       text-xs text-center
-      sm:text-xl bg-black
-    `}>
+      sm:text-xl bg-black`}>
       {constants.EVENTMAPPING[tileType]['icon']}
     </div>)
   }
