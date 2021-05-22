@@ -210,7 +210,7 @@ function Profile({ data }) {
 
 export async function getStaticPaths() {
   // Call an external API endpoint to get posts
-  const user_res = await axios.get(urljoin(process.env.API_URL, `/api/usernames`));
+  const user_res = await axios.get(urljoin(process.env.API_URL, `/api/usernames?private=true`));
 
   // Get the paths we want to pre-render based on posts
   const paths = user_res.data.map((username) => ({

@@ -104,7 +104,7 @@ export const withAuth = (WrappedComponent, authorizedOnly=false, redirectTo="/lo
     useEffect(async () => {
       if (!loading){
         // This is a very primitive way to authenticate user. It's only check if the username in query equal user's username
-        if (!auth || ( authorizedOnly&& (!user || router.query.username != user.username))) {
+        if (!auth || ( authorizedOnly && (!user || router.query.username != user.username))) {
           router.push(redirectTo);
         }
         else setVerified(true);
