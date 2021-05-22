@@ -128,7 +128,7 @@ export default function Upsert({ storyId, story, onComplete }){
   return (
 
     <div>
-      <form id="form-story" noValidate autoComplete="off" className="bg-white w-screen m-auto overflow-x-hidden overlfow-y-scroll h-full">
+      <form id="form-story" noValidate autoComplete="off" className="bg-white w-full m-auto overflow-x-hidden overlfow-y-scroll h-full">
         <div id="form-image" className="relative overflow-hidden border-b-1 border-gray-600 bg-black">
           <img 
             style={{height:"40vh"}}

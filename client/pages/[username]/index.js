@@ -169,7 +169,7 @@ function Profile({ data }) {
             open={openUpsert}
             onClose={handleCloseUpsert}
           >
-            <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 h-full overflow-y-scroll bg-white">
+            <div id="event-editor" className="md:w-desktop fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 h-full overflow-y-scroll bg-white">
               <IconButton
                 id="close-button-add"
                 onClick={handleCloseUpsert}

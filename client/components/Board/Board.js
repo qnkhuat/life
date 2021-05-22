@@ -120,7 +120,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
 
     // text
     const text = <div 
-      className={`bg-white px-10 py-5 text-black text-left ${isMedia ? "min-h-1/2" : ""}`}>
+      className={`bg-white px-10 py-5 text-black text-left ${isMedia ? "min-h-1/2" : ""} overflow-y-scroll`}>
       <p className="text-lg font-bold overflow-ellipsis">{event.title}</p>
       {isText && event.content && <p className="text-base mb-2">{formatMultilineText(event.content)}</p>}
       <hr/>
@@ -134,7 +134,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
         <div  {...swipeHandlers}
           className={`h-full`}>
           <div id="modal-wrapper" 
-            className="bg-white md:bg-black md:bg-opacity-40 flex overflow-scroll outline-none h-full justify-start">
+            className="bg-white md:bg-black md:bg-opacity-40 flex outline-none h-full justify-start">
             <div id="modal-icon">
               <IconButton
                 onClick={handleCloseDisplayer}
@@ -142,7 +142,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
                 aria-label="edit" color="primary">
                 <CloseIcon fontSize="small"></CloseIcon>
               </IconButton>
-              {editable && 
+              {editable && event.type != 'today' && 
               <IconButton 
                 onClick={() => onEditEvent(eventId)} 
                 aria-label="edit" color="primary" 
