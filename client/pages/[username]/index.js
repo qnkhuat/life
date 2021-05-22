@@ -141,7 +141,7 @@ function Profile({ data }) {
 
   return (
     <Layout copyright={false}>
-      <div className="my-2">
+      <div className="my-4">
         <div id="info" className="flex flex-col relative">
           <div className="flex">
             <Avatar
