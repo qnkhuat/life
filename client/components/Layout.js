@@ -53,7 +53,7 @@ export default function Layout({ children, copyright=true }) {
         </div>
         {copyright &&
         <div id="footer" 
-          className="pb-4 text-center text-gray-500 text-xs" >
+          className="py-4 text-center text-gray-500 text-xs" >
           <Link
             href={`/about`}
             passHref>
