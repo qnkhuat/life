@@ -127,7 +127,7 @@ export default function Upsert({ storyId, story, onComplete }){
 
   return (
 
-    <div>
+    <>
       <form id="form-story" noValidate autoComplete="off" className="bg-white w-full m-auto overflow-x-hidden overlfow-y-scroll h-full">
         <div id="form-image" className="relative overflow-hidden border-b-1 border-gray-600 bg-black">
           <img 
@@ -219,9 +219,9 @@ export default function Upsert({ storyId, story, onComplete }){
             </Button>
             <Modal
               BackdropComponent={Backdrop}
-              open={openDeleteConfirmation}
+              open={openDeleteConfirmation} 
               onClose={() => setOpenDeleteConfirmation(false)}>
-              <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-4/5 text-left">
+              <div className="fixed top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 w-4/5 md:w-desktop text-center">
                 <div className="bg-white p-4 rounded">
                   <p>Are you sure you want to delete story : {story?.title}?</p>
                   <div className="flex justify-center">
@@ -249,6 +249,6 @@ export default function Upsert({ storyId, story, onComplete }){
         </MuiAlert>
       </Snackbar>
 
-    </div>
+    </>
   )
 }

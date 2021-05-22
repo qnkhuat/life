@@ -157,7 +157,6 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
               {isMedia && media}
               {isText && text}
             </div>
-
           </div>
           <div id="modal-navigation">
             <MobileStepper
@@ -236,7 +235,7 @@ const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols,
       hover:z-10 z-0 relative
       text-xs text-center
       sm:text-xl bg-black`}>
-      {constants.EVENTMAPPING[tileType]['icon']}
+      {constants.EVENTMAPPING[tileType].icon}
     </div>)
   }
 

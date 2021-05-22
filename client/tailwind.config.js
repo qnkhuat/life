@@ -42,6 +42,11 @@ module.exports = {
 
       },
       colors: {
+        teal: {
+          300: "#5EEAD4",
+          500: "#14B8A6"
+
+        },
         lime:{
           300: "#BEF264",
           500: "#84CC16"
@@ -58,5 +63,7 @@ module.exports = {
       zIndex: ['hover'],
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 }

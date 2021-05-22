@@ -53,8 +53,13 @@ export default function Layout({ children, copyright=true }) {
         </div>
         {copyright &&
         <div id="footer" 
-          className="pb-4" >
-          <p id="copy-right" className="mt-4 text-center text-gray-500 text-xs">© {new Date().getFullYear()} The life book</p>
+          className="pb-4 text-center text-gray-500 text-xs" >
+          <Link
+            href={`/about`}
+            passHref>
+            <a><span className="underline">About</span></a>
+          </Link>
+          <p id="copy-right" className="text-gray-500 text-xs">© {new Date().getFullYear()} The Life Book</p>
         </div>
         }
 
