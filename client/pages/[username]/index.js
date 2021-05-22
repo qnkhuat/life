@@ -75,19 +75,32 @@ function Profile({ data }) {
   const router = useRouter();
   const { auth, user: currentUser, loading } = useAuth();
 
-  if (router.isFallback) return <Loading />
+  if (router.isFallback || loading) return <Loading />;
 
-  const [ state, setState ] = useState({ updateKey:0, stateData: data });
+  const [ state, setState ] = useState({ updateKey: 0, stateData: data });
   const { updateKey, stateData } = state;
   const { events , user } = stateData;
+  const [ isAuthorized, setIsAuthorized ] = useState(null);
 
+  
   // Add/Edit Story button controller
   const [openUpsert, setOpenUpsert] = useState(false);
   const [upsertStory, setUpsertStory ] = useState({storyId: null, story: null});
 
 
   useEffect(() => {
-    if (router.query.username && updateKey==0) {
+    if(user && !loading && isAuthorized == null){
+      if (user.user.private){
+        if (!auth || auth.uid != user.id) setIsAuthorized(false);
+        else setIsAuthorized(true);
+      } else setIsAuthorized(true);
+    }
+  }, [user, auth]);
+
+
+  useEffect(() => {
+    if (router.query.username && updateKey == 0 && isAuthorized == true) {
+      console.log('going to there now');
       getData(router.query.username).then((data) => {
         if(isDataChanged(stateData, data)) {
           console.log("Update data");
@@ -98,7 +111,9 @@ function Profile({ data }) {
       });
     } 
   }, []);
-  if (router.isFallback || loading) return <Loading />;
+
+  if(isAuthorized == null) return <Loading />;
+
   const editable = auth && router.query.username == currentUser?.user.username;
 
   function handleOpenUpsert() {
@@ -181,7 +196,13 @@ function Profile({ data }) {
           </Modal>
         </div>
         }
+        {isAuthorized  && 
         <Board key={updateKey} events={events} birthday={user.user.birthday} maxAge={parseInt(user.user.maxAge)} onEditEvent={onEditEvent} editable={editable}/>
+        }
+        {!isAuthorized  && 
+          <p className="text-center font-bold">Private account</p>
+        }
+
       </div>
     </Layout>
   )

@@ -79,7 +79,6 @@ function Settings() {
   const [ usernames, setUsernames ] = useState([]);
   const [ displayAvatar, setDisplayAvatar] = useState(null);
 
-
   function handleSignOut() {
     signOut();
     router.push("/login");
@@ -87,9 +86,8 @@ function Settings() {
 
   function setUserInfoByField(field, value){
     if (typeof value == "string") value = value.trim();
-    var tempData = deepClone(data)
-    tempData.userInfo.user[field] = value;
-    setData(tempData);
+    data.userInfo.user[field] = value;
+    setData(data);
   }
 
   function handleUploadComplete(path, url) {
@@ -203,10 +201,9 @@ function Settings() {
         setAlert({severity: "error", message: "Please edit your info"});
         setAlertOpen(true);
         console.log("Failed to add user: ", error?.response);
-      })
+      });
     }
   }
-
   return (
     <Layout>
       <p className="text-center text-xl font-bold my-4">Account settings</p>
@@ -308,8 +305,9 @@ function Settings() {
           className='w-full'
           control={
             <Checkbox
+              id="profile-private"
               color="secondary" 
-              checked={data?.userInfo.user.private} 
+              defaultChecked={data?.userInfo.user.private}
               onChange={(e) => setUserInfoByField("private", e.target.checked)}
             />
           }
