@@ -73,15 +73,12 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
     switch (e.keyCode){
       case 27: // esc
       case 40: // down
-        console.log("down");
         handleCloseDisplayer();
         break;
       case 37: // left
-        console.log("left");
         handleJumpEvent(true);
         break;
       case 39: // right
-        console.log("right");
         handleJumpEvent();
         break;
     }
@@ -130,6 +127,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
     return (
       <Modal
         BackdropComponent={Backdrop}
+        onClose={handleCloseDisplayer}
         open={event!=null} >
         <div  {...swipeHandlers}
           className={`h-full`}>
