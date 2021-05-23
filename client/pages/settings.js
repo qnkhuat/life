@@ -253,7 +253,7 @@ function Settings() {
           className="w-full mt-6"
           error={!userNameValidation['valid']}
           defaultValue={data?.userInfo.user.username}
-          onChange={(e) => handleOnChangeUsername(e.target.value.toLowerCaseCase())}
+          onChange={(e) => handleOnChangeUsername(e.target.value.toLowerCase())}
           label="Username" 
           variant="outlined" 
           required
