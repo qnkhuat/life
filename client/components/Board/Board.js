@@ -108,7 +108,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
     {isMedia && event.imageUrls.length > 0 && 
     <img 
       alt={event.date.format(DATE_RANGE_FORMAT)}
-      className={`object-contain m-auto h-2/5-screen`}
+      className={`object-contain m-auto h-3/5-screen`}
       src={event.imageUrls[0]}/>}
     <hr></hr>
   </div>;
@@ -117,7 +117,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
   // text
   const text = <div 
     id="modal-text"
-    className={`bg-white px-10 py-5 text-black text-left ${isMedia ? "min-h-3/5-screen" : ""}`}>
+    className={`bg-white px-10 py-5 text-black text-left ${isMedia ? "min-h-2/5-screen" : ""}`}>
     <p className="text-lg font-bold overflow-ellipsis">{event.title}</p>
     <p className={`text-sm text-gray-500 ${isMedia ? "pb-2" : ""}`}>{event.date.format(DATE_RANGE_FORMAT)} - {Math.floor(event.ageSince)} Years old</p>
     {isText && <hr/>}

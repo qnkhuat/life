@@ -25,7 +25,8 @@ export default function About() {
           <h2>Why we build this?</h2>
           <p>To visualize and put life in perspective</p>
           <p>We believe none of us want to waste our time, but sometimes we just forget how precious and short life is.</p>
-          <p>That's why we hope <span className="underline">The Life Book</span> could help us look at our life from the big picture, so we have a better sense of what we had done with the time that passed, and how much we have left. From there we can be better at planning and live our life to the fullest.</p>
+          <p>That's why we hope <span className="underline">The Life Book</span> could help all of us look at our life from the big picture, so we have a better sense of what we had done in the past, and how much we have left.</p>
+          <p>From there we can treasure the past, learn from mistakes, plan for the future, and live a life we are proud of.</p>
         </article>
 
       </div>
