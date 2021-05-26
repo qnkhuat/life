@@ -34,7 +34,7 @@ async function storageGetUrl(path){
   const options = {
     version: 'v2', // defaults to 'v2' if missing.
     action: 'read',
-    expires: Date.now() + 2 * 60 * 60 * 1000, // 2 hourt stas
+    expires: Date.now() + 2 * 24 * 60 * 60 * 1000, // 2 days
   };
 
   // Get a v2 signed URL for the file
