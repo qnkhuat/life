@@ -152,7 +152,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
           </div>
 
           <div id="modal-content" 
-            className="w-full md:w-desktop bg-white md:bg-black bg:bg-opacity-40 m-auto overflow-scroll flex flex-col justify-center"
+            className="w-full md:w-desktop bg-white md:bg-black bg:bg-opacity-40 m-auto flex flex-col justify-center"
           >
             {isMedia && media}
             {isText && text}
