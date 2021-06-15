@@ -234,17 +234,17 @@ const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols,
       hover:bg-${constants.EVENTMAPPING[tileType].color}-500 bg-${constants.EVENTMAPPING[tileType].color}-300 
       hover:z-10 z-0 relative
       text-xs text-center
-      sm:text-xl bg-black`}>
+      md:text-sm bg-black`}>
       {constants.EVENTMAPPING[tileType].icon}
     </div>)
   }
 
   return (
-    <div className="relative flex flex-col">
+    <div className="relative md:overflow-y-hidden md:overflow-x-scroll md:flex md:pt-8 md:absolute md:w-4/5 md:left-0 md:left-1/2 md:transform md:-translate-x-2/4">
       {numRows > 0 && Array.from(Array(numRows + 1).keys()).map((r) =>
-      <div key={`row-wrapper-${r}`} className="flex justify-center">
-        <div key={`row-${r}`} className="justify-start items-center relative flex flex-row">
-          <div key={`row-index-${r}`} className="w-4 m-tile sm:m-sm-tile text-xs sm:text-xl text-right absolute -left-board sm:-left-sm-board">{r % 5 == 0 ? r : ""}</div>
+      <div key={`row-wrapper-${r}`} className="flex justify-center md:w-16">
+        <div key={`row-${r}`} className="justify-start items-center relative flex md:flex-col">
+          <div key={`row-index-${r}`} className="w-4 m-tile sm:m-sm-tile text-xs md:text-lg text-right md:text-center absolute -left-board sm:-left-sm-board md:left-0 top-0 md:-top-8 md:w-sm-tile">{r % 5 == 0 ? r : ""}</div>
           {numCols > 0 && Array.from(Array(numCols).keys()).map((c) => 
             getTile(r, c)
           )}
