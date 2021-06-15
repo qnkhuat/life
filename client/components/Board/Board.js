@@ -29,9 +29,11 @@ const roundDate = (date) => date.hour(0).minute(0).second(0).millisecond(0);
 const formatDate = (date) => roundDate(dayjs(date));
 const DATE_RANGE_FORMAT = "DD/MM/YYYY";
 
-function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) {
+function EventDisplayer ({ events, displayInfo, onEditEvent, setDisplayInfo, editable }) {
 
   var event = null;
+  var eventId = displayInfo?.eventId;
+
   const [ currentEventIndex, setCurrentEventIndex ] = useState(null);
   for (var i = 0; i < events.length; i ++) {
     if (events[i].id == eventId){
@@ -41,34 +43,42 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
     }
   }
 
+  function handleCloseDisplayer() {
+    // the trigger of this component to display is the change in value of eventId 
+    // It's set by setEventId, A hook shared by both EventDisplayer and Layout
+    // This complication is to reduce the number of re-renders on the board
+    setDisplayInfo(null);
+    setCurrentEventIndex(null);
+  }
+
   function handleJumpEvent(prev=false) {
     let nextEventId = null;
+    let nextEventIndex = null;
     let foundCurrentOne = false;
     for (var i = 0; i < events.length; i++){
-      if (prev) var index = (events.length - 1) - i;
+      var index = null;
+      if (prev) index = (events.length - 1) - i;
       else index = i;
+
       if ( !foundCurrentOne ){
         if (events[index].id == eventId) foundCurrentOne = true; // next loop will be the next event t show
       } else {
         nextEventId = events[index].id;
-        setCurrentEventIndex(index);
+        nextEventIndex = index;
         break;
       }
     };
-    if(nextEventId != null) setEventId(nextEventId); // if the nextEventId is null the displayer will be closed
-    if (nextEventId == null)  {
+
+    if (nextEventId != null) {
+      displayInfo['eventId'] = nextEventId;
+      setDisplayInfo(displayInfo); // if the nextEventId is null the displayer will be closed
+      setCurrentEventIndex(nextEventIndex);
+    } else {
       setCurrentEventIndex(null);
     }
   }
 
-  function handleCloseDisplayer() {
-    // the trigger of this component to display is the value of eventId . 
-    // It's set by setEventId, A hook shared by both EventDisplayer and Layout
-    // This complication is to reduce the number of re-renders on the board
-    setEventId(null);
-    setCurrentEventIndex(null);
-  }
-
+  
   function handleKeyUp(e) {
     switch (e.keyCode){
       case 27: // esc
@@ -79,7 +89,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
         handleJumpEvent(true);
         break;
       case 39: // right
-        handleJumpEvent();
+        handleJumpEvent(false);
         break;
     }
   }
@@ -199,7 +209,7 @@ function EventDisplayer ({ events, eventId, onEditEvent, setEventId, editable}) 
   )
 }
 
-const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols, numRows, modalRef, displayMode="month", setEventId }) {
+const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols, numRows, modalRef, displayMode="month", setDisplayInfo }) {
   const today = roundDate(dayjs());
 
   function eventsLookup(startDate, endDate){
@@ -222,8 +232,12 @@ const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols,
     if (!tileType) tileType = startDate < today ? "default" : "disable"; 
 
     const onClickHandler = (matchedEvents.length > 0 && !["default", "disable"].includes(tileType)) 
-      ?  () => {
-        setEventId(matchedEvents[0].id);
+      ? () => { 
+        setDisplayInfo({
+          eventId: matchedEvents[0].id,
+          mode:"click",
+          anchorEl:null,
+        });
       } : () => {};
 
     return (<div 
@@ -257,10 +271,10 @@ const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols,
 
 function Board({ events, birthday, maxAge, editable, onEditEvent }) {
   const today = roundDate(dayjs());
-  const [ storyId, setEventId ] = useState(null);
+  const [ displayInfo, setDisplayInfo ] = useState({eventId: null, anchorEl:null, mode:null}); // mode : hover or click
   const [ updated, setUpdated ] = useState(false);
-  const [eventsList, setEventsList ] = useState([]);
-  const [birthdayState, setBirthday] = useState(formatDate(birthday));
+  const [ eventsList, setEventsList ] = useState([]);
+  const [ birthdayState, setBirthday ] = useState(formatDate(birthday));
   // sort the events 
 
   birthday = formatDate(birthday);
@@ -269,8 +283,8 @@ function Board({ events, birthday, maxAge, editable, onEditEvent }) {
 
   useEffect(() => {
     if (!updated){
-      Object.keys(events).forEach((storyId) => {
-        const e = events[storyId]
+      Object.keys(events).forEach((eventId) => {
+        const e = events[eventId]
         e.date = formatDate(e.date);
         e.ageSince = (e.date - birthday) / ( 1000 * 60 * 60 * 24 * 365 );
       });
@@ -283,12 +297,13 @@ function Board({ events, birthday, maxAge, editable, onEditEvent }) {
       setUpdated(true);
     }
   });
+
   if (!updated) return <Loading />;
 
   return(
     <>
-      <EventDisplayer eventId={storyId} events={eventsList} editable={editable} onEditEvent={onEditEvent}  setEventId={setEventId}/>
-      <Layout events={eventsList} numCols={numCols} numRows={numRows} birthday={birthday} setEventId={setEventId}/>
+      <EventDisplayer displayInfo={displayInfo} events={eventsList} editable={editable} onEditEvent={onEditEvent} setDisplayInfo={setDisplayInfo}/>
+      <Layout events={eventsList} numCols={numCols} numRows={numRows} birthday={birthday} setDisplayInfo={setDisplayInfo}/>
     </>
   )
 }
