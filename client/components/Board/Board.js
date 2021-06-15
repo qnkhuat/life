@@ -234,7 +234,7 @@ const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols,
       hover:bg-${constants.EVENTMAPPING[tileType].color}-500 bg-${constants.EVENTMAPPING[tileType].color}-300 
       hover:z-10 z-0 relative
       text-xs text-center
-      md:text-sm bg-black`}>
+      md:text-lg bg-black`}>
       {constants.EVENTMAPPING[tileType].icon}
     </div>)
   }
