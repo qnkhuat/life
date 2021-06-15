@@ -30,13 +30,13 @@ module.exports = {
       width: {
         'desktop': "660px",
         'tile': "6vw",
-        'sm-tile':"40px",
+        'sm-tile':"20px",
         'tooltip': "90vw",
         'sm-tooltip': "600px",
       },
       height: {
         'tile': "5vw",
-        'sm-tile': "32px",
+        'sm-tile': "20px",
         '2/5-screen': '40vh',
         '3/5-screen': '60vh',
 
