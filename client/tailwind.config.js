@@ -33,6 +33,7 @@ module.exports = {
         'sm-tile':"20px",
         'tooltip': "90vw",
         'sm-tooltip': "600px",
+        '9/10': "90%",
       },
       height: {
         'tile': "5vw",

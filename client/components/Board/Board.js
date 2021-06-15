@@ -240,7 +240,7 @@ const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols,
   }
 
   return (
-    <div className="relative md:overflow-y-hidden md:overflow-x-scroll md:flex md:pt-8 md:absolute md:w-4/5 md:left-0 md:left-1/2 md:transform md:-translate-x-2/4">
+    <div className="relative md:overflow-y-hidden md:overflow-x-scroll md:flex md:pt-8 md:absolute md:w-9/10 md:left-0 md:left-1/2 md:transform md:-translate-x-2/4">
       {numRows > 0 && Array.from(Array(numRows + 1).keys()).map((r) =>
       <div key={`row-wrapper-${r}`} className="flex justify-center md:w-16">
         <div key={`row-${r}`} className="justify-start items-center relative flex md:flex-col">
