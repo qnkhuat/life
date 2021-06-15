@@ -22,6 +22,8 @@ module.exports = {
         'tooltip': "70vh",
         'tooltip-media': "40vh", // tooltip = media + text
         'tooltip-text': "30vh",
+        '2/5-screen': '40vh',
+        '3/5-screen': '60vh',
       },
       margin: {
         'tile': '2px',
@@ -39,6 +41,7 @@ module.exports = {
         'tile': "5vw",
         'sm-tile': "24px",
         '2/5-screen': '40vh',
+        '1/5-screen': '20vh',
         '3/5-screen': '60vh',
 
       },
