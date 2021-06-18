@@ -35,7 +35,6 @@ function EventDisplayer ({ events, displayInfo, onEditEvent, setDisplayInfo, edi
   var event = null;
   var eventId = displayInfo?.eventId;
   var displayMode = displayInfo?.mode;
-  console.log("Start: ", displayInfo);
 
   const [ currentEventIndex, setCurrentEventIndex ] = useState(null);
   for (var i = 0; i < events.length; i ++) {
@@ -249,7 +248,6 @@ const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols,
 
     const onClickHandler = setDisplayInfo && (matchedEvents.length > 0 && !["default", "disable"].includes(tileType)) 
       ? () => { 
-        console.log("click", clickState);
         setClickState(true);
         setDisplayInfo({
           eventId: matchedEvents[0].id,
@@ -260,7 +258,6 @@ const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols,
 
     const onMouseEnterHandler = setDisplayInfo && (matchedEvents.length > 0 && !["default", "disable"].includes(tileType)) 
       ? (e) => { 
-        console.log("enter", clickState);
         setClickState(false);
         setDisplayInfo({
           eventId: matchedEvents[0].id,
@@ -272,7 +269,6 @@ const Layout = React.memo(function LayoutComponent ({ events, birthday, numCols,
     const onMouseLeaveHandler = setDisplayInfo && (matchedEvents.length > 0 && !["default", "disable"].includes(tileType)) 
       ? () => { 
         if (!clickState)  {
-          console.log("leave", clickState);
           setDisplayInfo({
             eventId: null,
             mode: null,
