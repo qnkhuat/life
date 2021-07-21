@@ -31,52 +31,41 @@ export default function Home ({ users }){
   //  }
   //}, [auth, loading]);
 
-  const [newSearch, setNewSearch] = useState(false);
   
   async function handleSearch(e){
-    setNewSearch(true);
-    // on average typing speed is 40wpm. with average of 4 chars per word
-    // => 500ms per character
-    // so for each type we will set at time out of 600ms to search
-    // if user type righ after that, the search will be cancled due to setNewSearch(true)
-    // but if not the setTimeout to setNewSearch(false) is in just 500ms which will fire before the search is fired
-    // this will make the search execute
-   
-    setTimeout(() => {
-      setNewSearch(false);
-    }, 500);
+    // TODO : Don't search on every type
+    if (Object.keys(users).length < 1) return;
+    const value = e.target.value;
+    const allUserIds = Object.keys(users);
+    if (!value || value.length == 0) {
+      setUserIdsList(Object.keys(users).sort((a, b) => 0.5 - Math.random()));
+      return
+    }
 
-    setTimeout(() => {
-      if (newSearch || Object.keys(users).length < 1) return;
-      const value = e.target.value;
-      const allUserIds = Object.keys(users);
-      if (!value || value == "") setUserIdsList(Object.keys(users).sort((a, b) => 0.5 - Math.random()));
+    const usernamesList =  allUserIds.map((userId) => users[userId].username);
+    const fullnamesList =  allUserIds.map((userId) => users[userId].fullname);
 
-      const usernamesList =  allUserIds.map((userId) => users[userId].username);
-      const fullnamesList =  allUserIds.map((userId) => users[userId].fullname);
+    var usernamesRating = findBestMatch(value, usernamesList).ratings;
+    usernamesRating.forEach((e) => e.type= "username");
 
-      var usernamesRating = findBestMatch(value, usernamesList).ratings;
-      usernamesRating.forEach((e) => e.type= "username");
+    var fullnameRatings = findBestMatch(value, fullnamesList).ratings
+    fullnameRatings.forEach((e) => e.type= "fullname");
 
-      var fullnameRatings = findBestMatch(value, fullnamesList).ratings
-      fullnameRatings.forEach((e) => e.type= "fullname");
+    var mergeRatings = usernamesRating.concat(fullnameRatings);
+    mergeRatings.sort((a, b) => b.rating - a.rating); // sort descending
 
-      var mergeRatings = usernamesRating.concat(fullnameRatings);
-      mergeRatings.sort((a, b) => b.rating - a.rating); // sort descending
+    var matchedUserIdsList = [];
+    function findUniqueUserIds(value, type) {
+      const result = Object.keys(users).filter((userId) => !matchedUserIdsList.includes(userId) && users[userId][type] == value);
+      return result;
+    }
 
-      var matchedUserIdsList = [];
-      function findUniqueUserIds(value, type) {
-        const result = Object.keys(users).filter((userId) => !matchedUserIdsList.includes(userId) && users[userId][type] == value);
-        return result;
-      }
+    for (let e of mergeRatings){
+      if (e.rating < .3) break;
+      matchedUserIdsList = matchedUserIdsList.concat(findUniqueUserIds(e.target, e.type));
+    }
 
-      for (let e of mergeRatings){
-        if (e.rating < .6) break;
-        matchedUserIdsList = matchedUserIdsList.concat(findUniqueUserIds(e.target, e.type));
-      }
-
-      if (matchedUserIdsList.length != 0) setUserIdsList(matchedUserIdsList);
-    }, 600);
+    setUserIdsList(matchedUserIdsList);
   }
 
   useEffect(() => { 
