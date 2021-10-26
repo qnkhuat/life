@@ -20,6 +20,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import SettingsIcon from '@material-ui/icons/Settings';
 import LanguageIcon from '@material-ui/icons/Language';
 import TwitterIcon from '@material-ui/icons/Twitter';
+import InstagramIcon from '@material-ui/icons/Instagram';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import EmailIcon from '@material-ui/icons/Email';
 
@@ -155,6 +156,7 @@ function Profile({ data }) {
               <p className="text-sm">{formatAge(user.user.birthday)}</p>
               <div id="social-accounts" className="flex">
                 {user.user.website && <a rel="noopener noreferrer" href={user.user.website} target="_blank"><LanguageIcon className="mr-3" /></a>}
+                {user.user.instagram && <a rel="noopener noreferrer" href={`https://instagram.com/${user.user.instagram}`} target="_blank"><InstagramIcon className="mr-3 text-blue-600" /></a>}
                 {user.user.twitter && <a rel="noopener noreferrer" href={`https://twitter.com/${user.user.twitter}`} target="_blank"><TwitterIcon className="mr-3 text-blue-600" /></a>}
                 {user.user.github && <a rel="noopener noreferrer" href={`https://github.com/${user.user.github}`} target="_blank"><GitHubIcon className="mr-3"  /></a>}
                 {user.user.displayEmail && <a rel="noopener noreferrer" href={`mailto: ${user.user.displayEmail}`}><EmailIcon className="mr-3" /></a>}
