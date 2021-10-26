@@ -48,6 +48,7 @@ function Settings() {
         avatar:null,
         private: false,
         twitter: null,
+        instagram: null,
         github: null,
         displayEmail: null,
         website: null,
@@ -65,6 +66,7 @@ function Settings() {
         avatar:null,
         private: false,
         twitter: null,
+        instagram: null,
         github: null,
         displayEmail: null,
         website: null,
@@ -327,6 +329,15 @@ function Settings() {
             label="Twitter (username)" 
             variant="outlined" 
           />
+
+          <CustomTextField id="profile-instagram" 
+            className="w-full mt-6"
+            onChange={(e) => setUserInfoByField("instagram", e.target.value.toLowerCase())}
+            defaultValue={data?.userInfo.user.instagram}
+            label="Instagram (username)" 
+            variant="outlined" 
+          />
+
 
           <CustomTextField id="profile-github" 
             className="w-full mt-6"

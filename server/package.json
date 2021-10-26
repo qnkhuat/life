@@ -7,7 +7,7 @@
     "dev-server": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
-    "serve": "firebase emulators:start --export-on-exit=./.firestore-export --import=./.firestore-import"
+    "firebase:dev": "firebase emulators:start --export-on-exit=./.firestore-export --import=./.firestore-import"
   },
   "dependencies": {
     "@firebase/app": "^0.6.21",
